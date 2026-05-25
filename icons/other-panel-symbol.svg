@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Other Goal Outline Symbol</title>
+  <desc id="desc">Outline target symbol for the mentor panel.</desc>
+  <path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M64 16a48 48 0 1 0 48 48"/>
+  <path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M64 42a22 22 0 1 0 22 22"/>
+  <circle cx="64" cy="64" r="7" fill="none" stroke="#000000" stroke-width="2"/>
+  <path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M70 57l30-30 2 13 13 2-30 30-14-1-1-14Z"/>
+  <path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M64 64l21-21"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <title>Finance - Wallet</title>
+  <path fill="#5D7F3A" d="M22 36h72c8 0 14 6 14 14v8H83c-13 0-23 10-23 23s10 23 23 23h25v2c0 8-6 14-14 14H22c-8 0-14-6-14-14V50c0-8 6-14 14-14z"/>
+  <path fill="#5D7F3A" d="M43 18h47c5 0 8 4 8 8v5H33l10-13z" opacity=".92"/>
+  <path fill="#5D7F3A" d="M83 64h31c5 0 9 4 9 9v16c0 5-4 9-9 9H83c-9 0-17-8-17-17s8-17 17-17z"/>
+  <circle fill="#FFF7E6" cx="86" cy="81" r="6"/>
+</svg>

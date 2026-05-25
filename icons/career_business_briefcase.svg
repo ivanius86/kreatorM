@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <title>Career and Business - Briefcase</title>
+  <path fill="#D17A0B" d="M48 25h32c7 0 12 5 12 12v9h14c7 0 12 5 12 12v40c0 7-5 12-12 12H22c-7 0-12-5-12-12V58c0-7 5-12 12-12h14v-9c0-7 5-12 12-12zm0 21h32v-8H48v8z"/>
+  <path fill="#FFF7E6" d="M10 67h108v10c-14 8-32 12-54 12S24 85 10 77V67z" opacity=".95"/>
+  <rect fill="#D17A0B" x="55" y="75" width="18" height="18" rx="4"/>
+</svg>

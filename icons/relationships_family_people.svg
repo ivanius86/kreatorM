@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <title>Relationships and Family - People</title>
+  <circle fill="#2F75B5" cx="64" cy="36" r="15"/>
+  <circle fill="#2F75B5" cx="35" cy="48" r="14" opacity=".95"/>
+  <circle fill="#2F75B5" cx="93" cy="48" r="14" opacity=".95"/>
+  <path fill="#2F75B5" d="M43 71c0-12 9-21 21-21s21 9 21 21v24H43V71z"/>
+  <path fill="#2F75B5" d="M15 82c0-13 9-24 23-24 8 0 14 4 18 10-8 6-13 16-13 27H15V82zM113 82c0-13-9-24-23-24-8 0-14 4-18 10 8 6 13 16 13 27h28V82z" opacity=".95"/>
+</svg>

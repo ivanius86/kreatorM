@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<svg width="640.0000000000001" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - https://github.com/SVG-Edit/svgedit-->
+ <g class="layer">
+  <title>Layer 1</title>
+  <path d="m326,340c0,0 61,-42 56,-116c-5,-74 -57,-122 -57,-122c0,0 -54,54 -56,128c-2,74 57,110 57,110z" fill="none" id="svg_20" stroke="#000000" stroke-width="2"/>
+  <path d="m326,339c0,0 68,-6 102,-62c34,-56 19,-130 16,-137c-3,-7 -42,19 -68,45" fill="none" id="svg_23" stroke="#000000" stroke-width="2"/>
+  <path d="m325.44,338.58c0,0 -68,-6 -102,-62c-34,-56 -19,-130 -16,-137c3,-7 42,19 68,45" fill="none" id="svg_24" stroke="#000000" stroke-width="2"/>
+  <path d="m326,338c0,0 36,8 78,-2c42,-10 65,-23 83,-60c18,-37 26,-66 26,-66c0,0 -9,-10 -64,6" fill="none" id="svg_25" stroke="#000000" stroke-width="2"/>
+  <path d="m325,337.53c0,0 -36,8 -78,-2c-42,-10 -65,-23 -83,-60c-18,-37 -26,-66 -26,-66c0,0 9,-10 64,6" fill="none" id="svg_26" stroke="#000000" stroke-width="2"/>
+  <path d="m325,339c0.4,0.2 -26,43 -90,44c-64,1 -106,-37 -106,-37c0,0 20,-22 68,-30" fill="none" id="svg_27" stroke="#000000" stroke-width="2"/>
+  <path d="m326.5,338.99c0,0 26,43 90,44c64,1 106,-37 106,-37c0,0 -20,-22 -68,-30" fill="none" id="svg_28" stroke="#000000" stroke-width="2"/>
+  <ellipse cx="325.69" cy="338.16" fill="none" id="svg_29" rx="4.41" ry="2.67" stroke="#000000" stroke-width="2" transform="matrix(1 0 0 0.775 0 76.6863)"/>
+ </g>
+</svg>

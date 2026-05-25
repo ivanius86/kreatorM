@@ -1,0 +1,512 @@
+﻿<!DOCTYPE html>
+<html lang="sr-Latn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentor Planer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <section class="app">
+    <aside class="sidebar-shell" aria-label="Glavna navigacija">
+      <div class="sidebar-symbol-card">
+        <span id="dynamicCategorySymbol" class="dynamic-category-symbol" aria-hidden="true"></span>
+        <p id="dynamicCategoryLabel">Mentor</p>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-item active" type="button" data-view="dashboard" aria-current="page">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10.5V19h4v-5h3v5h4v-8.5"/></svg></span>
+          <span>Dashboard</span>
+        </button>
+        <button class="sidebar-item" type="button" data-view="builder">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19h5l10-10a2.1 2.1 0 0 0-3-3L6 16z"/><path d="m14 6 4 4"/><path d="M12 19h8"/></svg></span>
+          <span>Kreator ciljeva</span>
+        </button>
+        <button class="sidebar-item" type="button" data-view="planner">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>
+          <span>Kalendar</span>
+        </button>
+        <button class="sidebar-item" type="button" data-view="brainstorming">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 14a5 5 0 1 1 8 0c-.9.8-1.2 1.7-1.2 3H9.2c0-1.3-.3-2.2-1.2-3Z"/><path d="M9.5 20h5M10 17h4M12 3V2M19 8l1-.7M5 8l-1-.7"/></svg></span>
+          <span>Brainstorming</span>
+        </button>
+        <button class="sidebar-item" type="button" data-view="finance">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h13a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a1 1 0 0 1 1-1Z"/><path d="M7 7V5.5A1.5 1.5 0 0 1 8.5 4H17"/><path d="M16 13h4"/><path d="M16.5 13.5h.1"/></svg></span>
+          <span>Finansije</span>
+        </button>
+        <button class="sidebar-item" type="button" data-view="journal">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><path d="M8 8h7M8 12h6M8 16h4"/></svg></span>
+          <span>Dnevnik</span>
+        </button>
+        <button class="sidebar-item" type="button" data-view="statistics">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/><path d="M4 19h16"/></svg></span>
+          <span>Statistike</span>
+        </button>
+        <button class="sidebar-item" type="button" data-view="achievements">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 12v4M9 20h6M10 16h4"/></svg></span>
+          <span>Achievements</span>
+        </button>
+        <button class="sidebar-item" type="button" data-view="settings">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M4.2 7.5l2.6 1.5M17.2 15l2.6 1.5M19.8 7.5 17.2 9M6.8 15l-2.6 1.5"/></svg></span>
+          <span>Podešavanja</span>
+        </button>
+      </nav>
+      <div class="sidebar-quote">
+        <p>"Mali koraci danas, velike promene sutra."</p>
+      </div>
+    </aside>
+    <main class="paper-shell">
+      <div class="topbar-row">
+        <div class="view-switch" role="tablist" aria-label="Prikazi aplikacije">
+          <button id="builderTab" class="tab-btn active" role="tab" aria-selected="true">Kreator ciljeva</button>
+          <button id="plannerTab" class="tab-btn" role="tab" aria-selected="false">Kalendar</button>
+        </div>
+        <button id="backToCategoriesBtn" class="back-category-btn" type="button" aria-label="Nazad na kategorije">&larr;</button>
+      </div>
+
+      <section id="dashboardView" class="view-panel app-page">
+        <div class="page-heading">
+          <p>DASHBOARD</p>
+          <h1>Dobro jutro, Marko</h1>
+          <span>Tvoj miran pregled dana i fokusa.</span>
+        </div>
+        <div class="dashboard-grid">
+          <article class="mentor-card today-focus-card">
+            <small>Današnji fokus</small>
+            <h2>Lični razvojs</h2>
+            <p>Postani osoba na koju si ponosan.</p>
+          </article>
+          <article class="mentor-card progress-ring-card">
+            <small>Dnevni progres</small>
+            <div class="progress-ring" style="--value: 72"><span>72%</span></div>
+            <ul>
+              <li><strong>3 / 4</strong> Cilja</li>
+              <li><strong>2 / 3</strong> Rutine</li>
+              <li><strong>7 / 10</strong> Zadaci</li>
+            </ul>
+          </article>
+          <article class="mentor-card">
+            <small>Današnji plan</small>
+            <div class="mini-schedule">
+              <span>08:00</span><strong>Meditacija</strong>
+              <span>10:00</span><strong>Deep Work blok</strong>
+              <span>13:00</span><strong>Pauza</strong>
+              <span>17:00</span><strong>Čitanje knjige</strong>
+              <span>18:30</span><strong>Trening</strong>
+            </div>
+          </article>
+          <article class="mentor-card">
+            <small>Aktivni ciljevi</small>
+            <div class="goal-progress-list">
+              <label>Intelektualni razvoj <span>75%</span></label>
+              <meter value="75" max="100"></meter>
+              <label>Zdravlje i Energija <span>60%</span></label>
+              <meter value="60" max="100"></meter>
+              <label>Finansijska sloboda <span>40%</span></label>
+              <meter value="40" max="100"></meter>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="builderView" class="view-panel app-page hidden">
+        <div class="builder-layout">
+          <section class="builder-main">
+            <section id="categoryStage" class="category-stage">
+              <article class="mentor-intro-card">
+                <h2 id="mentorIntroTitle">Pokreni svoj uspeh</h2>
+                <section id="liveGoalCardPreview" class="live-goal-card-preview hidden" aria-live="polite"></section>
+                <p id="mentorIntroText">
+                  Izaberi jednu oblast života i pitanja, kalendar i beleške će pratiti taj fokus.
+                </p>
+              </article>
+
+              <section class="category-selection-card">
+                <h2 class="category-copy">Izaberi kategoriju cilja</h2>
+                <p class="category-copy">Prvo izaberi glavnu oblast. Zatim biramo uži fokus da Mentor postavi prava pitanja.</p>
+                <div id="categoryGrid" class="category-grid" role="listbox" aria-label="Kategorije ciljeva">
+                  <button class="category-option" type="button" data-category="Personal Growth">
+                    <span class="icon" aria-hidden="true">
+                      <img src="icons/brain_icon.svg" alt="" />
+                    </span>
+                    <span>Lični razvoj</span>
+                  </button>
+                  <button class="category-option" type="button" data-category="Health &amp; Energy">
+                    <span class="icon" aria-hidden="true">
+                      <img src="icons/health_energy_heart.svg" alt="" />
+                    </span>
+                    <span>Zdravlje i energija</span>
+                  </button>
+                  <button class="category-option" type="button" data-category="Career &amp; Work">
+                    <span class="icon" aria-hidden="true">
+                      <img src="icons/career_business_briefcase.svg" alt="" />
+                    </span>
+                    <span>Karijera i posao</span>
+                  </button>
+                  <button class="category-option" type="button" data-category="Finance">
+                    <span class="icon" aria-hidden="true">
+                      <img src="icons/finance_wallet.svg" alt="" />
+                    </span>
+                    <span>Finansije</span>
+                  </button>
+                  <button class="category-option" type="button" data-category="Relationships &amp; Family">
+                    <span class="icon" aria-hidden="true">
+                      <img src="icons/relationships_family_people.svg" alt="" />
+                    </span>
+                    <span>Odnosi i porodica</span>
+                  </button>
+                  <button class="category-option" type="button" data-category="Other">
+                    <span class="icon" aria-hidden="true">
+                      <img src="icons/other_target.svg" alt="" />
+                    </span>
+                    <span>Ostalo</span>
+                  </button>
+                </div>
+                <section id="subcategoryPanel" class="subcategory-panel hidden" aria-live="polite">
+                  <div class="subcategory-heading">
+                    <button id="backToMainCategoriesBtn" class="ghost-btn subcategory-back" type="button">Nazad na kategorije</button>
+                    <div>
+                      <h3 id="selectedCategoryTitle">Podkategorije</h3>
+                      <p>Izaberi konkretnu oblast da pitanja budu mentorska, a ne generička.</p>
+                    </div>
+                  </div>
+                  <div id="subcategoryGrid" class="subcategory-grid" role="listbox" aria-label="Podkategorije ciljeva"></div>
+                  <label id="customSubcategoryWrap" class="custom-subcategory hidden">
+                    <span>Kako želiš da nazoveš svoju oblast?</span>
+                    <input id="customSubcategoryInput" class="text-input" type="text" placeholder="Primer: Specifičan lični projekat" />
+                  </label>
+                </section>
+                <button id="startGoalBuilderBtn" class="btn" type="button" disabled>Nastavi na kreator cilja</button>
+              </section>
+
+              <section id="builderFlow" class="builder-flow hidden">
+                <div id="chat" class="chat" aria-live="polite"></div>
+                <button id="toggleChatBtn" class="ghost-btn chat-toggle hidden" type="button">Prikaži chat</button>
+
+                <div class="composer">
+                  <div id="answerArea"></div>
+                  <div class="input-row">
+                    <div></div>
+                    <button id="nextBtn" class="btn" disabled>Dalje</button>
+                    <button id="generateBtn" class="btn hidden">Generiši cilj</button>
+                  </div>
+                </div>
+
+                <section id="goalReview" class="review-card hidden" aria-live="polite"></section>
+              </section>
+            </section>
+          </section>
+        </div>
+      </section>
+
+      <section id="plannerView" class="view-panel app-page hidden">
+        <div class="planner-main">
+          <div class="planner-workspace">
+            <aside class="day-inspector">
+              <section class="inspector-section inspector-panel goals-control-panel">
+                <div class="goals-browser-header">
+                  <div>
+                    <h2>Moji ciljevi</h2>
+                    <p>Upravljaj ciljevima i prevuci akcije u kalendar.</p>
+                  </div>
+                  <button id="createGoalFromPlannerBtn" class="goal-create-btn" type="button">+ Kreiraj novi cilj</button>
+                </div>
+                <label class="goal-type-combobox">
+                  <span>Tip cilja</span>
+                  <select id="goalTypeSelect">
+                    <option value="all">Svi ciljevi</option>
+                    <option value="personal">Personalni</option>
+                    <option value="intellectual">Intelektualni</option>
+                    <option value="physical">Fizički</option>
+                    <option value="financial">Finansijski</option>
+                    <option value="business">Poslovni</option>
+                  </select>
+                </label>
+                <p id="selectedDateLabel" class="selected-date-label hidden">Nijedan datum nije izabran</p>
+                <div id="dayEventsList" class="day-events-list hidden">
+                  <div class="empty-state">Klikni dan u kalendaru da vidiš zakazane ciljeve.</div>
+                </div>
+              </section>
+
+              <section class="inspector-section goal-detail-section inspector-panel goals-browser-panel">
+                <div id="goalPool" class="goal-pool goals-hierarchy"></div>
+              </section>
+            </aside>
+
+            <div class="center-planner">
+          <div class="calendar-shell">
+            <div class="calendar-toolbar">
+              <div class="mode-toggle" role="tablist" aria-label="Prikaz kalendara">
+                <button id="monthViewBtn" class="tab-btn mini active" type="button" role="tab" aria-selected="true">Mesec</button>
+                <button id="weekViewBtn" class="tab-btn mini" type="button" role="tab" aria-selected="false">Nedelja</button>
+                <button id="dayViewBtn" class="tab-btn mini" type="button" role="tab" aria-selected="false">Dan</button>
+              </div>
+              <h1 class="calendar-title" aria-label="Kalendar">
+                <svg class="calendar-title-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="4" y="5" width="16" height="15" rx="2"></rect>
+                  <path d="M8 3v4M16 3v4M4 10h16"></path>
+                  <path d="M8 14h2M12 14h2M16 14h2M8 17h2M12 17h2"></path>
+                </svg>
+              </h1>
+              <div class="calendar-nav">
+                <button id="prevMonthBtn" class="ghost-btn nav-arrow" type="button" aria-label="Prethodni period">&lt;</button>
+                <h2 id="monthLabel">Mesec</h2>
+                <button id="nextMonthBtn" class="ghost-btn nav-arrow" type="button" aria-label="Sledeći period">&gt;</button>
+              </div>
+            </div>
+
+            <section id="monthCalendarView" class="calendar-view">
+              <div class="weekday-row" aria-hidden="true">
+                <span>Pon</span>
+                <span>Uto</span>
+                <span>Sre</span>
+                <span>Čet</span>
+                <span>Pet</span>
+                <span>Sub</span>
+                <span>Ned</span>
+              </div>
+              <div id="calendarGrid" class="calendar-grid"></div>
+            </section>
+
+            <section id="weekCalendarView" class="calendar-view hidden">
+              <div id="weekHeaderRow" class="week-header-row"></div>
+              <div id="weekGrid" class="week-grid"></div>
+            </section>
+
+            <section id="dayCalendarView" class="calendar-view hidden">
+              <div id="dayHeaderRow" class="day-header-row"></div>
+              <div id="dayTimeline" class="day-timeline"></div>
+            </section>
+          </div>
+
+          <section class="goal-pool-wrap goal-workspace-wrap">
+            <section class="goal-focus-panel">
+              <div id="goalFocusDetails" class="goal-focus-summary">
+                <div class="empty-state">Klikni cilj ili akciju da vidiš detalje.</div>
+              </div>
+              <div class="goal-focus-tabs" role="tablist" aria-label="Prikaz cilja">
+                <button class="goal-focus-tab active" type="button" data-goal-tab="overview">Pregled</button>
+                <button class="goal-focus-tab" type="button" data-goal-tab="actions">Akcije</button>
+                <button class="goal-focus-tab" type="button" data-goal-tab="notes">Beleške</button>
+                <button class="goal-focus-tab" type="button" data-goal-tab="stats">Statistike</button>
+                <button class="goal-focus-tab" type="button" data-goal-tab="edit">Uredi</button>
+              </div>
+              <div id="goalFocusTabPanel" class="goal-focus-tab-panel"></div>
+            </section>
+          </section>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="brainstormingView" class="view-panel app-page hidden">
+        <div class="brainstorming-shell">
+          <div class="brainstorming-control-panel">
+            <header class="brainstorming-hero">
+              <div class="brainstorming-title">
+                <p>BRAINSTORMING</p>
+                <h1 id="brainstormingHeroTitle">Zabeleži, poveži i razvijaj svoje ideje</h1>
+                <span id="brainstormingHeroText">Ideje nastaju slobodno. Uhvati ih, istraži i razvijaj ih kroz vreme.</span>
+              </div>
+              <label class="brainstorming-search" aria-label="Pretraži ideje">
+                <span aria-hidden="true">⌕</span>
+                <input id="brainstormingSearchInput" type="search" placeholder="Pretraži ideje..." />
+              </label>
+              <button id="openIdeaModalBtn" class="btn brainstorming-primary-btn" type="button">+ Nova ideja</button>
+            </header>
+
+            <div class="brainstorming-tab-row">
+              <nav class="brainstorming-tabs" aria-label="Filteri ideja">
+                <button class="brainstorming-tab active" type="button" data-status="all"><span class="brainstorming-tab-icon icon-lightbulb" aria-hidden="true"></span><span>Sve ideje</span></button>
+                <button class="brainstorming-tab" type="button" data-status="path"><span class="brainstorming-tab-icon icon-compass" aria-hidden="true"></span><span>Istraživanje</span></button>
+                <button class="brainstorming-tab" type="button" data-status="build"><span class="brainstorming-tab-icon icon-flag" aria-hidden="true"></span><span>Ostvarenje</span></button>
+                <button class="brainstorming-tab" type="button" data-status="archived"><span class="brainstorming-tab-icon icon-folder" aria-hidden="true"></span><span>Arhiva</span></button>
+              </nav>
+              <div class="brainstorming-canvas-tools" aria-label="Kontrole table">
+                <button id="zoomOutIdeasBtn" class="brainstorming-tool-btn" type="button" aria-label="Umanji ideje">−</button>
+                <span id="ideaZoomLabel">100%</span>
+                <button id="zoomInIdeasBtn" class="brainstorming-tool-btn" type="button" aria-label="Uvećaj ideje">+</button>
+                <button id="resetIdeaViewBtn" class="brainstorming-tool-btn" type="button" aria-label="Resetuj pogled">▦</button>
+              </div>
+            </div>
+          </div>
+
+          <section class="brainstorming-canvas-wrap">
+            <div id="brainstormingCanvas" class="brainstorming-canvas" aria-live="polite"></div>
+            <aside class="brainstorming-minimap" aria-label="Mini mapa ideja">
+              <div id="brainstormingMiniMap" class="brainstorming-minimap-dots"></div>
+            </aside>
+          </section>
+        </div>
+
+        <div id="quickIdeaModal" class="brainstorming-modal hidden" role="dialog" aria-modal="true" aria-labelledby="quickIdeaTitle">
+          <div class="brainstorming-modal-backdrop" data-close-modal="quick"></div>
+          <form id="quickIdeaForm" class="brainstorming-modal-card quick-idea-card">
+            <div class="brainstorming-modal-head">
+              <div>
+                <p>BRZA IDEJA</p>
+                <h2 id="quickIdeaTitle">Nova ideja</h2>
+              </div>
+              <button class="brainstorming-close-btn" type="button" data-close-modal="quick" aria-label="Zatvori">×</button>
+            </div>
+            <label>
+              <span>Naslov ideje</span>
+              <input id="ideaTitleInput" class="text-input" type="text" required placeholder="Primer: AI mentor aplikacija" />
+            </label>
+            <label>
+              <span>Kratak opis</span>
+              <textarea id="ideaDescriptionInput" class="text-input mentor-textarea" rows="4" required placeholder="Uhvati glavnu misao u par rečenica..."></textarea>
+            </label>
+            <div class="brainstorming-form-grid">
+              <label>
+                <span>Tip ideje</span>
+                <select id="ideaTypeInput" class="text-input">
+                  <option>Poslovna</option>
+                  <option>Kreativna</option>
+                  <option>Lifestyle</option>
+                  <option>Lični razvoj</option>
+                  <option>Finansijska</option>
+                  <option>Edukacija</option>
+                  <option>Projekat</option>
+                </select>
+              </label>
+              <label>
+                <span>Energija: <strong id="ideaEnergyValue">7</strong>/10</span>
+                <input id="ideaEnergyInput" type="range" min="1" max="10" value="7" />
+              </label>
+            </div>
+            <label>
+              <span>Slika ili inspiracija</span>
+              <input id="ideaImageInput" class="text-input" type="url" placeholder="URL slike ili ostavi prazno za atmosferu" />
+            </label>
+            <label>
+              <span>Upload slike</span>
+              <input id="ideaImageFileInput" class="text-input" type="file" accept="image/*" />
+            </label>
+            <label>
+              <span>Linkovi</span>
+              <input id="ideaLinksInput" class="text-input" type="text" placeholder="Odvoji linkove zarezom" />
+            </label>
+            <label>
+              <span>Tagovi</span>
+              <input id="ideaTagsInput" class="text-input" type="text" placeholder="travel, freedom, remote" />
+            </label>
+            <div class="brainstorming-modal-actions">
+              <button class="ghost-btn" type="button" data-close-modal="quick">Otkaži</button>
+              <button class="btn" type="submit">Sačuvaj</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="ideaPreviewModal" class="brainstorming-modal hidden" role="dialog" aria-modal="false" aria-labelledby="ideaPreviewTitle">
+          <div class="brainstorming-modal-backdrop" data-close-modal="preview"></div>
+          <article class="brainstorming-modal-card idea-preview-card">
+            <button class="brainstorming-close-btn preview-close" type="button" data-close-modal="preview" aria-label="Zatvori">×</button>
+            <div id="ideaPreviewContent"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="financeView" class="view-panel app-page hidden">
+        <div class="page-heading">
+          <p>FINANSIJE</p>
+          <h1>Pregled novca i finansijskih ciljeva</h1>
+          <span>Štednja, budžet i ulaganja na jednom mirnom mestu.</span>
+        </div>
+        <div class="stats-grid">
+          <article class="mentor-card stat-card"><small>Mesečna štednja</small><strong>€420</strong><span>planirani iznos za ovaj mesec</span></article>
+          <article class="mentor-card stat-card"><small>Budžet</small><strong>68%</strong><span>iskorišćeno od planiranog limita</span></article>
+          <article class="mentor-card stat-card"><small>Finansijski ciljevi</small><strong>3</strong><span>aktivna cilja u toku</span></article>
+          <article class="mentor-card chart-card"><h3>Tok novca</h3><div class="bar-chart"><span style="height:55%"></span><span style="height:48%"></span><span style="height:70%"></span><span style="height:62%"></span><span style="height:76%"></span><span style="height:58%"></span><span style="height:84%"></span></div></article>
+          <article class="mentor-card chart-card">
+            <h3>Prioriteti</h3>
+            <div class="goal-progress-list">
+              <label>Fond sigurnosti <span>45%</span></label>
+              <meter value="45" max="100"></meter>
+              <label>Smanjenje troškova <span>62%</span></label>
+              <meter value="62" max="100"></meter>
+              <label>Investiranje <span>28%</span></label>
+              <meter value="28" max="100"></meter>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="journalView" class="view-panel app-page hidden">
+        <div class="page-heading">
+          <p>DNEVNIK</p>
+          <h1>Dnevna refleksija</h1>
+          <span>Tiha stranica za misli, energiju i fokus.</span>
+        </div>
+        <div class="journal-layout">
+          <article class="mentor-card journal-editor">
+            <textarea class="text-input mentor-textarea" rows="8" placeholder="Šta danas primećuješ kod sebe?"></textarea>
+            <div class="journal-inputs">
+              <label>Raspoloženje<input class="text-input" type="text" value="Mirno" /></label>
+              <label>Energija<input class="text-input" type="text" value="7/10" /></label>
+              <label>Fokus<input class="text-input" type="text" value="Dubok rad" /></label>
+            </div>
+          </article>
+          <aside class="mentor-card notes-list">
+            <small>Prethodne beleške</small>
+            <p><strong>Ponedeljak</strong> Dobar tempo, malo više pauza.</p>
+            <p><strong>Nedelja</strong> Jasniji fokus za narednu sedmicu.</p>
+            <p><strong>Subota</strong> Završena jedna važna mala stvar.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="statisticsView" class="view-panel app-page hidden">
+        <div class="page-heading">
+          <p>STATISTIKE</p>
+          <h1>Pregled napretka</h1>
+          <span>Nedelja, mesec i aktivni ciljevi na jednom mestu.</span>
+        </div>
+        <div class="stats-grid">
+          <article class="mentor-card stat-card"><small>Nedelja</small><strong>18</strong><span>završenih zadataka</span></article>
+          <article class="mentor-card stat-card"><small>Mesec</small><strong>64%</strong><span>prosečan progres</span></article>
+          <article class="mentor-card stat-card"><small>Aktivni ciljevi</small><strong>5</strong><span>u toku</span></article>
+          <article class="mentor-card chart-card"><h3>Nedeljni pregled</h3><div class="bar-chart"><span style="height:45%"></span><span style="height:62%"></span><span style="height:40%"></span><span style="height:76%"></span><span style="height:58%"></span><span style="height:82%"></span><span style="height:68%"></span></div></article>
+          <article class="mentor-card chart-card"><h3>Aktivni ciljevi</h3><div class="soft-chart-line"></div></article>
+        </div>
+      </section>
+
+      <section id="achievementsView" class="view-panel app-page hidden">
+        <div class="page-heading">
+          <p>ACHIEVEMENTS</p>
+          <h1>Postignuća i prekretnice</h1>
+          <span>Mali dokazi kontinuiteta i završenih ciljeva.</span>
+        </div>
+        <div class="achievement-grid">
+          <article class="mentor-card achievement-card"><span>01</span><h3>7 dana fokusa</h3><p>Streak završen bez prekida.</p></article>
+          <article class="mentor-card achievement-card"><span>02</span><h3>Prvi završen cilj</h3><p>Jedan cilj je kompletiran do kraja.</p></article>
+          <article class="mentor-card achievement-card"><span>03</span><h3>Jutarnja rutina</h3><p>Rutina se pojavila 5 puta ove nedelje.</p></article>
+          <article class="mentor-card achievement-card"><span>04</span><h3>Milestone</h3><p>Važna etapa je zaključana.</p></article>
+        </div>
+      </section>
+
+      <section id="settingsView" class="view-panel app-page hidden">
+        <div class="page-heading">
+          <p>PODEŠAVANJA</p>
+          <h1>Mirna kontrola aplikacije</h1>
+          <span>Placeholder za buduća podešavanja profila, tema i obaveštenja.</span>
+        </div>
+        <article class="mentor-card settings-card">
+          <label><input type="checkbox" checked /> Topli premium izgled</label>
+          <label><input type="checkbox" checked /> Dnevni podsetnik</label>
+          <label><input type="checkbox" /> Fokus režim</label>
+        </article>
+      </section>
+    </main>
+  </section>
+  <script src="script.js"></script>
+  <script src="kalendar.js"></script>
+  <script src="brainstorming.js"></script>
+</body>
+</html>
