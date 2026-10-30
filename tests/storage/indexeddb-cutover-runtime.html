@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="application-version" content="1.0.0" />
+  <meta name="application-build" content="20260730.1" />
+  <title>IndexedDB cutover runtime</title>
+</head>
+<body>
+  <script src="/js/release.js"></script>
+  <script src="/storageService.js"></script>
+  <script src="/js/vendor/fflate-0.8.3.min.js"></script>
+  <script src="/js/vendor/dexie-4.4.4.min.js"></script>
+  <script src="/js/data/backup/backup-format.constants.js"></script>
+  <script src="/js/data/backup/backup-checksum.service.js"></script>
+  <script src="/js/data/backup/backup-manifest.schema.js"></script>
+  <script src="/js/data/backup/nutrition-media-export.service.js"></script>
+  <script src="/js/data/backup/backup-export.service.js"></script>
+  <script src="/js/data/backup/backup-validation.service.js"></script>
+  <script src="/js/data/backup/zip-backup.service.js"></script>
+  <script src="/js/data/backup/legacy-backup-preparation.service.js"></script>
+  <script src="/js/data/backup/goals-calendar-backup.service.js"></script>
+  <script src="/js/data/validation/legacy-payload.validators.js"></script>
+  <script src="/js/data/legacy/legacy-storage.registry.js"></script>
+  <script src="/js/data/legacy/legacy-storage.reader.js"></script>
+  <script src="/js/data/legacy/legacy-media.reader.js"></script>
+  <script src="/js/data/normalization/legacy-domain-normalizer.service.js"></script>
+  <script src="/js/data/migration/migration-status.constants.js"></script>
+  <script src="/js/data/database/schema-v1.js"></script>
+    <script src="/js/data/database/kreatorm.database.js"></script>
+    <script src="/js/data/database/transaction.helper.js"></script>
+    <script src="/js/data/adapters/dexie.adapter.js"></script>
+    <script src="/js/data/services/mutation-freeze.service.js"></script>
+    <script src="/js/data/services/cross-tab-coordination.service.js"></script>
+    <script src="/js/data/migration/migration-state-machine.js"></script>
+  <script src="/js/data/migration/migration-checkpoint.service.js"></script>
+  <script src="/js/data/migration/migration-verification.service.js"></script>
+    <script src="/js/data/recovery/indexeddb-recovery.service.js"></script>
+    <script src="/js/data/migration/legacy-to-indexeddb.service.js"></script>
+    <script src="/js/data/backup/indexeddb-backup.service.js"></script>
+    <script src="/js/data/recovery/indexeddb-restore.service.js"></script>
+  <script src="/js/data/state/repository-state.constants.js"></script>
+  <script src="/js/data/errors/data-error.js"></script>
+  <script src="/js/data/state/data-event-bus.js"></script>
+  <script src="/js/data/contracts/storage-adapter.contract.js"></script>
+  <script src="/js/data/contracts/repository.contract.js"></script>
+  <script src="/js/data/services/ideas-durable-save.service.js"></script>
+  <script src="/js/data/services/domain-durable-save.service.js"></script>
+  <script src="/js/data/services/goals.service.js"></script>
+  <script src="/js/data/services/goals-calendar.service.js"></script>
+  <script src="/js/data/adapters/local-storage.adapter.js"></script>
+  <script src="/js/data/repositories/repository-helpers.js"></script>
+  <script src="/js/data/repositories/settings.repository.js"></script>
+  <script src="/js/data/repositories/goals.repository.js"></script>
+  <script src="/js/data/repositories/calendar.repository.js"></script>
+  <script src="/js/data/repositories/ideas.repository.js"></script>
+  <script src="/js/data/repositories/finance.repository.js"></script>
+  <script src="/js/data/repositories/assets.repository.js"></script>
+  <script src="/js/data/repositories/comparisons.repository.js"></script>
+  <script src="/js/data/repositories/nutrition-food-data.repository.js"></script>
+  <script src="/js/data/repositories/nutrition-inventory-data.repository.js"></script>
+    <script src="/js/data/repositories/media.repository.js"></script>
+    <script src="/js/data/repositories/indexeddb-core.repositories.js"></script>
+    <script src="/js/data/index.js"></script>
+    <script src="/js/data/admin/indexeddb-admin.facade.js"></script>
+    <script src="/js/data/bootstrap/feature-hydration.js"></script>
+  <script src="/js/data/compatibility/mentor-storage.facade.js"></script>
+  <script src="/js/data/bootstrap/data-bootstrap.js"></script>
+</body>
+</html>

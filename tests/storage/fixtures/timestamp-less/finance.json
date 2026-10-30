@@ -1,0 +1,21 @@
+{
+  "central": {
+    "transactions": [],
+    "budgets": [],
+    "cashflowIncomes": [],
+    "cashflowExpenses": [],
+    "cashflowDebts": [],
+    "importedTransactionFiles": [],
+    "categoryRules": {}
+  },
+  "legacy": {
+    "transactions": [],
+    "budgets": [],
+    "cashflowIncomes": [],
+    "cashflowExpenses": [],
+    "cashflowDebts": [],
+    "importedTransactionFiles": [],
+    "categoryRules": {}
+  },
+  "expectedSource": "central"
+}

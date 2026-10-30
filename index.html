@@ -1,8 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sr-Latn">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="application-version" content="1.0.0" />
+  <meta name="application-build" content="20260730.1" />
   <title>Mentor Planer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -10,11 +12,26 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=20261029-floating-01" />
+  <link rel="stylesheet" href="research-icons.css" />
+  <link rel="stylesheet" href="research-organizer.css?v=20261016-custom-focus-01" />
+  <link rel="stylesheet" href="research-sticker-designer.css?v=20261021-header-colors-10" />
+  <link rel="stylesheet" href="mentor-chat.css?v=20261030-history-controls-01" />
+  <script>
+    try {
+      document.documentElement.dataset.sidebarState = localStorage.getItem("mentor.sidebar.state") === "collapsed" ? "collapsed" : "expanded";
+    } catch (_) {
+      document.documentElement.dataset.sidebarState = "expanded";
+    }
+  </script>
 </head>
 <body>
   <section class="app">
-    <aside class="sidebar-shell" aria-label="Glavna navigacija">
+    <aside id="mentorSidebar" class="sidebar-shell" aria-label="Glavna navigacija">
+      <button id="sidebarCollapseToggle" class="sidebar-collapse-toggle" type="button" aria-controls="mentorSidebar">
+        <span class="sidebar-collapse-arrow sidebar-collapse-arrow-expand" aria-hidden="true">«</span>
+        <span class="sidebar-collapse-arrow sidebar-collapse-arrow-collapse" aria-hidden="true">»</span>
+      </button>
       <div class="sidebar-symbol-card">
         <span id="dynamicCategorySymbol" class="dynamic-category-symbol" aria-hidden="true"></span>
         <p id="dynamicCategoryLabel">Mentor</p>
@@ -24,17 +41,17 @@
           <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10.5V19h4v-5h3v5h4v-8.5"/></svg></span>
           <span>Dashboard</span>
         </button>
+        <button class="sidebar-item" type="button" data-view="brainstorming">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 14a5 5 0 1 1 8 0c-.9.8-1.2 1.7-1.2 3H9.2c0-1.3-.3-2.2-1.2-3Z"/><path d="M9.5 20h5M10 17h4M12 3V2M19 8l1-.7M5 8l-1-.7"/></svg></span>
+          <span>Brainstorming</span>
+        </button>
         <button class="sidebar-item" type="button" data-view="builder">
           <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19h5l10-10a2.1 2.1 0 0 0-3-3L6 16z"/><path d="m14 6 4 4"/><path d="M12 19h8"/></svg></span>
-          <span>Kreator ciljeva</span>
+          <span data-creator-nav></span>
         </button>
         <button class="sidebar-item" type="button" data-view="planner">
           <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>
           <span>Kalendar</span>
-        </button>
-        <button class="sidebar-item" type="button" data-view="brainstorming">
-          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 14a5 5 0 1 1 8 0c-.9.8-1.2 1.7-1.2 3H9.2c0-1.3-.3-2.2-1.2-3Z"/><path d="M9.5 20h5M10 17h4M12 3V2M19 8l1-.7M5 8l-1-.7"/></svg></span>
-          <span>Brainstorming</span>
         </button>
         <button class="sidebar-item" type="button" data-view="finance">
           <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h13a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a1 1 0 0 1 1-1Z"/><path d="M7 7V5.5A1.5 1.5 0 0 1 8.5 4H17"/><path d="M16 13h4"/><path d="M16.5 13.5h.1"/></svg></span>
@@ -44,27 +61,39 @@
           <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Z"/><path d="M8 8h7M8 12h6M8 16h4"/></svg></span>
           <span>Dnevnik</span>
         </button>
-        <button class="sidebar-item" type="button" data-view="statistics">
-          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/><path d="M4 19h16"/></svg></span>
-          <span>Statistike</span>
+        <button class="sidebar-item" type="button" data-view="nutrition">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3v8a3 3 0 0 0 6 0V3"/><path d="M9 3v18"/><path d="M17 3v18"/><path d="M17 3a4 4 0 0 1 0 8"/></svg></span>
+          <span></span>
         </button>
-        <button class="sidebar-item" type="button" data-view="achievements">
-          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 12v4M9 20h6M10 16h4"/></svg></span>
-          <span>Achievements</span>
+        <button class="sidebar-item" type="button" data-view="bodyEnergy">
+          <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 8.6a5.4 5.4 0 0 0-9.2-3.8L12 5.2l.4-.4a5.4 5.4 0 0 1 7.6 7.6L12 20l-8-7.6a5.4 5.4 0 0 1 7.6-7.6l.4.4"/><path d="m13 8-3 5h4l-2 4"/></svg></span>
+          <span></span>
         </button>
         <button class="sidebar-item" type="button" data-view="settings">
           <span class="sidebar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M4.2 7.5l2.6 1.5M17.2 15l2.6 1.5M19.8 7.5 17.2 9M6.8 15l-2.6 1.5"/></svg></span>
           <span>Podešavanja</span>
         </button>
       </nav>
-      <div class="sidebar-quote">
-        <p>"Mali koraci danas, velike promene sutra."</p>
+      <div class="sidebar-overflow hidden">
+        <button id="sidebarOverflowToggle" class="sidebar-overflow-toggle" type="button" aria-expanded="false" aria-controls="sidebarOverflowMenu" aria-label="Prikaži dodatne navigacije">
+          <span>Još</span>
+          <span class="sidebar-overflow-arrow" aria-hidden="true">⌄</span>
+        </button>
+        <div id="sidebarOverflowMenu" class="sidebar-overflow-menu hidden" role="menu"></div>
+      </div>
+      <div class="language-switcher" aria-label="Izbor jezika">
+        <button class="language-option active" type="button" data-language="sr" aria-pressed="true" aria-label="Srpski" title="Srpski">
+          <img class="flag-icon" src="icons/flag-serbia.svg" alt="" aria-hidden="true" />
+        </button>
+        <button class="language-option" type="button" data-language="en" aria-pressed="false" aria-label="English" title="English">
+          <img class="flag-icon" src="icons/flag-uk.svg" alt="" aria-hidden="true" />
+        </button>
       </div>
     </aside>
     <main class="paper-shell">
       <div class="topbar-row">
         <div class="view-switch" role="tablist" aria-label="Prikazi aplikacije">
-          <button id="builderTab" class="tab-btn active" role="tab" aria-selected="true">Kreator ciljeva</button>
+          <button id="builderTab" class="tab-btn active" role="tab" aria-selected="true"></button>
           <button id="plannerTab" class="tab-btn" role="tab" aria-selected="false">Kalendar</button>
         </div>
         <button id="backToCategoriesBtn" class="back-category-btn" type="button" aria-label="Nazad na kategorije">&larr;</button>
@@ -73,50 +102,60 @@
       <section id="dashboardView" class="view-panel app-page">
         <div class="page-heading">
           <p>DASHBOARD</p>
-          <h1>Dobro jutro, Marko</h1>
-          <span>Tvoj miran pregled dana i fokusa.</span>
+          <h1>Dobro jutro, Ivan</h1>
+          <span>Tvoj miran pregled finansija, ideja i ciljeva za danas.</span>
         </div>
         <div class="dashboard-grid">
-          <article class="mentor-card today-focus-card">
-            <small>Današnji fokus</small>
-            <h2>Lični razvojs</h2>
-            <p>Postani osoba na koju si ponosan.</p>
+          <article class="mentor-card today-focus-card dashboard-morning-card">
+            <small>Jutarnji pregled</small>
+            <h2>Jedan miran pogled pre akcije</h2>
+            <p>Finansije pokazuju prostor, brainstorming čuva ideje, a ciljevi ti govore šta danas zaslužuje pažnju.</p>
+            <div class="dashboard-signal-strip">
+              <span><strong>Budžet</strong> Hrana pod kontrolom</span>
+              <span><strong>Ideje</strong> Van Life čeka sledeći test</span>
+              <span><strong>Ciljevi</strong> 3 aktivna pravca</span>
+            </div>
           </article>
           <article class="mentor-card progress-ring-card">
-            <small>Dnevni progres</small>
+            <small>Dnevni puls</small>
             <div class="progress-ring" style="--value: 72"><span>72%</span></div>
             <ul>
-              <li><strong>3 / 4</strong> Cilja</li>
-              <li><strong>2 / 3</strong> Rutine</li>
-              <li><strong>7 / 10</strong> Zadaci</li>
+              <li><strong>3 / 4</strong> <span>Cilja</span></li>
+              <li><strong>2 / 3</strong> <span>Rutine</span></li>
+              <li><strong>7 / 10</strong> <span>Zadaci</span></li>
             </ul>
           </article>
-          <article class="mentor-card">
-            <small>Današnji plan</small>
-            <div class="mini-schedule">
-              <span>08:00</span><strong>Meditacija</strong>
-              <span>10:00</span><strong>Deep Work blok</strong>
-              <span>13:00</span><strong>Pauza</strong>
-              <span>17:00</span><strong>Čitanje knjige</strong>
-              <span>18:30</span><strong>Trening</strong>
+          <article class="mentor-card dashboard-connection-card">
+            <small>Finansije</small>
+            <h3>Novac kao signal, ne pritisak</h3>
+            <p>Danas prati da li troškovi ostaju u ritmu budžeta i da li ima prostora za sledeći mali korak.</p>
+            <div class="dashboard-mini-meter"><span style="width: 39%"></span><em>39% hrane</em></div>
+          </article>
+          <article class="mentor-card dashboard-connection-card">
+            <small>Brainstorming</small>
+            <h3>Ideje koje vredi vratiti na sto</h3>
+            <p>Izaberi jednu ideju i napiši sledeći test koji može da se uradi bez velikog rizika.</p>
+            <div class="dashboard-link-row">
+              <span>Van Life</span>
+              <strong>sledeći mini test</strong>
             </div>
           </article>
           <article class="mentor-card">
             <small>Aktivni ciljevi</small>
             <div class="goal-progress-list">
-              <label>Intelektualni razvoj <span>75%</span></label>
-              <meter value="75" max="100"></meter>
-              <label>Zdravlje i Energija <span>60%</span></label>
-              <meter value="60" max="100"></meter>
-              <label>Finansijska sloboda <span>40%</span></label>
-              <meter value="40" max="100"></meter>
+              <label for="goalProgressIntellectual">Intelektualni razvoj <span>75%</span></label>
+              <meter id="goalProgressIntellectual" value="75" max="100"></meter>
+              <label for="goalProgressHealth">Zdravlje i Energija <span>60%</span></label>
+              <meter id="goalProgressHealth" value="60" max="100"></meter>
+              <label for="goalProgressFinance">Finansijska sloboda <span>40%</span></label>
+              <meter id="goalProgressFinance" value="40" max="100"></meter>
             </div>
           </article>
         </div>
       </section>
 
       <section id="builderView" class="view-panel app-page hidden">
-        <div class="builder-layout">
+        <div id="mentorManualCreator" class="builder-layout" data-panel="manual-goal-creator">
           <section class="builder-main">
             <section id="categoryStage" class="category-stage">
               <article class="mentor-intro-card">
@@ -215,7 +254,7 @@
                     <h2>Moji ciljevi</h2>
                     <p>Upravljaj ciljevima i prevuci akcije u kalendar.</p>
                   </div>
-                  <button id="createGoalFromPlannerBtn" class="goal-create-btn" type="button">+ Kreiraj novi cilj</button>
+                  <button id="createGoalFromPlannerBtn" class="goal-create-btn" type="button"><span>+ Kreiraj novi cilj</span></button>
                 </div>
                 <label class="goal-type-combobox">
                   <span>Tip cilja</span>
@@ -243,9 +282,9 @@
           <div class="calendar-shell">
             <div class="calendar-toolbar">
               <div class="mode-toggle" role="tablist" aria-label="Prikaz kalendara">
-                <button id="monthViewBtn" class="tab-btn mini active" type="button" role="tab" aria-selected="true">Mesec</button>
-                <button id="weekViewBtn" class="tab-btn mini" type="button" role="tab" aria-selected="false">Nedelja</button>
-                <button id="dayViewBtn" class="tab-btn mini" type="button" role="tab" aria-selected="false">Dan</button>
+                <button id="monthViewBtn" class="tab-btn mini active" type="button" role="tab" aria-selected="true"><span>Mesec</span></button>
+                <button id="weekViewBtn" class="tab-btn mini" type="button" role="tab" aria-selected="false"><span>Nedelja</span></button>
+                <button id="dayViewBtn" class="tab-btn mini" type="button" role="tab" aria-selected="false"><span>Dan</span></button>
               </div>
               <h1 class="calendar-title" aria-label="Kalendar">
                 <svg class="calendar-title-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -291,11 +330,11 @@
                 <div class="empty-state">Klikni cilj ili akciju da vidiš detalje.</div>
               </div>
               <div class="goal-focus-tabs" role="tablist" aria-label="Prikaz cilja">
-                <button class="goal-focus-tab active" type="button" data-goal-tab="overview">Pregled</button>
-                <button class="goal-focus-tab" type="button" data-goal-tab="actions">Akcije</button>
-                <button class="goal-focus-tab" type="button" data-goal-tab="notes">Beleške</button>
-                <button class="goal-focus-tab" type="button" data-goal-tab="stats">Statistike</button>
-                <button class="goal-focus-tab" type="button" data-goal-tab="edit">Uredi</button>
+                <button class="goal-focus-tab active" type="button" data-goal-tab="overview"><span>Pregled</span></button>
+                <button class="goal-focus-tab" type="button" data-goal-tab="actions"><span>Akcije</span></button>
+                <button class="goal-focus-tab" type="button" data-goal-tab="notes"><span>Beleške</span></button>
+                <button class="goal-focus-tab" type="button" data-goal-tab="stats"><span>Statistike</span></button>
+                <button class="goal-focus-tab" type="button" data-goal-tab="edit"><span>Uredi</span></button>
               </div>
               <div id="goalFocusTabPanel" class="goal-focus-tab-panel"></div>
             </section>
@@ -309,36 +348,33 @@
         <div class="brainstorming-shell">
           <div class="brainstorming-control-panel">
             <header class="brainstorming-hero">
-              <div class="brainstorming-title">
-                <p>BRAINSTORMING</p>
-                <h1 id="brainstormingHeroTitle">Zabeleži, poveži i razvijaj svoje ideje</h1>
-                <span id="brainstormingHeroText">Ideje nastaju slobodno. Uhvati ih, istraži i razvijaj ih kroz vreme.</span>
-              </div>
-              <label class="brainstorming-search" aria-label="Pretraži ideje">
-                <span aria-hidden="true">⌕</span>
-                <input id="brainstormingSearchInput" type="search" placeholder="Pretraži ideje..." />
-              </label>
-              <button id="openIdeaModalBtn" class="btn brainstorming-primary-btn" type="button">+ Nova ideja</button>
-            </header>
-
-            <div class="brainstorming-tab-row">
               <nav class="brainstorming-tabs" aria-label="Filteri ideja">
                 <button class="brainstorming-tab active" type="button" data-status="all"><span class="brainstorming-tab-icon icon-lightbulb" aria-hidden="true"></span><span>Sve ideje</span></button>
                 <button class="brainstorming-tab" type="button" data-status="path"><span class="brainstorming-tab-icon icon-compass" aria-hidden="true"></span><span>Istraživanje</span></button>
                 <button class="brainstorming-tab" type="button" data-status="build"><span class="brainstorming-tab-icon icon-flag" aria-hidden="true"></span><span>Ostvarenje</span></button>
                 <button class="brainstorming-tab" type="button" data-status="archived"><span class="brainstorming-tab-icon icon-folder" aria-hidden="true"></span><span>Arhiva</span></button>
               </nav>
-              <div class="brainstorming-canvas-tools" aria-label="Kontrole table">
-                <button id="zoomOutIdeasBtn" class="brainstorming-tool-btn" type="button" aria-label="Umanji ideje">−</button>
-                <span id="ideaZoomLabel">100%</span>
-                <button id="zoomInIdeasBtn" class="brainstorming-tool-btn" type="button" aria-label="Uvećaj ideje">+</button>
-                <button id="resetIdeaViewBtn" class="brainstorming-tool-btn" type="button" aria-label="Resetuj pogled">▦</button>
+              <div class="brainstorming-actions">
+                <label class="brainstorming-search" aria-label="Pretraži ideje">
+                  <span class="brainstorming-search-icon" aria-hidden="true">⌕</span>
+                  <input id="brainstormingSearchInput" type="search" placeholder="Pretraži ideje..." />
+                </label>
+                <button id="openIdeaModalBtn" class="btn brainstorming-primary-btn" type="button" aria-label="Nova ideja">
+                  <span class="brainstorming-primary-icon" aria-hidden="true">+</span>
+                  <span class="brainstorming-primary-text">Nova ideja</span>
+                </button>
               </div>
-            </div>
+            </header>
           </div>
 
-          <section class="brainstorming-canvas-wrap">
+          <section class="brainstorming-canvas-wrap is-board">
             <div id="brainstormingCanvas" class="brainstorming-canvas" aria-live="polite"></div>
+            <div class="brainstorming-canvas-tools" aria-label="Kontrole table">
+              <button id="zoomOutIdeasBtn" class="brainstorming-tool-btn" type="button" aria-label="Umanji ideje">−</button>
+              <span id="ideaZoomLabel">100%</span>
+              <button id="zoomInIdeasBtn" class="brainstorming-tool-btn" type="button" aria-label="Uvećaj ideje">+</button>
+              <button id="resetIdeaViewBtn" class="brainstorming-tool-btn" type="button" aria-label="Resetuj pogled">▦</button>
+            </div>
             <aside class="brainstorming-minimap" aria-label="Mini mapa ideja">
               <div id="brainstormingMiniMap" class="brainstorming-minimap-dots"></div>
             </aside>
@@ -346,8 +382,8 @@
         </div>
 
         <div id="quickIdeaModal" class="brainstorming-modal hidden" role="dialog" aria-modal="true" aria-labelledby="quickIdeaTitle">
-          <div class="brainstorming-modal-backdrop" data-close-modal="quick"></div>
-          <form id="quickIdeaForm" class="brainstorming-modal-card quick-idea-card">
+          <div class="brainstorming-modal-backdrop"></div>
+          <form id="quickIdeaForm" class="brainstorming-modal-card quick-idea-card" novalidate>
             <div class="brainstorming-modal-head">
               <div>
                 <p>BRZA IDEJA</p>
@@ -357,7 +393,7 @@
             </div>
             <label>
               <span>Naslov ideje</span>
-              <input id="ideaTitleInput" class="text-input" type="text" required placeholder="Primer: AI mentor aplikacija" />
+              <input id="ideaTitleInput" class="text-input" type="text" required maxlength="38" placeholder="Primer: AI mentor aplikacija" />
             </label>
             <label>
               <span>Kratak opis</span>
@@ -367,23 +403,31 @@
               <label>
                 <span>Tip ideje</span>
                 <select id="ideaTypeInput" class="text-input">
-                  <option>Poslovna</option>
-                  <option>Kreativna</option>
-                  <option>Lifestyle</option>
-                  <option>Lični razvoj</option>
-                  <option>Finansijska</option>
-                  <option>Edukacija</option>
-                  <option>Projekat</option>
+                  <option value="Poslovna">Poslovna</option>
+                  <option value="Kreativna">Kreativna</option>
+                  <option value="Lifestyle">Lifestyle</option>
+                  <option value="Lični razvoj">Lični razvoj</option>
+                  <option value="Finansijska">Finansijska</option>
+                  <option value="Edukacija">Edukacija</option>
+                  <option value="Projekat">Projekat</option>
                 </select>
               </label>
               <label>
-                <span>Energija: <strong id="ideaEnergyValue">7</strong>/10</span>
+                <span><span>Energija:</span> <strong id="ideaEnergyValue">7</strong>/10</span>
                 <input id="ideaEnergyInput" type="range" min="1" max="10" value="7" />
+              </label>
+              <label>
+                <span>Prioritet</span>
+                <select id="ideaPriorityInput" class="text-input">
+                  <option value="Srednji">Srednji</option>
+                  <option value="Visok">Visok</option>
+                  <option value="Nizak">Nizak</option>
+                </select>
               </label>
             </div>
             <label>
               <span>Slika ili inspiracija</span>
-              <input id="ideaImageInput" class="text-input" type="url" placeholder="URL slike ili ostavi prazno za atmosferu" />
+              <input id="ideaImageInput" class="text-input" type="text" placeholder="URL slike ili ostavi prazno za atmosferu" />
             </label>
             <label>
               <span>Upload slike</span>
@@ -398,14 +442,14 @@
               <input id="ideaTagsInput" class="text-input" type="text" placeholder="travel, freedom, remote" />
             </label>
             <div class="brainstorming-modal-actions">
-              <button class="ghost-btn" type="button" data-close-modal="quick">Otkaži</button>
-              <button class="btn" type="submit">Sačuvaj</button>
+              <button class="ghost-btn" type="button" data-close-modal="quick"><span>Otkaži</span></button>
+              <button class="btn" type="submit"><span>Sačuvaj</span></button>
             </div>
           </form>
         </div>
 
         <div id="ideaPreviewModal" class="brainstorming-modal hidden" role="dialog" aria-modal="false" aria-labelledby="ideaPreviewTitle">
-          <div class="brainstorming-modal-backdrop" data-close-modal="preview"></div>
+          <div class="brainstorming-modal-backdrop"></div>
           <article class="brainstorming-modal-card idea-preview-card">
             <button class="brainstorming-close-btn preview-close" type="button" data-close-modal="preview" aria-label="Zatvori">×</button>
             <div id="ideaPreviewContent"></div>
@@ -414,27 +458,732 @@
       </section>
 
       <section id="financeView" class="view-panel app-page hidden">
-        <div class="page-heading">
-          <p>FINANSIJE</p>
-          <h1>Pregled novca i finansijskih ciljeva</h1>
-          <span>Štednja, budžet i ulaganja na jednom mirnom mestu.</span>
-        </div>
-        <div class="stats-grid">
-          <article class="mentor-card stat-card"><small>Mesečna štednja</small><strong>€420</strong><span>planirani iznos za ovaj mesec</span></article>
-          <article class="mentor-card stat-card"><small>Budžet</small><strong>68%</strong><span>iskorišćeno od planiranog limita</span></article>
-          <article class="mentor-card stat-card"><small>Finansijski ciljevi</small><strong>3</strong><span>aktivna cilja u toku</span></article>
-          <article class="mentor-card chart-card"><h3>Tok novca</h3><div class="bar-chart"><span style="height:55%"></span><span style="height:48%"></span><span style="height:70%"></span><span style="height:62%"></span><span style="height:76%"></span><span style="height:58%"></span><span style="height:84%"></span></div></article>
-          <article class="mentor-card chart-card">
-            <h3>Prioriteti</h3>
-            <div class="goal-progress-list">
-              <label>Fond sigurnosti <span>45%</span></label>
-              <meter value="45" max="100"></meter>
-              <label>Smanjenje troškova <span>62%</span></label>
-              <meter value="62" max="100"></meter>
-              <label>Investiranje <span>28%</span></label>
-              <meter value="28" max="100"></meter>
+        <div class="finance-workspace">
+          <div class="finance-folder-tabs" role="tablist" aria-label="Finansijski mini tabovi">
+            <button class="active" type="button" role="tab" aria-selected="true" data-finance-tab="dashboard" aria-controls="financeDashboardPanel">
+              <span aria-hidden="true">⌂</span>
+              <span>Pregled</span>
+            </button>
+            <button type="button" role="tab" aria-selected="false" data-finance-tab="transactions" aria-controls="financeTransactionsPanel">
+              <span aria-hidden="true">⇄</span>
+              <span>Transakcije</span>
+            </button>
+            <button type="button" role="tab" aria-selected="false" data-finance-tab="income" aria-controls="financeIncomePanel">
+              <span aria-hidden="true">+</span>
+              <span>Tokovi Novca</span>
+            </button>
+            <button type="button" role="tab" aria-selected="false" data-finance-tab="budget" aria-controls="financeBudgetPanel">
+              <span aria-hidden="true">◷</span>
+              <span>Budžet</span>
+            </button>
+            <button type="button" role="tab" aria-selected="false" data-finance-tab="assets" aria-controls="financeAssetsPanel">
+              <span aria-hidden="true">▣</span>
+              <span>Imovina</span>
+            </button>
+            <button type="button" role="tab" aria-selected="false" data-finance-tab="ideas" aria-controls="financeIdeasPanel">
+              <span aria-hidden="true">◇</span>
+              <span>Finansijsko poređenje</span>
+            </button>
+            <div class="finance-tabs-overflow hidden">
+              <button id="financeTabsOverflowToggle" class="finance-tabs-overflow-toggle" type="button" aria-expanded="false" aria-controls="financeTabsOverflowMenu">
+                <span>Još</span>
+                <span aria-hidden="true">⌄</span>
+              </button>
+              <div id="financeTabsOverflowMenu" class="finance-tabs-overflow-menu hidden" role="menu"></div>
             </div>
-          </article>
+          </div>
+
+          <section id="financeDashboardPanel" class="finance-dashboard-panel finance-tab-panel" role="tabpanel" data-finance-panel="dashboard" aria-label="Pregled finansija">
+            <div id="financeOverviewRoot" class="finance-overview-page"></div>
+          </section>
+
+          <section id="financeTransactionsPanel" class="finance-dashboard-panel finance-tab-panel hidden" role="tabpanel" data-finance-panel="transactions" aria-label="Struktura transakcija">
+            <div class="finance-transactions-page">
+              <header class="finance-tab-heading">
+                <div>
+                  <small>FINANSIJSKI DNEVNIK</small>
+                  <h2>Transakcije</h2>
+                  <p>Prati svoj novac, razumej tokove i donosi bolje odluke - jednostavno.</p>
+                </div>
+                <div class="transaction-heading-actions">
+                  <span id="transactionSaveStatus" class="transaction-save-status" aria-live="polite"></span>
+                  <button id="transactionUploadBtn" class="ghost-btn transaction-upload-btn" type="button"><span>Uvezi transakcije</span></button>
+                  <button id="openTransactionModalBtn" class="btn transaction-new-btn" type="button"><span>+ Nova transakcija</span></button>
+                </div>
+              </header>
+
+              <div id="transactionModal" class="transaction-modal hidden" role="dialog" aria-modal="true" aria-labelledby="transactionFormTitle">
+                <div class="transaction-modal-backdrop"></div>
+                <form id="transactionForm" class="mentor-card transaction-form-card transaction-modal-card" novalidate>
+                  <div class="transaction-modal-head">
+                    <div class="transaction-card-heading">
+                      <small>BRZI UNOS</small>
+                      <h3 id="transactionFormTitle">Nova transakcija</h3>
+                    </div>
+                    <button class="transaction-modal-close" type="button" data-close-transaction-modal aria-label="Zatvori">×</button>
+                  </div>
+                  <input id="transactionEditId" type="hidden" />
+
+                  <label class="finance-field">
+                    <span>Tip transakcije</span>
+                    <select id="transactionType" required>
+                      <option value="income">Prihod</option>
+                      <option value="expense">Rashod</option>
+                      <option value="transfer">Transfer</option>
+                    </select>
+                    <small class="field-error" data-error-for="transactionType"></small>
+                  </label>
+
+                  <label class="finance-field">
+                    <span>Iznos</span>
+                    <input id="transactionAmount" type="number" min="0" step="0.01" placeholder="0,00 €" required />
+                    <small class="field-error" data-error-for="transactionAmount"></small>
+                  </label>
+
+                  <label class="finance-field">
+                    <span>Kategorija</span>
+                    <div class="category-select-row">
+                      <select id="transactionCategory" required></select>
+                      <button id="toggleQuickCategoryBtn" class="transaction-icon-btn" type="button"><span>+ Nova</span></button>
+                    </div>
+                    <div id="quickCategoryAdd" class="quick-category-add hidden">
+                      <input id="quickCategoryInput" type="text" placeholder="Nova kategorija" />
+                      <button id="quickCategoryAddBtn" class="ghost-btn" type="button"><span>Dodaj</span></button>
+                    </div>
+                    <small class="field-error" data-error-for="transactionCategory"></small>
+                  </label>
+
+                  <label class="finance-field">
+                    <span>Datum</span>
+                    <input id="transactionDate" type="date" required />
+                    <small class="field-error" data-error-for="transactionDate"></small>
+                  </label>
+
+                  <label class="finance-field">
+                    <span>Beleška</span>
+                    <textarea id="transactionNote" rows="3" placeholder="Dodaj belešku (opciono)"></textarea>
+                  </label>
+
+                  <label class="finance-field">
+                    <span>Poveži sa idejom ili ciljem</span>
+                    <select id="transactionLinkedTo">
+                      <option value="">Nije povezano</option>
+                      <option>Van Life po Evropi</option>
+                      <option>Putovanje Japan</option>
+                      <option>Profesionalni setup</option>
+                      <option>Finansijska sloboda</option>
+                      <option>Side Hustle</option>
+                    </select>
+                  </label>
+
+                  <label class="finance-field">
+                    <span>Budžet</span>
+                    <select id="transactionBudget">
+                      <option value="">Nije povezano</option>
+                    </select>
+                  </label>
+
+                  <div class="transaction-form-actions">
+                    <button id="transactionCancelEditBtn" class="ghost-btn hidden" type="button"><span>Otkaži izmenu</span></button>
+                    <button class="btn" type="submit"><span>Sačuvaj transakciju</span></button>
+                  </div>
+                </form>
+              </div>
+
+              <div id="transactionImportModal" class="transaction-modal hidden" role="dialog" aria-modal="true" aria-labelledby="transactionImportTitle">
+                <div class="transaction-modal-backdrop"></div>
+                <article class="mentor-card transaction-modal-card transaction-import-modal-card">
+                  <div class="transaction-modal-head">
+                    <div class="transaction-card-heading">
+                      <small>IMPORT</small>
+                      <h3 id="transactionImportTitle">Mapiranje transakcija</h3>
+                    </div>
+                    <button class="transaction-modal-close" type="button" data-close-transaction-import aria-label="Zatvori">×</button>
+                  </div>
+
+                  <div id="transactionImportUploadPanel" class="transaction-import-upload-panel">
+                    <strong id="transactionImportUploadTitle">Izaberi fajl za import</strong>
+                    <p id="transactionImportUploadHint">Podržani su CSV, TSV, Excel i PDF exporti. Nakon izbora fajla otvara se mapiranje kolona.</p>
+                    <button id="transactionImportChooseFileBtn" class="btn transaction-import-file-control" type="button"><span>Izaberi fajl</span></button>
+                    <input id="transactionUploadInput" class="transaction-upload-native" type="file" aria-label="Uvezi transakcije" accept=".csv,.tsv,.txt,.xlsx,.xls,.pdf,text/csv,text/tab-separated-values,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf" />
+                  </div>
+
+                  <div id="transactionImportToolbar" class="transaction-import-toolbar hidden">
+                    <label class="finance-field">
+                      <span>Template</span>
+                      <select id="transactionImportTemplate"></select>
+                    </label>
+                    <label class="finance-field">
+                      <span>Naziv novog template-a</span>
+                      <input id="transactionImportTemplateName" type="text" placeholder="npr. HSBC" />
+                    </label>
+                    <button id="saveTransactionImportTemplateBtn" class="ghost-btn transaction-import-save-template" type="button"><span>Sačuvaj template</span></button>
+                  </div>
+
+                  <div id="transactionImportSummary" class="transaction-import-summary hidden"></div>
+                  <div id="transactionImportMapping" class="transaction-import-mapping hidden"></div>
+                  <div id="transactionImportPreview" class="transaction-import-preview hidden"></div>
+
+                  <div class="transaction-form-actions">
+                    <button class="ghost-btn" type="button" data-close-transaction-import><span>Otkaži</span></button>
+                    <button id="confirmTransactionImportBtn" class="btn hidden" type="button"><span>Uvezi mapirane transakcije</span></button>
+                  </div>
+                </article>
+              </div>
+
+              <div id="categoryManagerModal" class="transaction-modal hidden" role="dialog" aria-modal="true" aria-labelledby="categoryManagerTitle">
+                <div class="transaction-modal-backdrop"></div>
+                <article class="mentor-card transaction-modal-card category-manager-card">
+                  <div class="transaction-modal-head">
+                    <div class="transaction-card-heading">
+                      <h3 id="categoryManagerTitle">Uredi kategorije</h3>
+                    </div>
+                    <button class="transaction-modal-close" type="button" data-close-category-manager aria-label="Zatvori">×</button>
+                  </div>
+                  <div class="category-manager-controls">
+                    <label class="finance-field">
+                      <span>Tip</span>
+                      <select id="categoryManagerType">
+                        <option value="income">Prihodi</option>
+                        <option value="expense">Rashodi</option>
+                        <option value="transfer">Transferi</option>
+                      </select>
+                    </label>
+                    <label class="finance-field">
+                      <span>Nova kategorija</span>
+                      <input id="categoryManagerInput" type="text" placeholder="npr. Donacije" />
+                    </label>
+                    <button id="categoryManagerAddBtn" class="btn" type="button"><span>Dodaj kategoriju</span></button>
+                  </div>
+                  <div class="category-manager-layout">
+                    <div id="categoryManagerList" class="category-manager-list"></div>
+                    <section class="category-keyword-panel">
+                      <div class="transaction-card-heading">
+                        <small>KEYWORDI</small>
+                        <h3 id="categoryKeywordTitle">Izaberi kategoriju</h3>
+                      </div>
+                      <p id="categoryKeywordHint">Keywordi se traže u belešci, opisu i tipu prilikom importa.</p>
+                      <div class="category-keyword-add">
+                        <input id="categoryKeywordInput" type="text" placeholder="npr. Bolt Food, Wolt, Lidl" />
+                        <button id="categoryKeywordAddBtn" class="ghost-btn" type="button"><span>Dodaj keyword</span></button>
+                      </div>
+                      <div id="categoryKeywordList" class="category-keyword-list"></div>
+                    </section>
+                  </div>
+                </article>
+              </div>
+
+              <section class="transaction-summary-grid" aria-label="Sažetak transakcija">
+                <article class="mentor-card transaction-summary-card summary-income">
+                  <small>Prihodi</small>
+                  <strong id="transactionIncomeTotal">+ 0 €</strong>
+                  <span>Ukupno ovog meseca</span>
+                </article>
+                <article class="mentor-card transaction-summary-card summary-expense">
+                  <small>Rashodi</small>
+                  <strong id="transactionExpenseTotal">- 0 €</strong>
+                  <span>Ukupno ovog meseca</span>
+                </article>
+                <article class="mentor-card transaction-summary-card summary-balance">
+                  <small>Stanje meseca</small>
+                  <strong id="transactionBalanceTotal">0 €</strong>
+                  <span>Raspoloživo ovog meseca</span>
+                </article>
+              </section>
+
+              <div class="transactions-layout">
+                <aside class="transactions-side">
+                  <article class="mentor-card monthly-overview-card overview-fixed-panel">
+                    <div class="overview-card-head">
+                      <div class="transaction-card-heading">
+                        <small id="overviewPeriodEyebrow">OVAJ MESEC</small>
+                        <h3 id="overviewPeriodTitle">Pregled meseca</h3>
+                      </div>
+                      <div class="overview-top-selectors">
+                        <label class="overview-compact-select">
+                        <span>Period</span>
+                        <select id="overviewPeriodSelect">
+                            <option value="day">Dan</option>
+                            <option value="month" selected>Mesec</option>
+                            <option value="year">Godina</option>
+                            <option value="custom">Custom date</option>
+                          </select>
+                        </label>
+                        <label class="overview-compact-select">
+                          <span>Prikaz</span>
+                          <select id="overviewChartTypeSelect">
+                            <option value="list">Lista</option>
+                            <option value="pie" selected>Pie chart</option>
+                          </select>
+                        </label>
+                      </div>
+                    </div>
+                    <div id="overviewCustomDates" class="overview-custom-dates hidden">
+                      <label class="finance-field">
+                        <span>Od</span>
+                        <input id="overviewStartDate" type="date" />
+                      </label>
+                      <label class="finance-field">
+                        <span>Do</span>
+                        <input id="overviewEndDate" type="date" />
+                      </label>
+                    </div>
+                    <div id="monthlyOverviewContent" class="monthly-overview-content"></div>
+                  </article>
+                </aside>
+
+                <section class="transactions-main">
+                  <article class="mentor-card transaction-filters-card">
+                    <div class="transaction-filter-head">
+                      <label class="transaction-search-field">
+                        <span>Pretraga</span>
+                        <input id="transactionSearchInput" type="search" placeholder="Keyword, datum ili iznos" />
+                      </label>
+                      <button id="openCategoryManagerBtn" class="ghost-btn transaction-category-edit-btn" type="button"><span>Uredi kategorije</span></button>
+                    </div>
+                    <div class="transaction-filter-grid">
+                      <label class="finance-field">
+                        <span>Datum</span>
+                        <select id="transactionDateFilter">
+                          <option value="current-month">Ovaj mesec</option>
+                          <option value="last-month">Prošli mesec</option>
+                          <option value="current-week">Ova nedelja</option>
+                          <option value="today">Danas</option>
+                          <option value="all">Sve</option>
+                        </select>
+                      </label>
+                      <label class="finance-field">
+                        <span>Tip</span>
+                        <select id="transactionTypeFilter">
+                          <option value="all">Svi tipovi</option>
+                          <option value="income">Prihodi</option>
+                          <option value="expense">Rashodi</option>
+                          <option value="transfer">Transferi</option>
+                        </select>
+                      </label>
+                      <label class="finance-field">
+                        <span>Kategorija</span>
+                        <select id="transactionCategoryFilter">
+                          <option value="all">Sve kategorije</option>
+                        </select>
+                      </label>
+                      <label class="finance-field">
+                        <span>Povezano sa</span>
+                        <select id="transactionLinkedFilter">
+                          <option value="all">Sve opcije</option>
+                          <option value="">Nije povezano</option>
+                          <option>Van Life po Evropi</option>
+                          <option>Putovanje Japan</option>
+                          <option>Profesionalni setup</option>
+                          <option>Finansijska sloboda</option>
+                          <option>Side Hustle</option>
+                        </select>
+                      </label>
+                      <label class="finance-field">
+                        <span>Sortiraj po</span>
+                        <select id="transactionSort">
+                          <option value="date-desc">Datum najnovije</option>
+                          <option value="date-asc">Datum najstarije</option>
+                          <option value="amount-desc">Iznos najveći</option>
+                          <option value="amount-asc">Iznos najmanji</option>
+                        </select>
+                      </label>
+                      <button id="transactionResetFiltersBtn" class="ghost-btn transaction-reset-btn" type="button"><span>Resetuj filtere</span></button>
+                    </div>
+                  </article>
+
+                  <article class="mentor-card transaction-list-card">
+                    <div class="transaction-list-head">
+                      <div class="transaction-card-heading">
+                        <small>LISTA</small>
+                        <h3>Lista transakcija</h3>
+                      </div>
+                      <div class="transaction-list-tools">
+                        <span id="transactionCountLabel">0 transakcija</span>
+                        <button id="refreshTransactionCategoriesBtn" class="transaction-refresh-btn" type="button" title="Osveži kategorije po keywordima" aria-label="Osveži kategorije">↻</button>
+                        <button id="deleteSelectedTransactionsBtn" class="ghost-btn transaction-bulk-delete-btn hidden" type="button"><span>Obriši izabrane (0)</span></button>
+                      </div>
+                    </div>
+                    <div id="transactionList" class="transaction-list"></div>
+                  </article>
+                </section>
+              </div>
+            </div>
+          </section>
+
+          <section id="financeIncomePanel" class="finance-dashboard-panel finance-tab-panel hidden" role="tabpanel" data-finance-panel="income" aria-label="Struktura prihoda">
+            <div class="cashflow-page">
+              <div class="cashflow-main-panel">
+                <header class="cashflow-hero">
+                  <div class="cashflow-hero-copy">
+                    <small>TOKOVI NOVCA</small>
+                    <h2>Tokovi novca</h2>
+                    <p>Unesi svoje mesečne prihode, troškove i dugove. Aplikacija samo izračuna koliko ti ostaje.</p>
+                  </div>
+                  <div class="cashflow-hero-metric">
+                    <span>Ostaje mesečno</span>
+                    <strong id="cashflowNetHero">0 €</strong>
+                    <small id="cashflowHealthLabel">Prihodi - troškovi - rate dugova</small>
+                  </div>
+                </header>
+
+                <section class="cashflow-summary-grid" aria-label="Mesečni obračun">
+                  <article class="cashflow-summary-item income"><span>Prihodi</span><strong id="cashflowIncomeTotal">0 €</strong></article>
+                  <article class="cashflow-summary-item expense"><span>Troškovi</span><strong id="cashflowExpenseTotal">0 €</strong></article>
+                  <article class="cashflow-summary-item debt"><span>Rate dugova</span><strong id="cashflowDebtPayment">0 €</strong></article>
+                  <article class="cashflow-summary-item budgeted"><span>Budžetirano ovog meseca</span><strong id="cashflowBudgetedTotal">0 €</strong></article>
+                </section>
+
+                <section class="mentor-card cashflow-projection-panel" aria-label="Projekcija tokova novca">
+                  <div class="cashflow-projection-head">
+                    <div class="transaction-card-heading"><small>PROJEKCIJA</small><h3>Plan za period</h3></div>
+                  </div>
+                  <div class="cashflow-projection-grid">
+                    <div class="cashflow-projection-annual-stack">
+                      <article class="annual-income"><span>Godišnji prihod</span><strong id="cashflowAnnualIncome">0 €</strong></article>
+                      <article class="annual-expense"><span>Godišnji troškovi</span><strong id="cashflowAnnualOutflow">0 €</strong></article>
+                      <article class="annual-net"><span>Godišnji neto</span><strong id="cashflowAnnualNet">0 €</strong></article>
+                    </div>
+                    <div class="cashflow-projection-period-zone">
+                      <div class="cashflow-projection-period-body">
+                        <div class="cashflow-period-options" aria-label="Dodaci za period neto">
+                          <label class="cashflow-period-option">
+                            <input id="cashflowIncludeCapital" type="checkbox" />
+                            <span>Trenutni kapital</span>
+                            <small id="cashflowCapitalOptionAmount">+ 0 €</small>
+                          </label>
+                          <label class="cashflow-period-option">
+                            <input id="cashflowIncludeInvestments" type="checkbox" />
+                            <span>Investicije</span>
+                            <small id="cashflowInvestmentOptionAmount">+ 0 €</small>
+                          </label>
+                          <label class="cashflow-period-option">
+                            <input id="cashflowIncludeExtraExpenses" type="checkbox" />
+                            <span>Dodatni rashodi</span>
+                            <small id="cashflowExtraExpenseOptionAmount">- 0 €</small>
+                          </label>
+                        </div>
+                        <div class="cashflow-period-result-stack">
+                          <div class="cashflow-projection-controls">
+                            <label class="finance-field"><span>Od</span><input id="cashflowProjectionStart" type="date" /></label>
+                            <label class="finance-field"><span>Do</span><input id="cashflowProjectionEnd" type="date" /></label>
+                          </div>
+                          <article class="period-net"><span>Period neto</span><strong id="cashflowProjectionNet">0 €</strong></article>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="mentor-card cashflow-card cashflow-list-panel" aria-labelledby="cashflowListTitle">
+                  <div class="cashflow-card-head cashflow-list-head">
+                    <div>
+                      <small>TOKOVI</small>
+                      <h3 id="cashflowListTitle">Mesečni tokovi novca</h3>
+                      <p id="cashflowListSubtitle">Pregledaj i upravljaj svojim mesečnim tokovima.</p>
+                    </div>
+                    <div class="cashflow-list-toolbar" role="tablist" aria-label="Tip toka novca">
+                      <button class="cashflow-list-tab" type="button" role="tab" aria-selected="false" data-cashflow-list-tab="income">Prihodi</button>
+                      <button class="cashflow-list-tab active" type="button" role="tab" aria-selected="true" data-cashflow-list-tab="expense">Troškovi</button>
+                      <button class="cashflow-list-tab" type="button" role="tab" aria-selected="false" data-cashflow-list-tab="debt">Dugovi i rate</button>
+                    </div>
+                    <button id="cashflowActiveAddBtn" class="transaction-icon-btn cashflow-active-add-btn" type="button"><span>Dodaj trošak</span></button>
+                  </div>
+                  <div id="cashflowUnifiedList" class="cashflow-simple-list cashflow-unified-list"></div>
+                </section>
+              </div>
+
+              <section class="mentor-card cashflow-month-strip-panel" aria-label="Pregled prihoda i troškova po mesecima">
+                <button id="cashflowMonthsPrevBtn" class="cashflow-month-nav" type="button" aria-label="Prethodni mesec">&lt;</button>
+                <div id="cashflowMonthsStrip" class="cashflow-month-strip"></div>
+                <button id="cashflowMonthsNextBtn" class="cashflow-month-nav" type="button" aria-label="Sledeći mesec">&gt;</button>
+              </section>
+
+              <div id="cashflowIncomeModal" class="transaction-modal hidden" role="dialog" aria-modal="true" aria-labelledby="cashflowIncomeFormTitle">
+                <div class="transaction-modal-backdrop"></div>
+                <form id="cashflowIncomeForm" class="mentor-card transaction-form-card transaction-modal-card cashflow-modal-card" novalidate>
+                  <div class="transaction-modal-head">
+                    <div class="transaction-card-heading"><small>PRIHOD</small><h3 id="cashflowIncomeFormTitle">Novi prihod</h3></div>
+                    <button class="transaction-modal-close" type="button" data-close-cashflow-modal aria-label="Zatvori">×</button>
+                  </div>
+                  <label class="finance-field"><span>Naziv prihoda</span><input id="cashflowIncomeName" type="text" placeholder="npr. Plata, freelance, najam" required /></label>
+                  <label class="finance-field cashflow-symbol-field">
+                    <span>Simbol</span>
+                    <div class="cashflow-symbol-picker" data-cashflow-symbol-picker="income">
+                      <i id="cashflowIncomeIconPreview" class="cashflow-symbol-preview" aria-hidden="true"></i>
+                      <input id="cashflowIncomeIconSearch" type="search" placeholder="Pretraži simbol" autocomplete="off" />
+                      <input id="cashflowIncomeIcon" type="hidden" value="wallet" />
+                    </div>
+                    <div id="cashflowIncomeIconResults" class="cashflow-symbol-results hidden" role="listbox"></div>
+                  </label>
+                  <label class="finance-field">
+                    <span>Kategorija transakcije</span>
+                    <div class="category-select-row">
+                      <select id="cashflowIncomeCategory" required></select>
+                      <button id="toggleCashflowIncomeCategoryBtn" class="transaction-icon-btn" type="button"><span>+ Nova</span></button>
+                    </div>
+                    <div id="cashflowIncomeQuickCategoryAdd" class="quick-category-add hidden">
+                      <input id="cashflowIncomeQuickCategoryInput" type="text" placeholder="Nova kategorija" />
+                      <button id="cashflowIncomeQuickCategoryAddBtn" class="ghost-btn" type="button"><span>Dodaj</span></button>
+                    </div>
+                  </label>
+                  <label class="finance-field"><span>Iznos</span><input id="cashflowIncomeAmount" type="number" min="0" step="0.01" placeholder="0,00 €" required /></label>
+                  <label class="finance-field"><span>Učestalost</span><select id="cashflowIncomeFrequency"><option value="monthly">Mesečno</option><option value="weekly">Nedeljno</option><option value="yearly">Godišnje</option></select></label>
+                  <label class="finance-field cashflow-weekday-field"><span>Dan u nedelji</span><select id="cashflowIncomeWeekday"><option value="1">Ponedeljak</option><option value="2">Utorak</option><option value="3">Sreda</option><option value="4">Četvrtak</option><option value="5">Petak</option><option value="6">Subota</option><option value="0">Nedelja</option></select></label>
+                  <label class="finance-field"><span>Beleška</span><textarea id="cashflowIncomeNote" rows="3" placeholder="Kratka beleška za ovaj prihod."></textarea></label>
+                  <div class="transaction-form-actions">
+                    <button class="ghost-btn" type="button" data-close-cashflow-modal><span>Otkaži</span></button>
+                    <button class="btn" type="submit"><span>Dodaj i nastavi</span></button>
+                  </div>
+                </form>
+              </div>
+
+              <div id="cashflowExpenseModal" class="transaction-modal hidden" role="dialog" aria-modal="true" aria-labelledby="cashflowExpenseFormTitle">
+                <div class="transaction-modal-backdrop"></div>
+                <form id="cashflowExpenseForm" class="mentor-card transaction-form-card transaction-modal-card cashflow-modal-card" novalidate>
+                  <div class="transaction-modal-head">
+                    <div class="transaction-card-heading"><small>TROŠAK</small><h3 id="cashflowExpenseFormTitle">Novi trošak</h3></div>
+                    <button class="transaction-modal-close" type="button" data-close-cashflow-modal aria-label="Zatvori">×</button>
+                  </div>
+                  <label class="finance-field"><span>Naziv troška</span><input id="cashflowExpenseName" type="text" placeholder="npr. Kirija, hrana, trening" required /></label>
+                  <label class="finance-field cashflow-symbol-field">
+                    <span>Simbol</span>
+                    <div class="cashflow-symbol-picker" data-cashflow-symbol-picker="expense">
+                      <i id="cashflowExpenseIconPreview" class="cashflow-symbol-preview" aria-hidden="true"></i>
+                      <input id="cashflowExpenseIconSearch" type="search" placeholder="Pretraži simbol" autocomplete="off" />
+                      <input id="cashflowExpenseIcon" type="hidden" value="receipt" />
+                    </div>
+                    <div id="cashflowExpenseIconResults" class="cashflow-symbol-results hidden" role="listbox"></div>
+                  </label>
+                  <label class="finance-field">
+                    <span>Kategorija transakcije</span>
+                    <div class="category-select-row">
+                      <select id="cashflowExpenseCategory" required></select>
+                      <button id="toggleCashflowExpenseCategoryBtn" class="transaction-icon-btn" type="button"><span>+ Nova</span></button>
+                    </div>
+                    <div id="cashflowExpenseQuickCategoryAdd" class="quick-category-add hidden">
+                      <input id="cashflowExpenseQuickCategoryInput" type="text" placeholder="Nova kategorija" />
+                      <button id="cashflowExpenseQuickCategoryAddBtn" class="ghost-btn" type="button"><span>Dodaj</span></button>
+                    </div>
+                  </label>
+                  <label class="finance-field"><span>Iznos</span><input id="cashflowExpenseAmount" type="number" min="0" step="0.01" placeholder="0,00 €" required /></label>
+                  <label class="finance-field"><span>Period plaćanja — od dana</span><input id="cashflowExpensePaymentStartDay" type="number" min="1" max="31" step="1" inputmode="numeric" placeholder="npr. 1" /></label>
+                  <label class="finance-field"><span>Period plaćanja — do dana</span><input id="cashflowExpensePaymentEndDay" type="number" min="1" max="31" step="1" inputmode="numeric" placeholder="npr. 10" /></label>
+                  <label class="finance-field"><span>Učestalost</span><select id="cashflowExpenseFrequency"><option value="monthly">Mesečno</option><option value="weekly">Nedeljno</option><option value="yearly">Godišnje</option></select></label>
+                  <label class="finance-field cashflow-weekday-field"><span>Dan u nedelji</span><select id="cashflowExpenseWeekday"><option value="1">Ponedeljak</option><option value="2">Utorak</option><option value="3">Sreda</option><option value="4">Četvrtak</option><option value="5">Petak</option><option value="6">Subota</option><option value="0">Nedelja</option></select></label>
+                  <label class="finance-field"><span>Beleška</span><textarea id="cashflowExpenseNote" rows="3" placeholder="Kratka beleška za ovaj trošak."></textarea></label>
+                  <div class="transaction-form-actions">
+                    <span id="cashflowExpenseFormStatus" class="transaction-save-status asset-form-status" aria-live="polite"></span>
+                    <button class="ghost-btn" type="button" data-close-cashflow-modal><span>Otkaži</span></button>
+                    <button class="btn" type="submit"><span>Dodaj i nastavi</span></button>
+                  </div>
+                </form>
+              </div>
+
+              <div id="cashflowDebtModal" class="transaction-modal hidden" role="dialog" aria-modal="true" aria-labelledby="cashflowDebtFormTitle">
+                <div class="transaction-modal-backdrop"></div>
+                <form id="cashflowDebtForm" class="mentor-card transaction-form-card transaction-modal-card cashflow-modal-card" novalidate>
+                  <div class="transaction-modal-head">
+                    <div class="transaction-card-heading"><small>DUG</small><h3 id="cashflowDebtFormTitle">Novi dug ili rata</h3></div>
+                    <button class="transaction-modal-close" type="button" data-close-cashflow-modal aria-label="Zatvori">×</button>
+                  </div>
+                  <label class="finance-field"><span>Naziv duga</span><input id="cashflowDebtName" type="text" placeholder="npr. Kreditna kartica, auto kredit" required /></label>
+                  <label class="finance-field cashflow-symbol-field">
+                    <span>Simbol</span>
+                    <div class="cashflow-symbol-picker" data-cashflow-symbol-picker="debt">
+                      <i id="cashflowDebtIconPreview" class="cashflow-symbol-preview" aria-hidden="true"></i>
+                      <input id="cashflowDebtIconSearch" type="search" placeholder="Pretraži simbol" autocomplete="off" />
+                      <input id="cashflowDebtIcon" type="hidden" value="credit-card" />
+                    </div>
+                    <div id="cashflowDebtIconResults" class="cashflow-symbol-results hidden" role="listbox"></div>
+                  </label>
+                  <label class="finance-field"><span>Ukupan dug</span><input id="cashflowDebtBalance" type="number" min="0" step="0.01" placeholder="0,00 €" required /></label>
+                  <label class="finance-field"><span>Iznos rate</span><input id="cashflowDebtMonthly" type="number" min="0" step="0.01" placeholder="0,00 €" required /></label>
+                  <label class="finance-field"><span>Datum prve rate</span><input id="cashflowDebtStartDate" type="date" required /></label>
+                  <label class="finance-field"><span>Učestalost rate</span><select id="cashflowDebtFrequency"><option value="one-time">Jednokratno</option><option value="monthly">Mesečno</option><option value="weekly">Nedeljno</option><option value="yearly">Godišnje</option></select></label>
+                  <label class="finance-field cashflow-weekday-field"><span>Dan u nedelji</span><select id="cashflowDebtWeekday"><option value="1">Ponedeljak</option><option value="2">Utorak</option><option value="3">Sreda</option><option value="4">Četvrtak</option><option value="5">Petak</option><option value="6">Subota</option><option value="0">Nedelja</option></select></label>
+                  <label class="finance-field"><span>Beleška</span><textarea id="cashflowDebtNote" rows="3" placeholder="Detalj o rati, kamati ili sledećoj uplati."></textarea></label>
+                  <div class="transaction-form-actions">
+                    <span id="cashflowDebtFormStatus" class="transaction-save-status asset-form-status" aria-live="polite"></span>
+                    <button class="ghost-btn" type="button" data-close-cashflow-modal><span>Otkaži</span></button>
+                    <button class="btn" type="submit"><span>Sačuvaj dug</span></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          <section id="financeBudgetPanel" class="finance-dashboard-panel finance-tab-panel hidden" role="tabpanel" data-finance-panel="budget" aria-label="Struktura budžeta">
+            <div class="budget-page">
+              <header class="finance-tab-heading">
+                <div>
+                  <small>FINANSIJSKI DNEVNIK</small>
+                  <h2>Budžet</h2>
+                  <p>Planiraj gde tvoj novac ide pre nego što ga potrošiš.</p>
+                </div>
+                <button id="openBudgetModalBtn" class="btn transaction-new-btn" type="button"><span>+ Novi budžet</span></button>
+              </header>
+
+              <div id="budgetModal" class="transaction-modal hidden" role="dialog" aria-modal="true" aria-labelledby="budgetFormTitle">
+                <div class="transaction-modal-backdrop"></div>
+                <form id="budgetForm" class="mentor-card transaction-form-card transaction-modal-card budget-modal-card" novalidate>
+                  <div class="transaction-modal-head">
+                    <div class="transaction-card-heading">
+                      <small>PLAN</small>
+                      <h3 id="budgetFormTitle">Novi budžet</h3>
+                    </div>
+                    <button class="transaction-modal-close" type="button" data-close-budget-modal aria-label="Zatvori">×</button>
+                  </div>
+                  <label class="finance-field"><span>Naziv budžeta</span><input id="budgetName" type="text" placeholder="npr. Hrana, Put oko Evrope, Van Life test" required /></label>
+                  <label class="finance-field"><span>Tip budžeta</span><select id="budgetType"><option>Kategorija</option><option>Grupa kategorija</option><option>Cilj</option><option>Ideja</option><option>Obaveza</option></select></label>
+                  <label class="finance-field"><span>Način budžeta</span><select id="budgetBehavior"><option>Limit potrošnje</option><option>Odvajanje novca</option><option>Obavezno plaćanje</option></select></label>
+                  <label class="finance-field"><span>Simbol</span><select id="budgetIcon"><option value="utensils">Hrana</option><option value="coffee">Kafa</option><option value="home">Stanovanje</option><option value="car">Transport</option><option value="heart-pulse">Zdravlje</option><option value="plane">Putovanje</option><option value="target">Cilj</option><option value="lightbulb">Ideja</option><option value="receipt">Obaveza</option><option value="wallet">Novac</option></select></label>
+                  <label class="finance-field"><span>Kategorija</span><select id="budgetCategories"></select></label>
+                  <label class="finance-field"><span>Iznos</span><input id="budgetAmount" type="number" min="0" step="0.01" placeholder="300 €" required /></label>
+                  <label class="finance-field"><span>Period</span><select id="budgetPeriod"><option>Dnevno</option><option>Nedeljno</option><option selected>Mesečno</option><option>Godišnje</option><option>Jednokratno</option></select></label>
+                  <label class="finance-field budget-toggle-field"><span>Ponavlja se</span><input id="budgetRecurring" type="checkbox" checked /></label>
+                  <label class="finance-field"><span>Poveži sa</span><select id="budgetLinkedType"><option>Nije povezano</option><option>Cilj</option><option>Ideja</option><option>Test ideje</option><option>Finansijsko poređenje</option></select></label>
+                  <label id="budgetLinkedItemField" class="finance-field hidden"><span>Dostupne stavke</span><select id="budgetLinkedItem"></select></label>
+                  <label class="finance-field"><span>Prioritet</span><select id="budgetPriority"><option>Nizak</option><option selected>Srednji</option><option>Visok</option><option>Obavezno</option></select></label>
+                  <label class="finance-field"><span>Upozorenje</span><select id="budgetWarning"><option value="Bez upozorenja">Bez upozorenja</option><option value="Na 50%">Na 50%</option><option value="Na 80%" selected>Na 80%</option><option value="Na 100%">Na 100%</option></select></label>
+                  <label class="finance-field"><span>Beleška</span><textarea id="budgetNote" rows="3" placeholder="Ovaj budžet koristim da kontrolišem troškove hrane tokom meseca."></textarea></label>
+                  <div class="transaction-form-actions">
+                    <button id="budgetCancelBtn" class="ghost-btn" type="button"><span>Otkaži</span></button>
+                    <button class="btn" type="submit"><span>Sačuvaj budžet</span></button>
+                  </div>
+                </form>
+              </div>
+
+              <section class="transaction-summary-grid budget-summary-grid" aria-label="Sažetak budžeta">
+                <article class="mentor-card transaction-summary-card summary-income"><small>Ukupan mesečni prihod</small><strong id="budgetIncomeTotal">0 €</strong><span>Iz Tokova Novca i prihoda</span></article>
+                <article class="mentor-card transaction-summary-card summary-balance"><small>Ukupno budžetirano</small><strong id="budgetPlannedTotal">0 €</strong><span>Aktivni budžeti ovog meseca</span></article>
+                <article class="mentor-card transaction-summary-card summary-expense"><small>Potrošeno iz budžeta</small><strong id="budgetSpentTotal">0 €</strong><span>Transakcije povezane sa budžetima</span></article>
+                <article class="mentor-card transaction-summary-card summary-balance"><small>Slobodno nakon budžeta</small><strong id="budgetFreeTotal">0 €</strong><span>Prihod minus plan</span></article>
+              </section>
+
+              <article class="mentor-card transaction-filters-card">
+                <div class="transaction-filter-grid budget-filter-grid">
+                  <label class="finance-field"><span>Period</span><select id="budgetPeriodFilter"><option value="current-month">Ovaj mesec</option><option value="last-month">Prošli mesec</option><option value="current-year">Ova godina</option><option value="custom">Custom</option></select></label>
+                  <label class="finance-field"><span>Tip budžeta</span><select id="budgetTypeFilter"><option value="all">Svi tipovi</option><option>Kategorija</option><option>Grupa kategorija</option><option>Cilj</option><option>Ideja</option><option>Obaveza</option></select></label>
+                  <label class="finance-field"><span>Način budžeta</span><select id="budgetBehaviorFilter"><option value="all">Svi</option><option>Limit potrošnje</option><option>Odvajanje novca</option><option>Obavezno plaćanje</option></select></label>
+                  <label class="finance-field"><span>Status</span><select id="budgetStatusFilter"><option value="all">Svi</option><option>Dobro</option><option>Blizu limita</option><option>Prekoračeno</option><option>Ispunjeno</option><option>Plaćeno</option><option>Aktivno</option></select></label>
+                  <label class="finance-field"><span>Povezano sa</span><select id="budgetLinkedFilter"><option value="all">Sve opcije</option><option>Nije povezano</option><option>Cilj</option><option>Ideja</option><option>Test ideje</option><option>Finansijsko poređenje</option></select></label>
+                  <button id="budgetResetFiltersBtn" class="ghost-btn transaction-reset-btn" type="button"><span>Resetuj filtere</span></button>
+                </div>
+              </article>
+
+              <div class="budget-layout">
+                <section class="mentor-card budget-list-panel">
+                  <div class="transaction-list-head">
+                    <div class="transaction-card-heading"><small>PLANOVI</small><h3>Lista budžeta</h3></div>
+                    <span id="budgetCountLabel">0 budžeta</span>
+                  </div>
+                  <div id="budgetList" class="budget-list"></div>
+                </section>
+                <section class="mentor-card budget-detail-panel">
+                  <div id="budgetDetails" class="budget-details"></div>
+                </section>
+              </div>
+            </div>
+          </section>
+
+          <section id="financeAssetsPanel" class="finance-dashboard-panel finance-tab-panel hidden" role="tabpanel" data-finance-panel="assets" aria-label="Struktura imovine">
+            <div class="assets-page">
+              <header class="finance-tab-heading">
+                <div>
+                  <small>FINANSIJSKI DNEVNIK</small>
+                  <h2>Imovina</h2>
+                  <p>Prati šta poseduješ i kolika je vrednost tvoje imovine.</p>
+                </div>
+                <div class="transaction-heading-actions">
+                  <span id="assetSaveStatus" class="transaction-save-status" aria-live="polite"></span>
+                  <button id="openAssetModalBtn" class="btn transaction-new-btn" type="button"><span>+ Nova imovina</span></button>
+                </div>
+              </header>
+
+              <div id="assetModal" class="transaction-modal hidden" role="dialog" aria-modal="true" aria-labelledby="assetFormTitle">
+                <div class="transaction-modal-backdrop"></div>
+                <form id="assetForm" class="mentor-card transaction-form-card transaction-modal-card asset-modal-card" novalidate>
+                  <div class="transaction-modal-head">
+                    <div class="transaction-card-heading">
+                      <small>IMOVINA</small>
+                      <h3 id="assetFormTitle">Nova imovina</h3>
+                    </div>
+                    <button class="transaction-modal-close" type="button" data-close-asset-modal aria-label="Zatvori">×</button>
+                  </div>
+                  <label class="finance-field"><span>Tip unosa</span><select id="assetTrackingMode"><option value="manual">Ručni unos</option><option value="live">Investicije</option></select></label>
+                  <div id="manualAssetFields" class="asset-form-section">
+                    <label class="finance-field"><span>Naziv</span><input id="assetName" type="text" placeholder="npr. Keš, Bankovni račun, Laptop" /></label>
+                    <label class="finance-field"><span>Tip imovine</span><select id="assetType"><option>Keš</option><option>Bankovni račun</option><option>Štednja</option><option>Nekretnina</option><option>Vozilo</option><option>Oprema</option><option>Vredne stvari</option><option>Ostalo</option></select></label>
+                    <label class="finance-field"><span>Vrednost</span><input id="assetValue" type="number" min="0" step="0.01" placeholder="0,00 €" /></label>
+                    <label class="finance-field asset-auto-track-field"><input id="assetAutoTrackTransactions" type="checkbox" /><span>Prati transakcije</span></label>
+                  </div>
+                  <div id="liveAssetFields" class="asset-form-section hidden">
+                    <label class="finance-field"><span>Tip</span><select id="assetLiveType"><option>Crypto</option><option>Deonice</option></select></label>
+                    <label class="finance-field"><span>Search instrument</span><input id="assetCoinSearch" type="search" placeholder="npr. ONDO, Bitcoin, AAPL.US, TSLA.US" autocomplete="off" /></label>
+                    <div id="assetCoinResults" class="asset-search-results"></div>
+                    <label class="finance-field"><span>Izabrana imovina</span><input id="assetSelectedCoin" type="text" readonly placeholder="CoinPaprika ili Stooq rezultat" /></label>
+                    <label class="finance-field"><span>Symbol</span><input id="assetSymbol" type="text" readonly /></label>
+                    <label class="finance-field"><span>Provider Asset ID</span><input id="assetProviderId" type="text" readonly /></label>
+                    <label class="finance-field"><span>Količina</span><input id="assetQuantity" type="number" min="0" step="0.00000001" placeholder="1600" /></label>
+                    <label id="stockManualPriceField" class="finance-field hidden"><span>Trenutna cena</span><input id="assetManualPrice" type="number" min="0" step="0.0001" placeholder="npr. 195.40" /></label>
+                    <label class="finance-field"><span>Uloženo / purchase value</span><input id="assetPurchaseValue" type="number" min="0" step="0.01" placeholder="900 €" /></label>
+                  </div>
+                  <label class="finance-field"><span>Valuta prikaza</span><select id="assetCurrency"><option value="EUR">€</option><option>USD</option><option>GBP</option></select></label>
+                  <label class="finance-field"><span>Likvidnost</span><select id="assetLiquidity"><option value="high">Visoka</option><option value="medium">Srednja</option><option value="low">Niska</option></select></label>
+                  <label class="finance-field"><span>Povezano sa</span><select id="assetLinkedType"><option>Nije povezano</option><option>Cilj</option><option>Ideja</option><option>Test ideje</option><option>Finansijsko poređenje</option></select></label>
+                  <label class="finance-field"><span>Prioritet</span><select id="assetPriority"><option>Nizak</option><option selected>Srednji</option><option>Visok</option></select></label>
+                  <label class="finance-field"><span>Beleška</span><textarea id="assetNote" rows="3" placeholder="Kratka beleška o ovoj imovini."></textarea></label>
+                  <div class="transaction-form-actions">
+                    <span id="assetFormStatus" class="transaction-save-status asset-form-status" aria-live="polite"></span>
+                    <button id="assetCancelBtn" class="ghost-btn" type="button"><span>Otkaži</span></button>
+                    <button class="btn" type="submit"><span>Sačuvaj imovinu</span></button>
+                  </div>
+                </form>
+              </div>
+
+              <section class="transaction-summary-grid assets-summary-grid" aria-label="Sažetak imovine">
+                <article class="mentor-card transaction-summary-card summary-income"><small>Ukupna imovina</small><strong id="assetTotalValue">0 €</strong><span>Likvidna, investicije i materijalna</span></article>
+                <article class="mentor-card transaction-summary-card summary-balance"><small>Likvidna sredstva</small><strong id="assetLiquidAssetsTotal">0 €</strong><span>Keš, računi i štednja</span></article>
+                <article class="mentor-card transaction-summary-card summary-balance"><small>Investicije</small><strong id="assetInvestmentTotal">0 €</strong><span>Crypto i deonice</span></article>
+                <article class="mentor-card transaction-summary-card summary-balance"><small>Materijalna imovina</small><strong id="assetMaterialTotal">0 €</strong><span>Nekretnine, vozila, oprema i vrednosti</span></article>
+              </section>
+
+              <div class="asset-subtabs" role="tablist" aria-label="Tip imovine">
+                <button class="active" type="button" data-asset-mode="liquid" aria-selected="true"><span>Likvidna sredstva</span></button>
+                <button type="button" data-asset-mode="live" aria-selected="false"><span>Investicije</span></button>
+                <button type="button" data-asset-mode="material" aria-selected="false"><span>Materijalna imovina</span></button>
+              </div>
+
+              <article class="mentor-card transaction-filters-card">
+                <div class="transaction-filter-grid asset-filter-grid">
+                  <label class="finance-field"><span>Tip imovine</span><select id="assetTypeFilter"><option value="all">Sve</option><option>Keš</option><option>Bankovni račun</option><option>Štednja</option><option>Crypto</option><option>Deonice</option><option>Nekretnina</option><option>Vozilo</option><option>Oprema</option><option>Vredne stvari</option><option>Ostalo</option></select></label>
+                  <label class="finance-field"><span>Likvidnost</span><select id="assetLiquidityFilter"><option value="all">Sve</option><option value="high">Visoka</option><option value="medium">Srednja</option><option value="low">Niska</option></select></label>
+                  <label class="finance-field"><span>Povezano sa</span><select id="assetLinkedFilter"><option value="all">Sve</option><option>Nije povezano</option><option>Cilj</option><option>Ideja</option><option>Test ideje</option><option>Finansijsko poređenje</option></select></label>
+                  <label class="finance-field"><span>Status</span><select id="assetStatusFilter"><option value="all">Sve</option><option>Aktivno</option><option>Neaktivno</option><option>Praćeno</option><option>Sigurno</option><option>Arhivirano</option></select></label>
+                  <label class="finance-field"><span>Sortiraj po</span><select id="assetSort"><option value="value-desc">Vrednost najveća</option><option value="value-asc">Vrednost najmanja</option><option value="name">Naziv</option><option value="created-desc">Najnovije dodato</option><option value="updated-desc">Poslednje ažurirano</option></select></label>
+                  <button id="assetResetFiltersBtn" class="ghost-btn transaction-reset-btn" type="button"><span>Resetuj filtere</span></button>
+                </div>
+              </article>
+
+              <div class="assets-layout">
+                <section class="mentor-card asset-list-panel">
+                  <div class="transaction-list-head">
+                    <div class="transaction-card-heading"><small>LISTA</small><h3>Lista imovine</h3></div>
+                    <span id="assetCountLabel">0 stavki</span>
+                  </div>
+                  <div id="assetList" class="asset-list"></div>
+                </section>
+                <section class="mentor-card asset-detail-panel">
+                  <div id="assetDetails" class="asset-details"></div>
+                </section>
+              </div>
+            </div>
+          </section>
+
+          <section id="financeIdeasPanel" class="finance-dashboard-panel finance-tab-panel hidden" role="tabpanel" data-finance-panel="ideas" aria-label="Finansijsko poređenje">
+            <div id="financialComparisonPage" class="financial-comparison-page"></div>
+          </section>
         </div>
       </section>
 
@@ -446,11 +1195,11 @@
         </div>
         <div class="journal-layout">
           <article class="mentor-card journal-editor">
-            <textarea class="text-input mentor-textarea" rows="8" placeholder="Šta danas primećuješ kod sebe?"></textarea>
+            <textarea id="journalEntry" name="journalEntry" class="text-input mentor-textarea" rows="8" placeholder="Šta danas primećuješ kod sebe?"></textarea>
             <div class="journal-inputs">
-              <label>Raspoloženje<input class="text-input" type="text" value="Mirno" /></label>
-              <label>Energija<input class="text-input" type="text" value="7/10" /></label>
-              <label>Fokus<input class="text-input" type="text" value="Dubok rad" /></label>
+              <label><span>Raspoloženje</span><input id="journalMood" name="journalMood" class="text-input" type="text" value="Mirno" /></label>
+              <label><span>Energija</span><input id="journalEnergy" name="journalEnergy" class="text-input" type="text" value="7/10" /></label>
+              <label><span>Fokus</span><input id="journalFocus" name="journalFocus" class="text-input" type="text" value="Dubok rad" /></label>
             </div>
           </article>
           <aside class="mentor-card notes-list">
@@ -462,7 +1211,23 @@
         </div>
       </section>
 
-      <section id="statisticsView" class="view-panel app-page hidden">
+      <section id="nutritionView" class="view-panel app-page hidden"></section>
+
+      <section id="bodyEnergyView" class="view-panel app-page hidden">
+        <div class="page-heading">
+          <p></p>
+          <h1></h1>
+          <span></span>
+        </div>
+        <div class="achievement-grid">
+          <article class="mentor-card achievement-card"><span>01</span><h3></h3><p></p></article>
+          <article class="mentor-card achievement-card"><span>02</span><h3></h3><p></p></article>
+          <article class="mentor-card achievement-card"><span>03</span><h3></h3><p></p></article>
+          <article class="mentor-card achievement-card"><span>04</span><h3></h3><p></p></article>
+        </div>
+      </section>
+
+      <section id="statisticsView" class="view-panel app-page hidden" data-module-status="inactive">
         <div class="page-heading">
           <p>STATISTIKE</p>
           <h1>Pregled napretka</h1>
@@ -477,7 +1242,7 @@
         </div>
       </section>
 
-      <section id="achievementsView" class="view-panel app-page hidden">
+      <section id="achievementsView" class="view-panel app-page hidden" data-module-status="inactive">
         <div class="page-heading">
           <p>ACHIEVEMENTS</p>
           <h1>Postignuća i prekretnice</h1>
@@ -498,15 +1263,168 @@
           <span>Placeholder za buduća podešavanja profila, tema i obaveštenja.</span>
         </div>
         <article class="mentor-card settings-card">
-          <label><input type="checkbox" checked /> Topli premium izgled</label>
-          <label><input type="checkbox" checked /> Dnevni podsetnik</label>
-          <label><input type="checkbox" /> Fokus režim</label>
+          <label><input type="checkbox" checked /> <span>Topli premium izgled</span></label>
+          <label><input type="checkbox" checked /> <span>Dnevni podsetnik</span></label>
+          <label><input type="checkbox" /> <span>Fokus režim</span></label>
         </article>
+        <section class="mentor-card database-backup" aria-labelledby="databaseBackupTitle">
+          <div class="database-backup-head">
+            <div>
+              <p id="databaseBackupEyebrow">DATA BACKUP</p>
+              <h2 id="databaseBackupTitle">Backup baze podataka</h2>
+              <span id="databaseBackupDescription">Sačuvaj kompletnu kopiju podataka ili vrati ranije sačuvan backup.</span>
+            </div>
+            <div class="database-actions">
+              <button id="databaseExportBtn" class="ghost-btn" type="button"><span>Export database backup</span></button>
+              <button id="databaseImportBtn" class="ghost-btn" type="button"><span>Import database backup</span></button>
+              <input id="databaseImportInput" class="database-file-input" type="file" accept="application/zip,.zip,application/json,.json" />
+            </div>
+          </div>
+          <div id="databaseBackupStatus" class="database-backup-status" aria-live="polite"></div>
+        </section>
       </section>
     </main>
   </section>
-  <script src="script.js"></script>
-  <script src="kalendar.js"></script>
-  <script src="brainstorming.js"></script>
+  <div id="mentorFloatingRoot" data-panel="mentor-floating" data-open="false">
+    <button id="mentorLauncher" class="mentor-launcher" type="button" data-mentor-action="toggle-chat" data-mentor-label="floating.open" aria-expanded="false" aria-controls="mentorChatPanel">
+      <img src="icons/mentor-portrait.png" width="64" height="64" alt="" aria-hidden="true" />
+    </button>
+    <section id="mentorChatPanel" class="mentor-chat-layout" data-panel="mentor-chat" role="region" aria-labelledby="mentorChatTitle" aria-hidden="true" inert>
+      <div class="mentor-history-panel" data-panel="mentor-history">
+        <aside id="mentorClarificationPanel" class="mentor-clarification hidden" data-panel="mentor-clarification" aria-labelledby="mentorClarificationTitle" inert>
+          <div id="mentorOverviewResize" class="mentor-resize-grip mentor-overview-resize-grip hidden" role="separator" tabindex="0" aria-orientation="horizontal" data-mentor-label="actions.resizeOverview"><span aria-hidden="true">↕</span></div>
+          <div id="mentorClarificationContent"></div>
+        </aside>
+      <div class="mentor-history-surface">
+        <button id="mentorOverviewToggle" class="mentor-overview-toggle hidden" type="button" data-mentor-action="toggle-overview" aria-controls="mentorClarificationPanel" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7M20 5l-7 7 7 7"/></svg></button>
+        <div id="mentorHistoryResize" class="mentor-resize-grip mentor-history-resize-grip" role="separator" tabindex="0" aria-orientation="horizontal" data-mentor-label="actions.resizeHistory"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3.5 13 8.5-8.5 8.5 8.5M3.5 20 12 11.5 20.5 20"/></svg></div>
+      <header class="mentor-floating-header">
+        <div class="mentor-floating-heading"><h2 id="mentorChatTitle" data-mentor-i18n="title"></h2><p data-mentor-i18n="description"></p></div>
+        <button class="ghost-btn" type="button" data-mentor-action="show-manual" data-mentor-i18n="floating.creator"></button>
+        <details id="mentorChatTools" class="mentor-tools">
+          <summary data-mentor-i18n="floating.tools"></summary>
+          <div class="mentor-tools-content" data-panel="mentor-tools">
+            <div class="mentor-conversation-toolbar">
+              <label class="mentor-history-label"><span data-mentor-i18n="history"></span><select id="mentorConversationSelect" data-mentor-label="history"></select></label>
+              <button class="ghost-btn" type="button" data-mentor-action="new"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-mentor-i18n="newConversation"></span></button>
+              <button class="ghost-btn" type="button" data-mentor-action="delete" data-mentor-label="deleteConversation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5M14 11v5"/></svg><span data-mentor-i18n="deleteConversation"></span></button>
+            </div>
+              <label class="mentor-share-label"><span data-mentor-i18n="shareGoal"></span><select id="mentorGoalContext" data-mentor-label="shareGoal"></select></label>
+              <details class="mentor-privacy-details">
+                <summary data-mentor-i18n="privacyAndHistory"></summary>
+                <p class="mentor-identity-note" data-mentor-i18n="privacy"></p>
+                <p class="mentor-identity-note" data-mentor-i18n="backupNote"></p>
+              </details>
+              <button class="ghost-btn" type="button" data-mentor-action="export"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg><span data-mentor-i18n="export"></span></button>
+          </div>
+        </details>
+        <button id="mentorMinimizeButton" class="ghost-btn mentor-minimize" type="button" data-mentor-action="minimize" data-mentor-label="floating.minimizeHistory"><span aria-hidden="true">&minus;</span></button>
+      </header>
+      <section class="mentor-conversation" data-panel="mentor-conversation">
+            <p id="mentorSetupStatus" class="mentor-setup" role="status"></p>
+            <div id="mentorMessages" class="mentor-message-list" role="log" aria-live="polite" aria-relevant="additions" data-mentor-label="chat"></div>
+            <div id="mentorRequestStatus" class="mentor-status" role="status"></div>
+      </section>
+      </div>
+      </div>
+            <form id="mentorComposer" class="mentor-composer">
+              <div class="mentor-input-row">
+                <textarea id="mentorMessageInput" rows="2" maxlength="4000" data-mentor-label="input" autocomplete="off" aria-describedby="mentorComposerHint" disabled></textarea>
+                <button id="mentorSendButton" class="btn" type="submit" data-mentor-label="send" disabled><span data-mentor-i18n="send"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 5 6 6M12 5l-6 6M12 5v14"/></svg></button>
+                <button id="mentorCancelButton" class="ghost-btn hidden" type="button" data-mentor-action="cancel" data-mentor-i18n="cancel"></button>
+              </div>
+              <p id="mentorComposerHint" class="mentor-composer-hint" data-mentor-i18n="hint"></p>
+            </form>
+    </section>
+  </div>
+  <script src="js/release.js"></script>
+  <script src="storageService.js"></script>
+  <script src="js/vendor/fflate-0.8.3.min.js"></script>
+  <script src="js/vendor/dexie-4.4.4.min.js"></script>
+  <script src="js/data/backup/backup-format.constants.js"></script>
+  <script src="js/data/backup/backup-checksum.service.js"></script>
+  <script src="js/data/backup/backup-manifest.schema.js"></script>
+  <script src="js/data/backup/nutrition-media-export.service.js"></script>
+  <script src="js/data/backup/backup-export.service.js"></script>
+  <script src="js/data/backup/backup-validation.service.js"></script>
+  <script src="js/data/backup/zip-backup.service.js"></script>
+  <script src="js/data/backup/legacy-backup-preparation.service.js"></script>
+  <script src="js/data/backup/goals-calendar-backup.service.js"></script>
+  <script src="js/data/validation/legacy-payload.validators.js"></script>
+  <script src="js/data/legacy/legacy-storage.registry.js"></script>
+  <script src="js/data/legacy/legacy-storage.reader.js"></script>
+  <script src="js/data/legacy/legacy-media.reader.js"></script>
+  <script src="js/data/normalization/legacy-domain-normalizer.service.js"></script>
+  <script src="js/data/migration/migration-status.constants.js"></script>
+  <script src="js/data/database/schema-v1.js"></script>
+  <script src="js/data/database/kreatorm.database.js"></script>
+  <script src="js/data/database/transaction.helper.js"></script>
+  <script src="js/data/adapters/dexie.adapter.js"></script>
+  <script src="js/data/services/mutation-freeze.service.js"></script>
+  <script src="js/data/services/cross-tab-coordination.service.js"></script>
+  <script src="js/data/migration/migration-state-machine.js"></script>
+  <script src="js/data/migration/migration-checkpoint.service.js"></script>
+  <script src="js/data/migration/migration-verification.service.js"></script>
+  <script src="js/data/recovery/indexeddb-recovery.service.js"></script>
+  <script src="js/data/migration/legacy-to-indexeddb.service.js"></script>
+  <script src="js/data/backup/indexeddb-backup.service.js"></script>
+  <script src="js/data/recovery/indexeddb-restore.service.js"></script>
+  <script src="js/data/state/repository-state.constants.js"></script>
+  <script src="js/data/errors/data-error.js"></script>
+  <script src="js/data/state/data-event-bus.js"></script>
+  <script src="js/data/contracts/storage-adapter.contract.js"></script>
+  <script src="js/data/contracts/repository.contract.js"></script>
+  <script src="js/data/services/ideas-durable-save.service.js"></script>
+  <script src="js/data/services/domain-durable-save.service.js"></script>
+  <script src="js/data/services/goals.service.js"></script>
+  <script src="js/data/services/goals-calendar.service.js"></script>
+  <script src="js/data/adapters/local-storage.adapter.js"></script>
+  <script src="js/data/repositories/repository-helpers.js"></script>
+  <script src="js/data/repositories/settings.repository.js"></script>
+  <script src="js/data/repositories/goals.repository.js"></script>
+  <script src="js/data/repositories/calendar.repository.js"></script>
+  <script src="js/data/repositories/ideas.repository.js?v=20261019-live-designer-01"></script>
+  <script src="js/data/repositories/finance.repository.js"></script>
+  <script src="js/data/repositories/assets.repository.js"></script>
+  <script src="js/data/repositories/comparisons.repository.js"></script>
+  <script src="js/data/repositories/nutrition-food-data.repository.js"></script>
+  <script src="js/data/repositories/nutrition-inventory-data.repository.js"></script>
+  <script src="js/data/repositories/media.repository.js"></script>
+  <script src="js/data/repositories/indexeddb-core.repositories.js"></script>
+  <script src="js/data/index.js"></script>
+  <script src="js/data/admin/indexeddb-admin.facade.js"></script>
+  <script src="js/data/bootstrap/feature-hydration.js"></script>
+  <script src="js/data/compatibility/mentor-storage.facade.js"></script>
+  <script src="js/data/bootstrap/data-bootstrap.js"></script>
+  <script src="js/i18n/sr-core.js?v=20261029-floating-01"></script>
+  <script src="js/i18n/sr-builder-calendar.js"></script>
+  <script src="js/i18n/sr-brainstorming-research.js?v=20261019-decision-removal-01"></script>
+  <script src="js/i18n/sr-finance.js"></script>
+  <script src="js/i18n/en-core.js?v=20261029-floating-01"></script>
+  <script src="js/i18n/en-builder-calendar.js"></script>
+  <script src="js/i18n/en-brainstorming-research.js?v=20261019-decision-removal-01"></script>
+  <script src="js/i18n/en-finance.js"></script>
+  <script src="js/i18n/mentor.js?v=20261030-history-controls-01"></script>
+  <script src="js/i18n/mentor-actions.js?v=20261030-catalog-recipes-02"></script>
+  <script src="js/i18n/mentor-foods.js?v=20261030-usda-first-01"></script>
+  <script src="js/i18n/provider.js"></script>
+  <script src="lazyLoader.js?v=20261030-catalog-recipes-02"></script>
+  <script src="script.js?v=20261029-floating-01"></script>
+  <script src="js/mentor/mentor-protocol.js?v=20261030-catalog-recipes-02"></script>
+  <script src="js/mentor/mentor-conversations.repository.js?v=20261030-catalog-recipes-02"></script>
+  <script src="js/mentor/mentor-goal-proposals.js?v=20261023-01"></script>
+  <script src="js/mentor/mentor-action-adapters.js?v=20261030-catalog-recipes-02"></script>
+  <script src="js/mentor/mentor-capability-registry.js?v=20261029-write-06"></script>
+  <script src="js/mentor/mentor-nutrition-inventory-read.js?v=20261028-nutrition-router-01"></script>
+  <script src="js/mentor/mentor-nutrition-read.js?v=20261029-choice-buttons-01"></script>
+  <script src="js/mentor/mentor-nutrition-inventory-resolver.js?v=20261030-recipe-intent-01"></script>
+  <script src="js/mentor/mentor-nutrition-inventory-write.js?v=20261030-recipe-intent-01"></script>
+  <script src="js/mentor/mentor-nutrition-food.js?v=20261030-usda-first-01"></script>
+  <script src="js/mentor/mentor-write-pipeline.js?v=20261029-inventory-multi-01"></script>
+  <script src="js/mentor/mentor-intelligence-router.js?v=20261030-catalog-recipes-02"></script>
+  <script src="js/mentor/mentor-action-cards.js?v=20261030-catalog-recipes-02"></script>
+  <script src="js/mentor/mentor-chat-view.js?v=20261030-history-controls-01"></script>
+  <script src="js/mentor/mentor-chat-client.js?v=20261030-catalog-recipes-02"></script>
+  <script src="js/mentor/mentor-chat.js?v=20261030-history-controls-01"></script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+{
+  "central": [
+    {
+      "id": "fixture-idea-1",
+      "title": "Centralna verzija",
+      "status": "path"
+    }
+  ],
+  "legacy": [
+    {
+      "id": "fixture-idea-1",
+      "title": "Legacy verzija",
+      "status": "seed"
+    }
+  ],
+  "expectedRule": "central-without-timestamp"
+}

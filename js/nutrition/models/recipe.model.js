@@ -1,0 +1,1 @@
+(function(){"use strict";window.MentorNutritionModels=window.MentorNutritionModels||{};window.MentorNutritionModels.recipe=(value)=>Object.freeze({...value,ingredients:Object.freeze((value.ingredients||[]).map((item)=>Object.freeze({...item})))});})();

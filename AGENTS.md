@@ -26,6 +26,9 @@ Long-term, the app should grow into a scalable personal life operating system an
 - Do not remove working features.
 - Do not introduce mock data unless explicitly requested.
 - Do not hardcode UI text outside the language/i18n system.
+- Text-editing controls are terminal UI targets: clicking or focusing `input`, `textarea`, `select`, or `[contenteditable]` must not trigger parent card/panel selection, deselection, navigation, modal close, drag start, or rerender handlers. Reuse `window.MentorUIEvents.isTextEditingEvent(event)` / `isTextEditingTarget(target)` for new vanilla features and carry the same rule into future React components.
+- Scope delegated global event handlers to the actual interactive control (for example, `button.language-option[data-language]`), not a broad attribute selector that can also match an ancestor such as `body`. Clicking inert page space must not trigger language changes, navigation, storage writes, or rerenders.
+- Do not require browser reproduction for every routine change. If a click-triggered flicker or unexpected refresh occurs, or code inspection reveals a concrete risk of one, check the relevant event handlers, view state, global events, and DOM node identity as needed; reproduce in a browser when the cause remains uncertain. Fix or preempt the root cause rather than masking a rerender with visual delays, and add a focused regression check when appropriate.
 - Prefer small, reviewable changes.
 - For large or risky changes, analyze first and create a plan before editing.
 - Always list changed files after implementation.
@@ -34,6 +37,9 @@ Long-term, the app should grow into a scalable personal life operating system an
 - Preserve the current visual theme unless explicitly asked to redesign.
 - Do not rewrite unrelated modules.
 - Do not make broad architecture changes without a plan.
+- Theme implementation is deferred until MVP functions are finished and stabilized. Do not introduce a theme system or perform a broad preparatory refactor now.
+- For new changes, use stable panel IDs or semantic `data-panel`/`data-action` attributes. Keep business logic independent of panel appearance, size, position, and DOM order; future themes may change images, shape, size, and layout.
+- Do not use positional selectors such as `nth-of-type` for functional behavior or UI-copy targeting in new changes. Record existing dependencies in `docs/THEME_READINESS_BACKLOG.md`; address them when themes are introduced or when a bounded MVP fix requires it.
 
 ## Agent Routing Rules
 

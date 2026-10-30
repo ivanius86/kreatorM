@@ -1,0 +1,1 @@
+(function(){"use strict";const all=()=>window.MentorNutritionNutrients||[];window.MentorNutrientRepository={getAll:()=>all().slice().sort((a,b)=>a.displayOrder-b.displayOrder),getById:(id)=>all().find(x=>x.id===id)||null,getByCode:(code)=>all().find(x=>x.code===code)||null,getByGroup:(group)=>all().filter(x=>x.group===group)};})();

@@ -1,0 +1,1 @@
+(function(){"use strict";window.MentorNutritionModels=window.MentorNutritionModels||{};window.MentorNutritionModels.food=(value)=>Object.freeze({...value,tags:Object.freeze([...(value.tags||[])]),filterProfile:window.MentorFoodFilterProfile.normalize(value.filterProfile)});})();

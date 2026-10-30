@@ -1,0 +1,49 @@
+slug,fdcId,srName,enName,category,state
+onion_raw,170000,"Crni luk, sirov","Onion, raw",vegetables,raw
+garlic_raw,1104647,"Beli luk, sirov","Garlic, raw",vegetables,raw
+potato_raw,170026,"Krompir, sirov","Potato, raw",vegetables,raw
+sweet_potato_raw,168482,"Batat, sirov","Sweet potato, raw",vegetables,raw
+carrot_raw,170393,"Šargarepa, sirova","Carrot, raw",vegetables,raw
+tomato_raw,170457,"Paradajz, sirov","Tomato, raw",vegetables,raw
+cucumber_raw,2346406,"Krastavac, sirov","Cucumber, raw",vegetables,raw
+red_pepper_raw,170108,"Paprika, sirova","Red sweet pepper, raw",vegetables,raw
+broccoli_raw,747447,"Brokoli, sirov","Broccoli, raw",vegetables,raw
+cauliflower_raw,2685573,"Karfiol, sirov","Cauliflower, raw",vegetables,raw
+spinach_raw,168462,"Spanać, sirov","Spinach, raw",vegetables,raw
+cabbage_green_raw,2346407,"Kupus, sirov","Green cabbage, raw",vegetables,raw
+banana_raw,173944,"Banana, sirova","Banana, raw",fruits,raw
+apple_skin_raw,171688,"Jabuka sa korom, sirova","Apple with skin, raw",fruits,raw
+orange_navel_raw,746771,"Pomorandža, sirova","Navel orange, raw",fruits,raw
+lemon_raw,167746,"Limun, sirov","Lemon, raw",fruits,raw
+strawberry_raw,2346409,"Jagoda, sirova","Strawberry, raw",fruits,raw
+blueberry_raw,2346411,"Borovnica, sirova","Blueberry, raw",fruits,raw
+grapes_green_raw,2346413,"Grožđe, sirovo","Green seedless grapes, raw",fruits,raw
+watermelon_raw,167765,"Lubenica, sirova","Watermelon, raw",fruits,raw
+avocado_raw,171705,"Avokado, sirov","Avocado, raw",fruits,raw
+egg_whole_raw,171287,"Jaje, celo, sirovo","Whole egg, raw",eggs,raw
+chicken_breast_skinless_raw,171077,"Pileća prsa bez kože, sirova","Skinless chicken breast, raw",poultry,raw
+chicken_thigh_skinless_raw,173627,"Pileći batak bez kože, sirov","Skinless chicken thigh, raw",poultry,raw
+turkey_breast_skinless_raw,174515,"Ćureća prsa bez kože, sirova","Skinless turkey breast, raw",poultry,raw
+ground_beef_90_10_raw,2514743,"Nemasna mlevena junetina, sirova","Ground beef 90/10, raw",meat,raw
+pork_tenderloin_raw,2646169,"Svinjski file, sirov","Pork tenderloin, raw",meat,raw
+tuna_yellowfin_raw,175159,"Tuna, sirova","Yellowfin tuna, raw",fish-seafood,raw
+salmon_atlantic_farmed_raw,2684441,"Losos, sirov","Atlantic farmed salmon, raw",fish-seafood,raw
+milk_whole,746782,"Kravlje mleko","Whole cow milk",dairy,raw
+greek_yogurt_plain_whole,2259794,"Grčki jogurt, običan","Plain whole-milk Greek yogurt",dairy,cooked
+yogurt_plain_whole,2259793,"Jogurt, običan","Plain whole-milk yogurt",dairy,cooked
+cottage_cheese_full_fat,2346384,"Mladi sir","Full-fat cottage cheese",dairy,cooked
+feta_cheese,2259796,"Feta sir","Feta cheese",dairy,cooked
+mozzarella_whole_milk,170845,"Mocarela","Whole-milk mozzarella",dairy,cooked
+rice_white_dry,2512381,"Beli pirinač, suv","White rice, dry",grains,dry
+rice_brown_dry,2512380,"Integralni pirinač, suv","Brown rice, dry",grains,dry
+oats_rolled_dry,2346396,"Ovsene pahuljice, suve","Rolled oats, dry",grains,dry
+wheat_flour_white,168936,"Pšenično brašno","White wheat flour",grains,dry
+bread_whole_wheat,172688,"Integralni hleb","Whole-wheat bread",bread-bakery,baked
+pasta_white_dry,168927,"Bela testenina, suva","White pasta, dry",pasta-noodles,dry
+beans_pinto_boiled,175200,"Pasulj, kuvan","Pinto beans, boiled",legumes,boiled
+lentils_boiled,172421,"Sočivo, kuvano","Lentils, boiled",legumes,boiled
+chickpeas_boiled,173757,"Leblebija, kuvana","Chickpeas, boiled",legumes,boiled
+peas_green_boiled,170420,"Grašak, kuvan","Green peas, boiled",legumes,boiled
+almond_raw,2346393,"Badem, sirov","Almond, raw",nuts-seeds,raw
+walnut_raw,2346394,"Orah, sirov","Walnut, raw",nuts-seeds,raw
+olive_oil_extra_virgin,748608,"Maslinovo ulje","Extra virgin olive oil",fats-oils,raw

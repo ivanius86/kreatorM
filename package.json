@@ -1,0 +1,23 @@
+{
+  "name": "kreatorm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KreatorM local-first application",
+  "scripts": {
+    "start": "node server.js",
+    "check:gemini": "node server.js --check-gemini",
+    "test": "npm run test:mentor && npm run test:storage && npm run test:nutrition && npm run test:research",
+    "test:mentor": "node --test --test-isolation=none tests/mentor/*.test.js",
+    "test:mentor:browser": "node tests/mentor/browser-check.js",
+    "test:storage": "node --test --test-isolation=none tests/storage/*.test.js",
+    "test:nutrition": "node --test --test-isolation=none tests/nutrition/*.test.js",
+    "test:research": "node --test --test-isolation=none tests/research-canvas.test.js tests/research-sticker-designer.test.js"
+  },
+  "dependencies": {
+    "dexie": "4.4.4",
+    "fflate": "0.8.3"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "6.2.5"
+  }
+}

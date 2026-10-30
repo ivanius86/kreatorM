@@ -1,0 +1,360 @@
+{
+    "generatedAt":  "2026-07-13T00:00:00.000Z",
+    "verifiedFoodCount":  48,
+    "requestedFoodCount":  50,
+    "foodNutrientRecordCount":  2112,
+    "duplicateFoodIds":  0,
+    "duplicateSlugs":  0,
+    "duplicateFdcIds":  0,
+    "nullAndZeroSeparated":  true,
+    "foods":  [
+                  {
+                      "foodId":  "food_onion_raw",
+                      "fdcId":  170000,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  8
+                  },
+                  {
+                      "foodId":  "food_garlic_raw",
+                      "fdcId":  1104647,
+                      "availableNutrientCount":  10,
+                      "missingNutrientCount":  34,
+                      "explicitZeroCount":  0
+                  },
+                  {
+                      "foodId":  "food_potato_raw",
+                      "fdcId":  170026,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  7
+                  },
+                  {
+                      "foodId":  "food_sweet_potato_raw",
+                      "fdcId":  168482,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  6
+                  },
+                  {
+                      "foodId":  "food_carrot_raw",
+                      "fdcId":  170393,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  6
+                  },
+                  {
+                      "foodId":  "food_tomato_raw",
+                      "fdcId":  170457,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  8
+                  },
+                  {
+                      "foodId":  "food_cucumber_raw",
+                      "fdcId":  2346406,
+                      "availableNutrientCount":  16,
+                      "missingNutrientCount":  28,
+                      "explicitZeroCount":  1
+                  },
+                  {
+                      "foodId":  "food_red_pepper_raw",
+                      "fdcId":  170108,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  7
+                  },
+                  {
+                      "foodId":  "food_broccoli_raw",
+                      "fdcId":  747447,
+                      "availableNutrientCount":  32,
+                      "missingNutrientCount":  12,
+                      "explicitZeroCount":  1
+                  },
+                  {
+                      "foodId":  "food_cauliflower_raw",
+                      "fdcId":  2685573,
+                      "availableNutrientCount":  17,
+                      "missingNutrientCount":  27,
+                      "explicitZeroCount":  0
+                  },
+                  {
+                      "foodId":  "food_spinach_raw",
+                      "fdcId":  168462,
+                      "availableNutrientCount":  40,
+                      "missingNutrientCount":  4,
+                      "explicitZeroCount":  6
+                  },
+                  {
+                      "foodId":  "food_cabbage_green_raw",
+                      "fdcId":  2346407,
+                      "availableNutrientCount":  17,
+                      "missingNutrientCount":  27,
+                      "explicitZeroCount":  1
+                  },
+                  {
+                      "foodId":  "food_banana_raw",
+                      "fdcId":  173944,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  6
+                  },
+                  {
+                      "foodId":  "food_apple_skin_raw",
+                      "fdcId":  171688,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  7
+                  },
+                  {
+                      "foodId":  "food_orange_navel_raw",
+                      "fdcId":  746771,
+                      "availableNutrientCount":  27,
+                      "missingNutrientCount":  17,
+                      "explicitZeroCount":  3
+                  },
+                  {
+                      "foodId":  "food_lemon_raw",
+                      "fdcId":  167746,
+                      "availableNutrientCount":  40,
+                      "missingNutrientCount":  4,
+                      "explicitZeroCount":  7
+                  },
+                  {
+                      "foodId":  "food_strawberry_raw",
+                      "fdcId":  2346409,
+                      "availableNutrientCount":  16,
+                      "missingNutrientCount":  28,
+                      "explicitZeroCount":  1
+                  },
+                  {
+                      "foodId":  "food_blueberry_raw",
+                      "fdcId":  2346411,
+                      "availableNutrientCount":  16,
+                      "missingNutrientCount":  28,
+                      "explicitZeroCount":  1
+                  },
+                  {
+                      "foodId":  "food_grapes_green_raw",
+                      "fdcId":  2346413,
+                      "availableNutrientCount":  16,
+                      "missingNutrientCount":  28,
+                      "explicitZeroCount":  0
+                  },
+                  {
+                      "foodId":  "food_watermelon_raw",
+                      "fdcId":  167765,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  7
+                  },
+                  {
+                      "foodId":  "food_avocado_raw",
+                      "fdcId":  171705,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  6
+                  },
+                  {
+                      "foodId":  "food_egg_whole_raw",
+                      "fdcId":  171287,
+                      "availableNutrientCount":  40,
+                      "missingNutrientCount":  4,
+                      "explicitZeroCount":  4
+                  },
+                  {
+                      "foodId":  "food_chicken_breast_skinless_raw",
+                      "fdcId":  171077,
+                      "availableNutrientCount":  40,
+                      "missingNutrientCount":  4,
+                      "explicitZeroCount":  8
+                  },
+                  {
+                      "foodId":  "food_chicken_thigh_skinless_raw",
+                      "fdcId":  173627,
+                      "availableNutrientCount":  39,
+                      "missingNutrientCount":  5,
+                      "explicitZeroCount":  7
+                  },
+                  {
+                      "foodId":  "food_turkey_breast_skinless_raw",
+                      "fdcId":  174515,
+                      "availableNutrientCount":  40,
+                      "missingNutrientCount":  4,
+                      "explicitZeroCount":  7
+                  },
+                  {
+                      "foodId":  "food_ground_beef_90_10_raw",
+                      "fdcId":  2514743,
+                      "availableNutrientCount":  19,
+                      "missingNutrientCount":  25,
+                      "explicitZeroCount":  2
+                  },
+                  {
+                      "foodId":  "food_pork_tenderloin_raw",
+                      "fdcId":  2646169,
+                      "availableNutrientCount":  19,
+                      "missingNutrientCount":  25,
+                      "explicitZeroCount":  1
+                  },
+                  {
+                      "foodId":  "food_tuna_yellowfin_raw",
+                      "fdcId":  175159,
+                      "availableNutrientCount":  40,
+                      "missingNutrientCount":  4,
+                      "explicitZeroCount":  6
+                  },
+                  {
+                      "foodId":  "food_salmon_atlantic_farmed_raw",
+                      "fdcId":  2684441,
+                      "availableNutrientCount":  21,
+                      "missingNutrientCount":  23,
+                      "explicitZeroCount":  2
+                  },
+                  {
+                      "foodId":  "food_milk_whole",
+                      "fdcId":  746782,
+                      "availableNutrientCount":  34,
+                      "missingNutrientCount":  10,
+                      "explicitZeroCount":  3
+                  },
+                  {
+                      "foodId":  "food_greek_yogurt_plain_whole",
+                      "fdcId":  2259794,
+                      "availableNutrientCount":  25,
+                      "missingNutrientCount":  19,
+                      "explicitZeroCount":  3
+                  },
+                  {
+                      "foodId":  "food_yogurt_plain_whole",
+                      "fdcId":  2259793,
+                      "availableNutrientCount":  25,
+                      "missingNutrientCount":  19,
+                      "explicitZeroCount":  2
+                  },
+                  {
+                      "foodId":  "food_cottage_cheese_full_fat",
+                      "fdcId":  2346384,
+                      "availableNutrientCount":  24,
+                      "missingNutrientCount":  20,
+                      "explicitZeroCount":  3
+                  },
+                  {
+                      "foodId":  "food_feta_cheese",
+                      "fdcId":  2259796,
+                      "availableNutrientCount":  25,
+                      "missingNutrientCount":  19,
+                      "explicitZeroCount":  1
+                  },
+                  {
+                      "foodId":  "food_mozzarella_whole_milk",
+                      "fdcId":  170845,
+                      "availableNutrientCount":  39,
+                      "missingNutrientCount":  5,
+                      "explicitZeroCount":  5
+                  },
+                  {
+                      "foodId":  "food_rice_white_dry",
+                      "fdcId":  2512381,
+                      "availableNutrientCount":  22,
+                      "missingNutrientCount":  22,
+                      "explicitZeroCount":  1
+                  },
+                  {
+                      "foodId":  "food_rice_brown_dry",
+                      "fdcId":  2512380,
+                      "availableNutrientCount":  22,
+                      "missingNutrientCount":  22,
+                      "explicitZeroCount":  1
+                  },
+                  {
+                      "foodId":  "food_oats_rolled_dry",
+                      "fdcId":  2346396,
+                      "availableNutrientCount":  21,
+                      "missingNutrientCount":  23,
+                      "explicitZeroCount":  0
+                  },
+                  {
+                      "foodId":  "food_wheat_flour_white",
+                      "fdcId":  168936,
+                      "availableNutrientCount":  38,
+                      "missingNutrientCount":  6,
+                      "explicitZeroCount":  7
+                  },
+                  {
+                      "foodId":  "food_bread_whole_wheat",
+                      "fdcId":  172688,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  7
+                  },
+                  {
+                      "foodId":  "food_pasta_white_dry",
+                      "fdcId":  168927,
+                      "availableNutrientCount":  39,
+                      "missingNutrientCount":  5,
+                      "explicitZeroCount":  8
+                  },
+                  {
+                      "foodId":  "food_beans_pinto_boiled",
+                      "fdcId":  175200,
+                      "availableNutrientCount":  41,
+                      "missingNutrientCount":  3,
+                      "explicitZeroCount":  8
+                  },
+                  {
+                      "foodId":  "food_lentils_boiled",
+                      "fdcId":  172421,
+                      "availableNutrientCount":  40,
+                      "missingNutrientCount":  4,
+                      "explicitZeroCount":  7
+                  },
+                  {
+                      "foodId":  "food_chickpeas_boiled",
+                      "fdcId":  173757,
+                      "availableNutrientCount":  40,
+                      "missingNutrientCount":  4,
+                      "explicitZeroCount":  6
+                  },
+                  {
+                      "foodId":  "food_peas_green_boiled",
+                      "fdcId":  170420,
+                      "availableNutrientCount":  40,
+                      "missingNutrientCount":  4,
+                      "explicitZeroCount":  6
+                  },
+                  {
+                      "foodId":  "food_almond_raw",
+                      "fdcId":  2346393,
+                      "availableNutrientCount":  23,
+                      "missingNutrientCount":  21,
+                      "explicitZeroCount":  2
+                  },
+                  {
+                      "foodId":  "food_walnut_raw",
+                      "fdcId":  2346394,
+                      "availableNutrientCount":  23,
+                      "missingNutrientCount":  21,
+                      "explicitZeroCount":  1
+                  },
+                  {
+                      "foodId":  "food_olive_oil_extra_virgin",
+                      "fdcId":  748608,
+                      "availableNutrientCount":  3,
+                      "missingNutrientCount":  41,
+                      "explicitZeroCount":  0
+                  }
+              ],
+    "warnings":  [
+                     {
+                         "requestedFood":  "Sardina, sirova",
+                         "code":  "USDA_RAW_RECORD_NOT_FOUND",
+                         "message":  "Foundation/SR Legacy nema generički sirov zapis; konzervirana sardina nije korišćena kao zamena."
+                     },
+                     {
+                         "requestedFood":  "Oslić, sirov",
+                         "code":  "USDA_RAW_RECORD_NOT_FOUND",
+                         "message":  "Foundation/SR Legacy nema generički raw hake zapis; druga vrsta ribe nije korišćena kao zamena."
+                     }
+                 ]
+}

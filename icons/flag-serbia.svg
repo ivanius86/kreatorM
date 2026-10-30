@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24" role="img" aria-label="Serbia flag">
+  <defs>
+    <clipPath id="flagClip">
+      <rect width="36" height="24" rx="4" ry="4"/>
+    </clipPath>
+    <linearGradient id="flagSheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".28"/>
+      <stop offset=".42" stop-color="#ffffff" stop-opacity=".05"/>
+      <stop offset="1" stop-color="#000000" stop-opacity=".12"/>
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#flagClip)">
+    <rect width="36" height="8" fill="#C7363D"/>
+    <rect y="8" width="36" height="8" fill="#0C4077"/>
+    <rect y="16" width="36" height="8" fill="#FFFFFF"/>
+    <rect width="36" height="24" fill="url(#flagSheen)"/>
+  </g>
+  <rect x=".5" y=".5" width="35" height="23" rx="3.5" ry="3.5" fill="none" stroke="rgba(255,255,255,.58)"/>
+</svg>

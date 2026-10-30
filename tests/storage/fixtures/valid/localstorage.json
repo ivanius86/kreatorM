@@ -1,0 +1,7 @@
+{
+  "sources": {
+    "mentor_language": "sr",
+    "mentor_brainstorming_ideas": "[{\"id\":\"fixture-idea-1\",\"title\":\"Anonimna ideja\",\"status\":\"seed\",\"updatedAt\":\"2026-01-01T00:00:00.000Z\"}]",
+    "mentorFinanceAssetsV1": "{\"assets\":[],\"debts\":[],\"savedAt\":\"2026-01-01T00:00:00.000Z\"}"
+  }
+}

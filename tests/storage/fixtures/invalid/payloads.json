@@ -1,0 +1,5 @@
+{
+  "invalidJson": "{\"broken\":",
+  "invalidFoodEnvelope": "{\"version\":1,\"userFoods\":[]}",
+  "invalidLanguage": "de"
+}

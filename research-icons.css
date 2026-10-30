@@ -1,0 +1,7 @@
+.research-external-icon,
+.research-external-tabler-icon {
+  display: block;
+  background: currentColor;
+  mask: var(--icon-url, var(--tabler-icon-url)) center / contain no-repeat;
+  -webkit-mask: var(--icon-url, var(--tabler-icon-url)) center / contain no-repeat;
+}

@@ -1,0 +1,17 @@
+{
+  "sourceDatabase": "mentor_nutrition_images",
+  "sourceStore": "foodImages",
+  "recordCount": 1,
+  "records": [
+    {
+      "id": "food-image:fixture-food-1",
+      "entityType": "food",
+      "entityId": "fixture-food-1",
+      "blob": {
+        "path": "media/food-image_3Afixture-food-1-blob",
+        "byteSize": 4,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  ]
+}

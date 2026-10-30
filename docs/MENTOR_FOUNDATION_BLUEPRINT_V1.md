@@ -2,15 +2,11 @@
 
 ## 0. Važna napomena za Codex
 
-Ovo nije zadatak da se odmah kodira cela aplikacija.
+Ovo je arhitektonski blueprint za postepeni razvoj postojeće Mentor aplikacije u vanilla JavaScript-u. Nije zadatak da se aplikacija gradi ponovo.
 
-Ovo je arhitektonski blueprint za novi React sistem.
+Postojeća aplikacija, njeni funkcionalni moduli, Data Layer, IndexedDB/repositories i lazy loading ostaju osnova MVP-a. React nije obavezna faza: može se razmotriti kasnije samo ako konkretna potreba opravda promenu prezentacionog sloja, uz očuvanje domena i korisničkih podataka.
 
-Cilj nije direktna 1:1 migracija starog vanilla JS website-a u React.
-
-Cilj je da se postojeći vanilla website koristi kao analitička baza/specifikacija, a da se novi React sistem gradi od početka, korak po korak, sa čistom arhitekturom.
-
-Stari vanilla website treba koristiti kao izvor znanja:
+Postojeći fajlovi su aktivni delovi aplikacije i polazne tačke za ograničena poboljšanja:
 
 * `index.html` kao mapa postojećih ekrana i UI sekcija
 * `script.js` kao izvor goal builder i navigation logike
@@ -18,18 +14,12 @@ Stari vanilla website treba koristiti kao izvor znanja:
 * `research.js` kao izvor research/reference/test modela
 * `finansije.js` kao izvor finance modela, calculation logike i comparison koncepta
 * `kalendar.js` kao izvor calendar/goal scheduling logike
-* `storageService.js` kao izvor legacy storage i migration logike
-* `js/i18n/*` kao osnova za novi language sistem
+* `lazyLoader.js` kao postojeći mehanizam učitavanja modula po potrebi
+* `js/data/*` kao postojeći Data Layer, sa repositories, IndexedDB/Dexie, kompatibilnošću, migracijom i backupom
+* `storageService.js` kao postojeća kompatibilnost sa starijim skladištem
+* `js/i18n/*` kao postojeći jezički sistem
 
-Ne kopirati slepo stari kod.
-
-Ne prebacivati veliki `index.html` u React.
-
-Ne prebacivati `innerHTML` render logiku.
-
-Ne prenositi globalni `window.*` model kao osnovu novog sistema.
-
-Novi sistem treba da bude React-first, state-first, modularan, local-first u MVP-u, ali spreman za ozbiljan backend i premium cloud save kasnije.
+Razvijati module inkrementalno. Zadržati korisne granice između poslovne logike, podataka, stanja i prikaza; postojeće globalne i `innerHTML` obrasce poboljšavati samo u okviru potrebnih MVP izmena. Ne započinjati React migraciju niti paralelnu aplikaciju. Sistem ostaje modularan i local-first, sa mogućnošću kasnijeg backend-a i premium cloud save-a.
 
 ---
 
@@ -312,7 +302,7 @@ U MVP-u ne mora da postoji aktivna naplata, ali architecture layer treba da bude
 
 MVP verzija treba da zadrži trenutni theme style koji je već napravljen u postojećoj aplikaciji.
 
-Cilj MVP-a nije kompletan redesign, već stabilna React arhitektura.
+Cilj MVP-a je završetak funkcionalnih modula i stabilizacija postojeće aplikacije, bez redesign-a.
 
 MVP tema:
 
@@ -353,21 +343,49 @@ Primeri:
 * student mode
 * entrepreneur mode
 
-## 7.3 Theme-ready MVP
+## 7.3 Redosled i granica rada
 
-Iako MVP ima samo jednu temu, UI mora biti theme-ready.
+Implementacija sistema tema čeka završetak i stabilizaciju MVP funkcija. Tokom novih MVP izmena koristiti stabilne ID-jeve panela ili semantičke `data-panel` / `data-action` atribute. Poslovna logika, sačuvani podaci i i18n ključevi ne smeju zavisiti od izgleda, veličine, položaja ili DOM redosleda panela. Postojeće zavisnosti su evidentirane u `docs/THEME_READINESS_BACKLOG.md`; nema širokog pripremnog refaktorisanja sada.
 
-To znači koristiti design tokens gde je moguće:
+## 7.4 Theme Engine Architecture — plan posle MVP stabilizacije
 
-* colors
-* typography
-* spacing
-* radius
-* shadows
-* layout density
-* component variants
+```text
+MENTOR APPLICATION
+        |
+     APP CORE
+        |
+   THEME ENGINE
+        |
+   THEME REGISTRY
+        |
+   THEME ADAPTER
+        |
+    LAYOUT SLOTS
+        |
+   THEME PACKAGES
+        |
+  STOIC | MILITARY | MINIMAL
+```
 
-Ne hardkodovati sve direktno u komponente tako da kasnije tema bude nemoguća.
+Ovo je ciljna zavisnost prezentacionog sloja, ne novi tok poslovnih podataka. Postojeći dizajn postaje prva potpuno funkcionalna podrazumevana Theme Package konfiguracija; Stoic, Military i Minimal su primeri budućih paketa, ne obaveza MVP-a.
+
+**Theme Engine** je jedino mesto za aktivaciju, promenu i upravljanje temama. Promena teme treba da se desi bez osvežavanja aplikacije i bez ponovnog učitavanja domenskih podataka kada nisu promenjeni. Engine selektivno ažurira tokene, layout i prikaz, uz minimalne DOM izmene; čuva aktivnu stranicu, stanje modula, fokus, tekst u toku uređivanja, scroll i korisničke interakcije. Ne sme nepotrebno ponovo inicijalizovati module ili praviti duple listenere.
+
+**Theme Registry** čuva identifikatore, verzije, manifest, kompatibilnost i konfiguracije dostupnih paketa. Neuspešno ili nekompatibilno učitavanje vraća postojeću podrazumevanu temu bez gubitka stanja. Registry ne čuva poslovne podatke.
+
+**Theme Adapter** povezuje postojeće funkcionalne module sa prikazom izabrane teme. Brainstorming, Research, Goals, Finance, Calendar i Journal dele istu poslovnu logiku, stanje i Data Layer u svim temama. Adapter izlaže stabilne identitete panela i akcija, mere prikaza i ograničene lifecycle pozive; tema ne menja IndexedDB direktno, ne uvodi sopstveno čuvanje i ne kopira poslovnu logiku.
+
+**Layout Slots** su imenovane pozicije: Header, Sidebar, Navigation, Main Content, Secondary Panel, Dashboard Widgets i Floating Actions. Tema može promeniti raspored i navigacioni prikaz kroz slotove bez promene poslovnih operacija. Vizuelni redosled mora ostati usklađen sa redosledom tastature i čitača ekrana. Modul zadržava vlasništvo nad svojim interaktivnim čvorovima; pri premeštanju ili zameni slot mora sačuvati ili pravilno vratiti stanje i fokus.
+
+**Theme Package** zasebno definiše design tokens, tipografiju, boje, ikonografiju, raspored panela, navigacioni prikaz, stil komponenti, animacije i vizuelno ponašanje. Paketi mogu menjati iskustvo i raspored, ne samo CSS. Definišu desktop, tablet i mobile varijante i lokalni fallback za obavezne vizuelne resurse. Izgled mentora/persona može imati zaseban identitet i ugovor da promena teme ne prepiše korisnikov izbor.
+
+Paketi se učitavaju po potrebi i keširaju po ID-u/verziji. Engine primenjuje samo potrebne izmene i predviđa lifecycle hooks za aktivaciju i deaktivaciju, uključujući cleanup event listener-a, observer-a, timera i animacija. Ako se komponenta zameni, njen prethodni lifecycle mora se završiti pre nove inicijalizacije; ako se samo premesti, ne sme se bez potrebe rekreirati. Promena teme ne sme izazvati nepotrebne refresh-e, reset canvas koordinata ili gubitak korisničkog stanja.
+
+Podešavanje aktivne teme, kada se uvede, prolazi kroz postojeći settings repository i backup/migration ugovore. Tema nema sopstveni storage sistem. Theme Marketplace, premium pristup i naplata ostaju kasnije faze.
+
+## 7.5 Odluke za potvrdu pre implementacije
+
+Pre Faze 3 treba potvrditi: granice između Theme Package, layout konfiguracije i izgleda mentora; format i kompatibilnost manifesta; tačan settings/backup ugovor za aktivnu temu; koje promene canvas geometrije podržava Theme Adapter; pravila za lokalne/offline resurse; i minimalni skup responsive layout-a. Ove odluke ne blokiraju završavanje MVP funkcija po pravilima iz §7.3.
 
 ---
 
@@ -419,7 +437,7 @@ Dovoljno je:
 * izbor dostupnih widgeta
 * quick action button
 
-Predloženi model:
+Konceptualni raspored widgeta (nije trenutna storage šema):
 
 ```js
 dashboardLayout = {
@@ -427,17 +445,17 @@ dashboardLayout = {
   layoutId: "default",
   widgets: [
     {
-      slotId: "top-left",
+      slotId: "primary-summary",
       widgetId: "goal-progress",
       size: "medium"
     },
     {
-      slotId: "top-right",
+      slotId: "finance-summary",
       widgetId: "finance-summary",
       size: "medium"
     },
     {
-      slotId: "bottom-left",
+      slotId: "recent-activity",
       widgetId: "mini-transactions",
       size: "large"
     }
@@ -455,15 +473,15 @@ Dashboard
   -> QuickActionMenu
 ```
 
+`slotId` označava ulogu sadržaja, ne koordinate. Buduća tema određuje gde će se slot prikazati, a widget zadržava isti identitet i izvor podataka.
+
 ---
 
 # 9. Backend / Storage Strategy
 
 ## 9.1 MVP storage
 
-MVP treba da bude local-first.
-
-To znači da aplikacija u početku čuva podatke lokalno na korisnikovom uređaju/browseru.
+MVP ostaje local-first. Postojeći Data Layer u `js/data/*` već ima repositories, Dexie/IndexedDB bazu, lokalne adaptere, migraciju, backup i kompatibilnost sa starijim `localStorage` podacima. Ne uklanjati ih niti uvoditi paralelno skladište. Izbor aktivnog repository-ja zavisi od postojećeg data bootstrap-a i migracionog stanja.
 
 Ali arhitektura mora od početka biti pripremljena za ozbiljan backend.
 
@@ -477,23 +495,21 @@ Dugoročno:
 
 ## 9.2 Data access pravilo
 
-React komponente nikada ne smeju direktno koristiti `localStorage`.
-
-Komponente treba da koriste repository layer.
+UI moduli ne smeju direktno menjati `localStorage` ili IndexedDB mimo postojećeg Data Layer-a. Koriste odgovarajući repository/service; postojeći legacy pristup se uklanja samo kroz zasebnu, proverenu migraciju.
 
 Pravilo:
 
 ```text
-Component -> Repository -> Storage Adapter
+UI / Feature -> Domain Service / Repository -> aktivni Storage Adapter
 ```
 
 Primer:
 
 ```text
-GoalBuilderPage
+Goals modul
   -> goalsRepository
-    -> localStorageAdapter za MVP/free/local
-    -> cloudStorageAdapter za premium cloud save kasnije
+    -> postojeći lokalni adapter (IndexedDB ili kompatibilni localStorage tok)
+    -> cloud adapter tek kada se uvede backend
 ```
 
 Za budući backend odmah predvideti polja:
@@ -524,7 +540,7 @@ Jedini deo koji korisnik može personalizovati je Dashboard, gde može koristiti
 
 Kasnije se može razmatrati više workspace-a, ali to nije deo MVP-a niti prvih update-a.
 
-Predloženi model:
+Konceptualni model budućih veza (nije zahtev za izmenu postojeće storage šeme):
 
 ```text
 User
@@ -572,7 +588,7 @@ Ideja je radni objekat koji korisnik može:
 * sprovesti u akciju
 * pratiti kroz ostvarenje
 
-Predloženi model:
+Konceptualni model ideje (nije trenutna storage šema):
 
 ```js
 idea = {
@@ -616,7 +632,7 @@ idea = {
 
 ## 10.3 Workspace structure
 
-Predložena glavna struktura:
+Konceptualna glavna struktura (nije zamena za postojeću IndexedDB šemu ili repositories):
 
 ```js
 mentorDatabase = {
@@ -648,7 +664,7 @@ mentorDatabase = {
 
 # 11. Layer Architecture
 
-Novi React sistem treba da ima jasne layere.
+Postojeća aplikacija se dalje razvija kroz jasne slojeve. Granice su logičke i ne zahtevaju novu aplikaciju ili masovno premeštanje fajlova.
 
 ## 11.1 Domain Layer
 
@@ -683,14 +699,13 @@ Data layer zna kako se podaci čuvaju, učitavaju, validiraju i migriraju.
 
 Data layer treba da sadrži:
 
-* local database
-* repositories
-* storage adapters
-* migration service
+* postojeću Dexie/IndexedDB bazu i kompatibilni localStorage adapter
+* postojeće repositories i servise
+* migraciju, validaciju i oporavak
 * backup/export/import
-* schema versioning
+* verzionisanje šeme
 
-Komponente ne smeju direktno čitati/pisati `localStorage`.
+UI ne sme da zaobilazi aktivni repository direktnim upisom u storage.
 
 ## 11.3 App State Layer
 
@@ -700,17 +715,17 @@ App state layer kontroliše:
 * aktivni jezik
 * aktivnu stranicu/rutu
 * otvorene modale
-* dashboard layout
+* dashboard layout i buduću aktivnu temu
 * session UI state
 * user settings
 
 Globalni state treba koristiti oprezno.
 
-Domain data treba držati kroz repositories i feature hooks.
+Domenske podatke držati kroz repositories i servise modula. UI state čuvati na mestu čiji lifecycle odgovara prikazu, bez nepotrebnog globalnog stanja.
 
 ## 11.4 UI Component Layer
 
-Reusable UI komponente:
+Ponovo upotrebljivi UI obrasci/kontrole, postojeći ili budući:
 
 * Button
 * Card
@@ -727,23 +742,11 @@ Reusable UI komponente:
 * DataTable
 * FormField
 
-UI komponente ne treba da znaju business logic.
+UI kontrole ne treba da sadrže poslovnu logiku. U vanilla JS-u DOM je legitimni prezentacioni mehanizam, uz selektivne izmene, stabilne identitete i cleanup handlera. Tekstualni input, textarea, select i contenteditable ostaju terminalni ciljevi događaja; interakcija sa njima ne pokreće parent selekciju, navigaciju ili rerender.
 
 ## 11.5 Theme Layer
 
-Theme layer kontroliše:
-
-* colors
-* typography
-* spacing
-* radius
-* shadows
-* density
-* component variants
-
-MVP koristi jednu default temu.
-
-Theme system treba biti spreman za buduće premium teme.
+MVP koristi postojeći vizuelni stil. Budući Theme Engine iz §7 upravlja paketima, layout slotovima i lifecycle-om prikaza; boje i tokeni su samo deo tog ugovora. Tema nikada nije vlasnik poslovne logike ili podataka.
 
 ## 11.6 Feature Layer
 
@@ -758,14 +761,7 @@ Feature layer sadrži glavne module:
 * calendar
 * settings
 
-Svaki feature treba imati svoje:
-
-* components
-* hooks
-* services
-* utils
-* constants
-* tabs ako je potrebno
+Svaki feature može imati svoje UI kontrole, lokalno stanje, servise, pomoćne funkcije, konstante i tabove kada su potrebni. Nema zahteva za React hooks ili paralelno prepisivanje već funkcionalnih modula.
 
 ## 11.7 Product / Entitlement Layer
 
@@ -801,7 +797,7 @@ U MVP-u ovaj layer može biti minimalan.
 
 # 12. Language / I18N Architecture
 
-Aplikacija mora od početka imati jasan language system.
+Aplikacija već koristi jezički sistem u `js/i18n/*`, sa sr/en rečnicima i `provider.js`. Njega razvijati inkrementalno, bez paralelnog providera.
 
 Podržani jezici:
 
@@ -810,227 +806,56 @@ Podržani jezici:
 
 Pravila:
 
-* Sav UI tekst u React komponentama ide kroz `t()` funkciju.
-* Ne hardkodovati UI tekst direktno u komponentama.
+* Sav novi UI tekst ide kroz postojeći prevodilački API (`t()` / postojeći i18n binding).
+* Ne hardkodovati UI tekst direktno u modulima.
 * Aktivni jezik ima jedan izvor istine.
 * Language mora biti deo settings-a.
 * Language mora biti spreman za per-user settings kasnije.
 * Fallback mora biti dosledan.
-* Stari `data-i18n` sistem ne treba prenositi kao osnovu React sistema.
+* Sačuvati postojeći `data-i18n` tamo gde radi; nove kontrole povezati semantičkim ključevima, bez pozicionih selektora.
 
-Predložena struktura:
+Postojeća osnova:
 
 ```text
-src/shared/i18n/
-  I18nProvider.jsx
-  useI18n.js
-  translations/
-    sr/
-      common.js
-      dashboard.js
-      goals.js
-      brainstorming.js
-      research.js
-      finance.js
-      journal.js
-      calendar.js
-      settings.js
-    en/
-      common.js
-      dashboard.js
-      goals.js
-      brainstorming.js
-      research.js
-      finance.js
-      journal.js
-      calendar.js
-      settings.js
+js/i18n/
+  provider.js
+  sr-core.js
+  sr-builder-calendar.js
+  sr-brainstorming-research.js
+  sr-finance.js
+  en-core.js
+  en-builder-calendar.js
+  en-brainstorming-research.js
+  en-finance.js
 ```
 
-Primer upotrebe:
-
-```jsx
-const { t, language, setLanguage } = useI18n();
-
-<h1>{t("dashboard.title")}</h1>
-```
-
-Za MVP, language provider može koristiti settingsRepository.
-
-Ne koristiti direktan `localStorage` u komponentama.
+Aktivni jezik prolazi kroz postojeći settings repository i i18n provider. Tema menja prikaz prevedenog teksta, ne prevode ili jezičko stanje. UI ne pristupa direktno skladištu radi promene jezika.
 
 ---
 
-# 13. React Folder Structure
+# 13. Existing Structure and Planned Boundaries
 
-Predložena osnovna struktura:
+Postojeća implementacija je vanilla JavaScript aplikacija. Ova mapa opisuje aktivne ulazne tačke; nije nalog za novu strukturu foldera ili React aplikaciju.
 
 ```text
-src/
-  app/
-    App.jsx
-    AppShell.jsx
-    routes.jsx
-    appConfig.js
-
-  providers/
-    AppProviders.jsx
-
-  shared/
-    ui/
-      Button.jsx
-      Card.jsx
-      Modal.jsx
-      EmptyState.jsx
-      Tabs.jsx
-      Input.jsx
-      Select.jsx
-      Textarea.jsx
-      PageContainer.jsx
-      SectionHeader.jsx
-      WidgetCard.jsx
-      StatCard.jsx
-
-    i18n/
-      I18nProvider.jsx
-      useI18n.js
-      translations/
-        sr/
-        en/
-
-    storage/
-      localDatabase.js
-      storageAdapters/
-        localStorageAdapter.js
-        cloudStorageAdapter.js
-      repositories/
-        settingsRepository.js
-        workspaceRepository.js
-        dashboardRepository.js
-        ideasRepository.js
-        goalsRepository.js
-        financeRepository.js
-        journalRepository.js
-        calendarRepository.js
-      migrationService.js
-      backupService.js
-
-    theme/
-      defaultTheme.js
-      themeTokens.js
-      ThemeProvider.jsx
-
-    utils/
-      dates.js
-      ids.js
-      formatters.js
-      validators.js
-
-  features/
-    dashboard/
-      DashboardPage.jsx
-      components/
-        DashboardGrid.jsx
-        WidgetSlot.jsx
-        WidgetPicker.jsx
-        QuickActionMenu.jsx
-      widgets/
-        GoalProgressWidget.jsx
-        FinanceSummaryWidget.jsx
-        MiniTransactionsWidget.jsx
-        IdeaOverviewWidget.jsx
-        JournalWidget.jsx
-        CalendarTodayWidget.jsx
-      services/
-        widgetRegistry.js
-
-    goals/
-      GoalsPage.jsx
-      GoalBuilderPage.jsx
-      components/
-        GoalForm.jsx
-        GoalCard.jsx
-        GoalSteps.jsx
-        GoalReview.jsx
-      hooks/
-      services/
-      constants/
-
-    brainstorming/
-      BrainstormingPage.jsx
-      components/
-        IdeaBoard.jsx
-        IdeaCard.jsx
-        IdeaModal.jsx
-        IdeaTabs.jsx
-      tabs/
-        IdeasTab.jsx
-        ResearchTab.jsx
-        RealizationTab.jsx
-      services/
-        ideaService.js
-        ideaStatusService.js
-
-    research/
-      ResearchView.jsx
-      components/
-        ResearchPanel.jsx
-        ReferenceList.jsx
-        ReferenceCard.jsx
-        IdeaTestPanel.jsx
-        ResearchNotes.jsx
-      services/
-        researchService.js
-        referenceService.js
-        ideaTestService.js
-
-    finance/
-      FinancePage.jsx
-      tabs/
-        FinanceOverviewTab.jsx
-        TransactionsTab.jsx
-        BudgetTab.jsx
-        FinancialComparisonTab.jsx
-        AssetsTab.jsx
-      components/
-        TransactionForm.jsx
-        TransactionList.jsx
-        BudgetPanel.jsx
-        FinanceSummary.jsx
-      services/
-        financeCalculations.js
-        financialComparisonService.js
-
-    journal/
-      JournalPage.jsx
-      components/
-        JournalEntryForm.jsx
-        JournalEntryList.jsx
-        ReflectionPanel.jsx
-        CheckInPanel.jsx
-      services/
-        journalService.js
-
-    calendar/
-      CalendarPage.jsx
-      components/
-        MonthView.jsx
-        WeekView.jsx
-        DayView.jsx
-        CalendarEventForm.jsx
-        CalendarToolbar.jsx
-      services/
-        calendarService.js
-        schedulingService.js
-
-    settings/
-      SettingsPage.jsx
-      components/
-        LanguageSettings.jsx
-        BackupControls.jsx
-        DatabaseViewer.jsx
-        StorageSettings.jsx
+index.html                 ekrani, semantički paneli i skripte
+style.css                  postojeći vizuelni stil
+script.js                  App Core, navigacija i glavni UI
+lazyLoader.js              učitavanje funkcionalnih modula po potrebi
+brainstorming.js           ideje i board
+research.js, js/research/  istraživanje i research canvas
+kalendar.js                kalendar i planiranje
+finansije.js               finansije i poređenja
+financeDashboard.js        finansijski pregled
+js/nutrition/              ishrana
+js/data/                   repositories, adapteri, IndexedDB, migracija, backup
+storageService.js          kompatibilnost sa starijim skladištem
+js/i18n/                   sr/en rečnici i jezički provider
 ```
+
+Logičke granice za dalje širenje su App Core, funkcionalni moduli, Domain Services, Data Layer, i18n i prezentacioni sloj. Novi moduli koriste postojeće repositories i lazy loading; ne vezuju poslovne operacije za izgled, dimenzije, poziciju ili DOM redosled panela. Kontrole i paneli dobijaju stabilne ID-jeve ili semantičke `data-panel` / `data-action` identitete. Postojeći funkcionalni kod se ne premešta samo radi ove mape.
+
+Planirani, odloženi sloj tema može se kasnije organizovati kao Theme Engine, Theme Registry, Theme Adapter, Layout Slots i zasebni Theme Packages. To je granica odgovornosti, ne trenutno stanje repozitorijuma. React, ako ikada bude opravdan, ostaje opciona tehnologija prezentacionog sloja i ne menja ove ugovore.
 
 ---
 
@@ -1040,19 +865,20 @@ Svaki feature treba da bude samostalan koliko je moguće.
 
 Feature može koristiti:
 
-* shared UI components
-* shared repositories
-* shared i18n
-* shared utilities
-* shared theme tokens
+* zajedničke UI kontrole i semantičke panel/action identitete
+* postojeće repositories i domenske servise
+* postojeći i18n i pomoćne funkcije
+* prezentacione tokene kada se uvedu
 
 Feature ne sme:
 
-* direktno koristiti `localStorage`
-* manipulisati DOM direktno
-* zavisiti od globalnih `window.*` API-ja
+* direktno zaobilaziti Data Layer radi upisa u `localStorage` ili IndexedDB
+* vezati poslovne operacije za CSS klase, dimenzije, pozicije, DOM redosled ili izabranu temu
+* nepotrebno rekreirati kontrolu, izgubiti fokus ili prekinuti unos pri promeni prikaza
 * sadržati hardkodovan UI tekst
 * držati nepovezane module u istom fajlu
+
+U postojećem vanilla JS-u DOM događaji su deo UI sloja. Nove kontrole treba da imaju jasno vlasništvo nad listenerima, idempotentnu inicijalizaciju ili cleanup pri uklanjanju, i da koriste zaštitu za događaje iz tekstualnih polja. Globalni handleri se vezuju za stvarnu interaktivnu kontrolu, ne za široke selektore. Theme Adapter kasnije koristi ove granice bez menjanja poslovne logike.
 
 ---
 
@@ -1072,7 +898,7 @@ Dashboard ne treba da sadrži kompletnu logiku svih modula.
 
 Dashboard čita podatke preko repositories/services.
 
-Widgeti treba da budu registrovani kroz widget registry.
+Widgeti treba da budu registrovani kroz widget registry. Njihov stabilni ID i izvor podataka nezavisni su od prikaza i pozicije u temi.
 
 Primer:
 
@@ -1081,21 +907,21 @@ widgetRegistry = {
   "goal-progress": {
     id: "goal-progress",
     titleKey: "dashboard.widgets.goalProgress.title",
-    component: GoalProgressWidget,
+    viewId: "goal-progress",
     requiredFeature: "goals",
     premium: false
   },
   "finance-summary": {
     id: "finance-summary",
     titleKey: "dashboard.widgets.financeSummary.title",
-    component: FinanceSummaryWidget,
+    viewId: "finance-summary",
     requiredFeature: "finance",
     premium: false
   },
   "mini-transactions": {
     id: "mini-transactions",
     titleKey: "dashboard.widgets.miniTransactions.title",
-    component: MiniTransactionsWidget,
+    viewId: "mini-transactions",
     requiredFeature: "finance",
     premium: false
   }
@@ -1155,7 +981,7 @@ Brainstorming modul treba da ima osnovne tabove:
 
 Idea je centralni objekat.
 
-Brainstorming MVP treba da podrži:
+Brainstorming dalje treba da očuva i stabilizuje:
 
 * kreiranje ideje
 * listu/board ideja
@@ -1164,9 +990,7 @@ Brainstorming MVP treba da podrži:
 * povezivanje sa research tabom
 * povezivanje sa realization/plan tabom
 
-Ne mora odmah imati kompleksan drag-and-drop board.
-
-Drag-and-drop može biti kasniji enhancement.
+Postojeći board i drag-and-drop su funkcionalni delovi aplikacije; tema sme promeniti okvir i raspored, ali ne njihove koordinate, interakcije ili sačuvane ideje. Geometrijske zavisnosti razrešavati ciljano kada se uvode drugačiji layout-i.
 
 ---
 
@@ -1183,16 +1007,14 @@ Research treba da podrži:
 * linked finance comparison
 * future forecasting/prediction
 
-MVP može imati basic research:
+Osnovni research tok obuhvata:
 
 * dodaj reference
 * dodaj belešku
 * dodaj test ideje
 * prikaži research status
 
-Ne prebacivati direktno stari `renderResearchView()` kao HTML string.
-
-React research treba da bude komponentni model.
+Postojeći `research.js` i `js/research/*` ostaju izvor funkcionalnosti. Pri budućem razdvajanju prikaza od domenskih operacija ne duplirati research model niti prepisivati modul radi teme; čuvati canvas stanje i event lifecycle.
 
 ---
 
@@ -1200,9 +1022,7 @@ React research treba da bude komponentni model.
 
 Finance je najrizičniji modul.
 
-Ne migrirati stari `finansije.js` direktno.
-
-Koristiti ga kao izvor:
+Postojeći `finansije.js` i `financeDashboard.js` ostaju aktivni moduli. Njihova poslovna logika i podaci se čuvaju; granice se poboljšavaju postepeno. Koristiti postojeći kod kao izvor:
 
 * data modela
 * calculation logike
@@ -1228,7 +1048,7 @@ Advanced za kasnije:
 * financial comparison snapshots
 * research cache integration
 
-Finance treba podeliti na podmodule:
+Kada je opravdano održavanjem, finance logika može se postepeno organizovati u podmodule:
 
 ```text
 finance/
@@ -1326,13 +1146,13 @@ Backup je kritičan jer MVP koristi local-first storage.
 
 Settings treba da koristi repository/backup service.
 
-Ne direktan `localStorage` iz komponente.
+Bez direktnog zaobilaženja aktivnog repository-ja iz UI-a.
 
 ---
 
 # 23. Repository Layer
 
-Predloženi repositories:
+Postojeći Data Layer već sadrži repositories za settings, goals, calendar, ideas, finance, assets, comparisons, nutrition i media. Sledeće su konceptualne domenske granice, uključujući buduće workspace, dashboard i journal repositories kada njihovi moduli to budu zahtevali:
 
 ```text
 settingsRepository
@@ -1372,28 +1192,22 @@ calendarRepository.getEvents();
 calendarRepository.saveEvent(event);
 ```
 
-Komponente koriste repositories, ne storage adaptere direktno.
+UI/feature moduli koriste postojeće repositories ili servise, ne adaptere direktno. Primeri API-ja iznad su ciljni ugovori, ne tvrdnja da svaka metoda već postoji.
 
 ---
 
 # 24. Storage Adapter Strategy
 
-U MVP-u koristi se local storage adapter.
-
-Kasnije može postojati cloud adapter.
+MVP koristi postojeći local-first Data Layer. Dexie/IndexedDB i repositories su implementirani, uz localStorage kompatibilnost i migracioni tok; aktivan adapter određuje postojeći bootstrap. Cloud adapter je moguć tek kasnije.
 
 ```text
 repositories/
   -> storageAdapter
-    -> localStorageAdapter
+    -> IndexedDB/Dexie adapter ili postojeći kompatibilni localStorage adapter
     -> cloudStorageAdapter kasnije
 ```
 
-Primer:
-
-```js
-const storageAdapter = getStorageAdapter(user.planType, user.storageMode);
-```
+Aktivni adapter bira postojeći data bootstrap, ne Theme Engine ili UI kontrola. Novi izbor skladišta zahteva zasebnu proveru migracije i oporavka.
 
 Za MVP:
 
@@ -1411,7 +1225,7 @@ storageMode = "cloud";
 
 # 25. Backup / Migration Strategy
 
-Pošto postoji stari vanilla website sa legacy localStorage ključevima, ne dirati stare podatke bez backup-a.
+Postojeća aplikacija ima legacy localStorage ključeve i implementirane migracione, recovery i backup servise. Ne dirati korisničke podatke ili strukturu bez zasebnog plana, backup-a i provere migracije.
 
 Legacy ključevi koje treba paziti:
 
@@ -1426,103 +1240,43 @@ Legacy ključevi koje treba paziti:
 * `mentor_language`
 * `mentorPlanner.language`
 
-Prvo napraviti backup/export.
+Postojeći alati već pokrivaju čitanje, normalizaciju, migraciju, verifikaciju, export/import i oporavak. Nove domene ili polja dodavati kroz postojeće ugovore, uz roundtrip proveru backup/restore i očuvanje legacy podataka prema važećoj migracionoj politici.
 
-Tek kasnije napraviti import/migration tool koji može:
-
-1. pročitati legacy podatke
-2. transformisati ih u novi React data model
-3. sačuvati ih u novu lokalnu bazu
-4. ostaviti legacy podatke netaknute kao backup
-
-Ne migrirati UI i storage shape istovremeno za isti modul.
+Ne menjati UI i storage šemu istovremeno za isti modul bez zasebnog, proverljivog koraka. Theme Engine koristi settings repository; tema ne dodaje paralelni storage oblik.
 
 ---
 
 # 26. Recommended Build Order
 
-Predloženi redosled rada:
+Ovo je redosled evolucije postojeće aplikacije, ne plan za novu aplikaciju. Svaka faza zadržava radne module i korisničke podatke. Arhitektonsku spremnost za teme održavati kroz pravila §7 i §14, bez implementacije Theme Engine-a pre stabilizacije MVP-a.
 
-## Faza 1 — Foundation
+## Faza 1 — Završiti postojeće funkcionalne module
 
-* React AppShell
-* Routing/view system
-* default layout
-* Sidebar
-* PageContainer
-* shared UI components
-* LanguageProvider
-* Theme tokens za default temu
-* Repository layer
-* Local storage adapter
-* Backup/export/import osnova
+Dovršiti i povezati Dashboard, Goals, Brainstorming, Research, Finance, Calendar, Journal, Settings i ostale postojeće MVP tokove prema stvarnom stanju svakog modula. Ne praviti placeholder zamene za funkcionalne ekrane. Sačuvati i18n, backup i postojeći Data Layer.
 
-## Faza 2 — Dashboard shell
+## Faza 2 — Stabilizovati App Core, navigaciju i Data Layer
 
-* DashboardPage
-* WidgetRegistry
-* WidgetSlot
-* osnovni widgeti
-* replace widget opcija
-* QuickActionMenu
+Otkloniti konkretne bugove, duple inicijalizacije i nepotrebne rerendere. Proveriti repository granice, IndexedDB migraciju/oporavak, backup/restore, integritet podataka i lazy loading. Novi moduli moraju biti nezavisni od pozicije panela i teme.
 
-## Faza 3 — Goals Creator
+## Faza 3 — Uvesti osnovni Theme Engine i Theme Registry
 
-* GoalBuilderPage
-* goal model
-* create/edit goal
-* goal steps
-* repository integration
+Tek posle MVP stabilizacije dodati centralni mehanizam aktivacije, manifest/verziju paketa, lazy loading, keš i siguran fallback. Aktivna tema prolazi kroz postojeći settings repository.
 
-## Faza 4 — Brainstorming basic
+## Faza 4 — Uvesti Theme Adapter i Layout Slots
 
-* create idea
-* idea list/board
-* idea detail
-* idea status
-* tabs: Ideas / Research / Realization
+Uvesti semantičke slotove i ograničene lifecycle ugovore za prikaz. Omogućiti selektivno premeštanje ili zamenu komponenti uz cleanup listener-a i animacija, očuvan fokus i stanje modula.
 
-## Faza 5 — Research basic
+## Faza 5 — Prva potpuno funkcionalna Theme Package
 
-* references
-* notes
-* idea tests
-* research status
+Upakovati postojeći dizajn kao podrazumevanu temu. Potvrditi paritet funkcija, navigacije, jezika, responsive ponašanja i korisničkih podataka pre dodavanja drugog izgleda.
 
-## Faza 6 — Journal basic
+## Faza 6 — Druga tema sa drugačijim layoutom
 
-* daily entry
-* entry list
-* check-in/reflection
+Testirati drugačiji raspored panela i navigacije na desktopu, tabletu i telefonu. Promena teme ne sme resetovati podatke, canvas, unos u toku, aktivni prikaz ili nepotrebno ponovo učitati aplikaciju.
 
-## Faza 7 — Finance basic
+## Faza 7 — Premium teme i Theme Marketplace
 
-* transactions
-* finance overview
-* budget basic
-* simple financial comparison
-
-## Faza 8 — Calendar basic
-
-* calendar view
-* events
-* link with goals/ideas
-
-## Faza 9 — Settings / backup polish
-
-* language
-* storage
-* backup
-* import/export
-* local database viewer
-
-## Faza 10 — Stabilization
-
-* performance
-* bug fixing
-* data validation
-* test users
-* UX polish
+Tek nakon stabilnih paketa i lifecycle ugovora razmatrati entitlements, premium distribuciju i marketplace. Backend/cloud ostaju zasebna kasnija odluka.
 
 ---
 
@@ -1530,90 +1284,46 @@ Predloženi redosled rada:
 
 Ne raditi:
 
-* ne prebacivati ceo vanilla website odjednom
-* ne kopirati veliki `index.html` u React
-* ne praviti jedan ogroman `App.jsx`
-* ne praviti jedan ogroman `finance.jsx`
-* ne koristiti `window.*` kao glavni state sistem
-* ne koristiti `innerHTML`
-* ne koristiti direktan `localStorage` u komponentama
-* ne hardkodovati UI tekst u komponentama
-* ne uvoditi backend pre nego što data layer bude čist
-* ne uvoditi marketplace pre MVP-a
-* ne uvoditi AI Mentor pre stabilnog core sistema
-* ne graditi theme marketplace pre default theme MVP-a
-* ne migrirati legacy finance podatke bez backup-a
+* ne započinjati React migraciju ili paralelnu aplikaciju bez zasebno potvrđene potrebe
+* ne prepisivati radne funkcionalne module radi tema
+* ne praviti monolitni App Core ili finance modul
+* ne koristiti globalni `window.*` kao jedini izvor stanja novih funkcija
+* ne vezati poslovnu logiku za CSS klase, položaj, veličinu ili redosled panela
+* ne koristiti direktan storage pristup u novom UI-u mimo Data Layer-a
+* ne hardkodovati UI tekst van i18n sistema
+* ne uvoditi backend, marketplace ili AI Mentor pre stabilnog core sistema
+* ne migrirati ili brisati korisničke podatke bez backup-a i provere
+* ne graditi Theme Engine pre MVP stabilizacije; ne graditi Theme Marketplace pre proverenih Theme Packages
 
 ---
 
-# 28. Codex Task For First Implementation Phase
+# 28. Next Documentation and Implementation Boundary
 
-Prvi zadatak za Codex treba da bude samo Foundation, ne cela aplikacija.
+Ovaj blueprint sada definiše smer, ali ne odobrava implementaciju Theme Engine-a. Neposredni rad je završavanje i stabilizacija postojećih funkcija. Za svaki novi modul ili ograničenu izmenu:
 
-Zadatak:
+1. koristiti postojeći App Core, lazy loading, i18n i Data Layer;
+2. dodeliti stabilne ID-jeve ili semantičke `data-panel` / `data-action` atribute interaktivnim delovima;
+3. odvojiti domenske operacije od prezentacije i pozicije panela;
+4. očuvati stanje, fokus, tekstualni unos i korisničke podatke;
+5. beležiti preostale theme zavisnosti u `docs/THEME_READINESS_BACKLOG.md`.
 
-Postavi React foundation za Mentor aplikaciju prema ovom blueprint-u.
-
-Ne prebacuj još stare vanilla module.
-
-Ne prebacuj finance/research/brainstorming logiku.
-
-Ne diraj legacy localStorage podatke.
-
-Napravi:
-
-1. AppShell
-2. routing/view system
-3. Sidebar
-4. placeholder stranice za glavne module
-5. LanguageProvider
-6. default translations sr/en
-7. shared UI components
-8. repository layer
-9. localStorage adapter
-10. default theme tokens
-11. basic dashboard widget architecture
-12. MIGRATION_NOTES.md
-
-Placeholder stranice:
-
-* Dashboard
-* Goals
-* Brainstorming
-* Research
-* Finance
-* Journal
-* Calendar
-* Settings
-
-Svaka placeholder stranica treba da koristi i18n `t()` funkciju, ne hardkodovan tekst.
-
-Sve komponente treba da koriste shared UI gde je moguće.
-
-Nijedna React komponenta ne sme direktno koristiti `localStorage`.
-
-Storage mora ići kroz repository layer.
+Pre Faze 3 posebno pripremiti i proveriti ugovor Theme Adapter-a, format Theme Package manifesta, settings/backup integraciju, podržane layout-e i pravila pristupačnosti. Ta priprema je dokumentacija i ciljana stabilizacija, ne široki refactoring sada.
 
 ---
 
-# 29. Success Criteria For Foundation Phase
+# 29. Success Criteria For Current Foundation
 
-Foundation faza je uspešna ako:
+Postojeća osnova je dovoljno stabilna za planirane teme kada:
 
-* aplikacija ima čist AppShell
-* navigacija između modula radi
-* LanguageProvider radi za sr/en
-* tekstovi dolaze iz translation fajlova
-* postoje placeholder stranice za module
-* postoji repository layer
-* postoji localStorage adapter
-* postoji basic backup service
-* postoje shared UI komponente
-* dashboard ima osnovni widget registry
-* QuickActionMenu postoji kao UI skeleton
-* nije diran stari vanilla website
-* nisu obrisani legacy podaci
-* struktura je spremna za modul-po-modul izgradnju
+* glavni funkcionalni moduli i navigacija rade kroz postojeći App Core;
+* nema nepotrebne ponovne inicijalizacije ili gubitka stanja pri promeni prikaza;
+* novi moduli koriste stabilne identitete panela i zajedničku poslovnu logiku;
+* sr/en prevodi prolaze kroz postojeći i18n sistem;
+* repositories, IndexedDB migracija, backup/restore i lazy loading ostaju funkcionalni;
+* korisnički podaci nisu obrisani ni preoblikovani radi prezentacije;
+* prva tema može da se definiše iz postojećeg dizajna bez kopiranja domenske logike.
+
+Ovi kriterijumi ne znače da Theme Engine već postoji. Implementacija tema počinje u Fazi 3.
 
 ---
 
