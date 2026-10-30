@@ -20,5 +20,5 @@
 ## Podaci koji nisu u Git-u
 
 - `.env`, API ključevi, `node_modules`, lokalni alati, log i privremeni smoke fajl nisu uploadovani.
-- Browser `IndexedDB` i `localStorage` nisu deo izvornog koda. Za iste lične podatke kod kuće treba zasebno izvesti backup iz aplikacije i uvesti ga na kućnom računaru. Mentor razgovori imaju zaseban export; glavni backup ih ne obuhvata. Sačuvati oba izvoza privatno.
+- Browser `IndexedDB` i `localStorage` nisu deo izvornog koda. Za iste lične podatke kod kuće treba u **Podešavanja → Backup baze podataka** izvesti backup, pa ga uvesti na kućnom računaru. Mentor panel ima zasebno dugme **Export** za razgovore; glavni backup ih ne obuhvata. Trenutno nema Mentor chat import dugmeta, pa taj export sačuvati privatno kao arhivu i referencu, ali ne očekivati automatski nastavak razgovora u kućnoj aplikaciji.
 - Ne ponavljati automatski zadatke sa statusom `executing` ili `uncertain`; prvo proveriti stvarno stanje podataka. Pending predlog zahteva novu proveru i vidljivu potvrdu.
