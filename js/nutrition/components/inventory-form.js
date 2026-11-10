@@ -36,14 +36,34 @@
     const today = todayKey();
     return {
       foodId: foodId || "", locationId: defaults.locationId, quantity: "", unit: defaults.unit,
-      packageCount: "", packageSize: "", packageUnit: defaults.unit, packageType: "package",
+      packageCount: "", packageSize: "", packageUnit: defaults.unit, packageType: null,
       purchaseDate: today, addedAt: today, expiryDate: "", openedDate: "",
       storageState: "", sourceType: "", storeId: "", storeName: "", totalPrice: "", currency: "EUR", note: "", status: "available"
     };
   }
 
   function fromBatch(batch) {
-    return { ...blank(batch.foodId), ...batch, addedAt: String(batch.addedAt || "").slice(0, 10), purchaseDate: String(batch.purchaseDate || "").slice(0, 10), expiryDate: String(batch.expiryDate || "").slice(0, 10), openedDate: String(batch.openedDate || "").slice(0, 10), packageCount: batch.packageCount ?? "", packageSize: batch.packageSize ?? "", totalPrice: batch.totalPrice ?? "" };
+    const count = Number(batch.packageCount), size = Number(batch.packageSize);
+    const intactPackage = window.MentorInventoryService.ALLOWED_PACKAGE_TYPES.includes(batch.packageType)
+      && count > 0 && size > 0 && batch.packageUnit === batch.unit
+      && Math.abs(Number(batch.quantity) - Math.round((count * size + Number.EPSILON) * 1000) / 1000) < 0.001;
+    return { ...blank(batch.foodId), ...batch,
+      quantity: intactPackage ? batch.packageCount : batch.quantity,
+      unit: intactPackage ? batch.packageType : batch.unit,
+      packageCount: intactPackage ? batch.packageCount : "",
+      packageSize: intactPackage ? batch.packageSize : "",
+      packageType: intactPackage ? batch.packageType : null,
+      addedAt: String(batch.addedAt || "").slice(0, 10), purchaseDate: String(batch.purchaseDate || "").slice(0, 10), expiryDate: String(batch.expiryDate || "").slice(0, 10), openedDate: String(batch.openedDate || "").slice(0, 10), totalPrice: batch.totalPrice ?? "" };
+  }
+
+  function packageSummary(draft) {
+    if (!window.MentorInventoryService.ALLOWED_PACKAGE_TYPES.includes(draft.unit)) return "";
+    const count = Number(String(draft.quantity || "").replace(",", "."));
+    const size = Number(String(draft.packageSize || "").replace(",", "."));
+    const total = Math.round((count * size + Number.EPSILON) * 1000) / 1000;
+    if (!(count > 0) || !(size > 0) || !(total > 0) || !Number.isFinite(total)) return "";
+    const quantity = new Intl.NumberFormat(window.MentorI18n?.locale || undefined, { maximumFractionDigits: 3 }).format(total);
+    return t("form.packageTotal", "Total: {{quantity}} {{unit}}", { quantity, unit: draft.packageUnit });
   }
 
   function open(state, id, foodId) {
@@ -62,6 +82,8 @@
 
   function render(state) {
     const form = state.inventoryForm, draft = form.draft;
+    const packaged = window.MentorInventoryService.ALLOWED_PACKAGE_TYPES.includes(draft.unit);
+    const packageTotal = packageSummary(draft);
     const allFoods = window.MentorFoodRepository.getAll().filter((food) => food.status !== "archived").sort((a, b) => foodName(a).localeCompare(foodName(b)));
     const activeSearch = String(state.inventoryFoodSearch || "").trim();
     let foods = activeSearch ? searchFoods(activeSearch) : allFoods;
@@ -81,7 +103,11 @@
             ${label(t("food", "Food"), `<select data-inventory-field="foodId" ${foodSelectSize ? `class="nutrition-inventory-food-results" size="${foodSelectSize}"` : ""} required><option value="">${esc(t("form.chooseFood", "Choose a food"))}</option>${foods.map((food) => option(food.id, foodName(food), draft.foodId)).join("")}</select>`, "foodId")}
           </fieldset>
           <div class="nutrition-inventory-form-grid"><fieldset><legend>${esc(t("form.quantitySection", "Quantity"))}</legend>
-            ${label(quantityLabel(draft.unit), input("quantity", draft.quantity, "number", 'min="0" step="any" required'), "quantity")}
+            <div class="nutrition-inventory-quantity-row">
+              ${label(quantityLabel(draft.unit), input("quantity", draft.quantity, "number", 'min="0" step="any" required'), "quantity")}
+              ${label(t("form.packageSizeWithUnit", "Contents per package ({{unit}})", { unit: draft.packageUnit || "g" }), input("packageSize", packaged ? draft.packageSize : "", "number", `min="0" step="any" ${packaged ? "required" : "disabled"}`), "packageSize")}
+            </div>
+            <small class="nutrition-inventory-package-total" data-inventory-package-total ${packageTotal ? "" : "hidden"}>${esc(packageTotal)}</small>
             ${label(t("form.unit", "Unit"), `<select data-inventory-field="unit">${unitOptions}</select>`, "unit")}
           </fieldset><fieldset><legend>${esc(t("form.storageSection", "Storage"))}</legend>
             ${label(t("location", "Location"), `<select data-inventory-field="locationId" required>${locations.map((location) => option(location.id, location.builtInKey ? t(`locations.${location.builtInKey}`, location.name) : location.name, draft.locationId)).join("")}<option value="__create__">${esc(t("createLocationOption", "+ Create new location"))}</option></select>`, "locationId")}
@@ -118,5 +144,5 @@
     return `<div class="nutrition-modal-backdrop" data-action="inventory-action-cancel"></div><section class="nutrition-simple-dialog" role="dialog" aria-modal="true"><form data-inventory-action-form novalidate><h2>${esc(title)}</h2>${notice}${control}<div><button class="nutrition-btn" type="button" data-action="inventory-action-cancel">${esc(t("form.cancel", "Cancel"))}</button><button class="nutrition-btn nutrition-btn-primary" type="submit">${esc(t("actionForm.confirm", "Confirm"))}</button></div></form></section>`;
   }
 
-  window.MentorNutritionInventoryFormUI = { open, blank, render, renderLocation, renderAction, foodName, searchFoods, quantityLabel };
+  window.MentorNutritionInventoryFormUI = { open, blank, render, renderLocation, renderAction, foodName, searchFoods, quantityLabel, packageSummary };
 })();

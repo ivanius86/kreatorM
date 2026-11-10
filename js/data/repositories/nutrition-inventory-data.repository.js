@@ -39,7 +39,9 @@
         let result;
         const write = () => controller.mutate(async () => {
           const envelope = await load();
-          result = mutator(envelope);
+          const foods = root.MentorData?.repositories?.nutritionFoodData;
+          const foodEnvelope = foods?.readEnvelope ? await foods.readEnvelope() : foods?.getEnvelope?.();
+          result = mutator(envelope, { foodEnvelope });
           if (result && typeof result.then === "function") throw new root.MentorDataError("ASYNC_DOMAIN_MUTATION", "Domain mutation must be synchronous.");
           return requireService().save(envelope);
         }).then(() => result == null ? result : JSON.parse(JSON.stringify(result)));
@@ -49,7 +51,8 @@
         return controller.mutate(() => requireService().save(envelope));
       },
       migrateLegacyIfNeeded(resolveFoodId) {
-        return controller.mutate(() => requireService().migrateLegacy(resolveFoodId));
+        const write = () => controller.mutate(() => requireService().migrateLegacy(resolveFoodId));
+        return root.navigator?.locks?.request ? root.navigator.locks.request("mentor-nutrition-create", write) : write();
       }
     };
   }

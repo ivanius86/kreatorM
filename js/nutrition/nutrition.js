@@ -19,7 +19,7 @@
 
 (function () {
   "use strict";
-  const NUTRITION_ASSET_VERSION = "20261029-plan-shopping-01";
+  const NUTRITION_ASSET_VERSION = "20261110-nutrition-phase3-01";
   const root = document.getElementById("nutritionView");
   const tabs = ["overview","foods","fridge","recipes","plan","statistics"];
   const state = window.MentorNutritionStorage.createState();
@@ -447,6 +447,8 @@
     if (state.modal.type === "confirm-inventory") return inventoryConfirmModal();
     if (state.modal.type === "recipe-form") return window.MentorNutritionPlanningForms.renderRecipe(state);
     if (state.modal.type === "meal-plan-form") return window.MentorNutritionPlanningForms.renderMeal(state);
+    if (state.modal.type === "intake-form") return window.MentorNutritionIntakeForm.render(state);
+    if (state.modal.type === "confirm-intake-remove") return `<div class="nutrition-modal-backdrop" data-action="intake-remove-cancel"></div><section class="nutrition-confirm-dialog" role="alertdialog" aria-modal="true"><h2>${C.esc(t("intake.removeTitle", "Delete recorded intake?"))}</h2><p>${C.esc(t("intake.removeText", "This does not change inventory or preparation status."))}</p><div><button class="nutrition-btn" type="button" data-action="intake-remove-cancel">${C.esc(t("intake.cancel", "Cancel"))}</button><button class="nutrition-btn nutrition-btn-danger" type="button" data-action="intake-remove-confirm">${C.esc(t("intake.remove", "Delete"))}</button></div></section>`;
     if (state.modal.type === "shopping-list") return renderShoppingModal();
     if (state.modal.type === "confirm-meal-remove") return `<div class="nutrition-modal-backdrop" data-action="meal-remove-cancel"></div><section class="nutrition-confirm-dialog" role="alertdialog" aria-modal="true"><h2>${C.esc(t("planning.removeMeal", "Remove meal?"))}</h2><div><button class="nutrition-btn" type="button" data-action="meal-remove-cancel">${C.esc(t("planning.cancel", "Cancel"))}</button><button class="nutrition-btn nutrition-btn-danger" type="button" data-action="meal-remove-confirm">${C.esc(t("planning.remove", "Remove"))}</button></div></section>`;
     return placeholderModal(state.modal);
@@ -714,36 +716,95 @@
     if (label && state.inventoryForm) label.textContent = window.MentorNutritionInventoryFormUI.quantityLabel(state.inventoryForm.draft.unit);
   }
 
+  function syncInventoryPackageFields() {
+    const draft = state.inventoryForm?.draft;
+    if (!draft) return;
+    const packaged = window.MentorInventoryService.ALLOWED_PACKAGE_TYPES.includes(draft.unit);
+    const size = root.querySelector('[data-inventory-field="packageSize"]');
+    if (size) {
+      size.disabled = !packaged; size.required = packaged;
+      const value = packaged ? String(draft.packageSize || "") : "";
+      if (size.value !== value) size.value = value;
+    }
+    const label = root.querySelector('[data-inventory-label="packageSize"]');
+    if (label) label.textContent = t("inventory.form.packageSizeWithUnit", "Contents per package ({{unit}})", { unit: draft.packageUnit || "g" });
+    const summary = root.querySelector('[data-inventory-package-total]');
+    if (summary) {
+      summary.textContent = window.MentorNutritionInventoryFormUI.packageSummary(draft);
+      summary.hidden = !summary.textContent;
+    }
+  }
+
   function selectInventoryFood(foodId) {
     const form = state.inventoryForm;
     if (!form) return;
+    const wasPackaged = window.MentorInventoryService.ALLOWED_PACKAGE_TYPES.includes(form.draft.unit);
     form.draft.foodId = foodId || "";
     if (foodId) {
       const defaults = window.MentorInventoryService.getDefaultsForFood(foodId);
       form.draft.unit = defaults.unit; form.draft.packageUnit = defaults.unit;
+      form.draft.packageCount = ""; form.draft.packageSize = ""; form.draft.packageType = null;
+      if (wasPackaged) {
+        form.draft.quantity = "";
+        const quantity = root.querySelector('[data-inventory-field="quantity"]'); if (quantity) quantity.value = "";
+      }
       if (!form.draft.locationId) form.draft.locationId = defaults.locationId;
       const unit = root.querySelector('[data-inventory-field="unit"]'); if (unit) unit.value = defaults.unit;
-      const packageUnit = root.querySelector('[data-inventory-field="packageUnit"]'); if (packageUnit) packageUnit.value = defaults.unit;
       syncInventoryQuantityLabel();
+      syncInventoryPackageFields();
     }
     validateInventoryForm();
+  }
+
+  function refreshInventoryFoodSearch() {
+    const select = root.querySelector('[data-inventory-form] select[data-inventory-field="foodId"]');
+    if (!select || !state.inventoryForm) return;
+    const foods = window.MentorNutritionInventoryFormUI.searchFoods(state.inventoryFoodSearch);
+    const activeSearch = Boolean(String(state.inventoryFoodSearch || "").trim());
+    const selectedId = state.inventoryForm.draft.foodId;
+    if (activeSearch && selectedId && !foods.some((food) => food.id === selectedId)) state.inventoryForm.draft.foodId = "";
+    const choose = document.createElement("option");
+    choose.value = "";
+    choose.textContent = t("inventory.form.chooseFood", "Choose a food");
+    select.replaceChildren(choose, ...foods.map((food) => {
+      const option = document.createElement("option");
+      option.value = food.id;
+      option.textContent = window.MentorNutritionInventoryFormUI.foodName(food);
+      return option;
+    }));
+    select.value = state.inventoryForm.draft.foodId || "";
+    if (activeSearch) {
+      select.size = Math.min(Math.max(foods.length + 1, 2), 6);
+      select.classList.add("nutrition-inventory-food-results");
+    } else {
+      select.removeAttribute("size");
+      select.classList.remove("nutrition-inventory-food-results");
+    }
   }
 
   function updateInventoryField(target) {
     const form = state.inventoryForm, field = target.dataset.inventoryField;
     if (!form || !field) return;
     if (field === "foodId") { selectInventoryFood(target.value); return; }
+    const wasPackaged = window.MentorInventoryService.ALLOWED_PACKAGE_TYPES.includes(form.draft.unit);
     form.draft[field] = target.value;
-    if (field === "unit") syncInventoryQuantityLabel();
-    if (["packageCount","packageSize","packageUnit"].includes(field)) {
-      const count = Number(form.draft.packageCount), size = Number(form.draft.packageSize);
-      if (count > 0 && size > 0) {
-        form.draft.quantity = Math.round((count * size + Number.EPSILON) * 1000) / 1000;
-        form.draft.unit = form.draft.packageUnit;
-        const quantity = root.querySelector('[data-inventory-field="quantity"]'); if (quantity) quantity.value = form.draft.quantity;
-        const unit = root.querySelector('[data-inventory-field="unit"]'); if (unit) unit.value = form.draft.unit;
+    if (field === "unit") {
+      const packaged = window.MentorInventoryService.ALLOWED_PACKAGE_TYPES.includes(target.value);
+      if (packaged !== wasPackaged) {
+        form.draft.quantity = ""; form.draft.packageCount = ""; form.draft.packageSize = "";
+        const quantity = root.querySelector('[data-inventory-field="quantity"]'); if (quantity) quantity.value = "";
       }
+      if (packaged && !wasPackaged) {
+        const defaults = window.MentorInventoryService.getDefaultsForFood(form.draft.foodId);
+        form.draft.packageUnit = window.MentorInventoryService.CONTENT_UNITS.includes(defaults.unit) ? defaults.unit : "g";
+      }
+      form.draft.packageType = packaged ? target.value : null;
+      if (!packaged) { form.draft.packageCount = ""; form.draft.packageSize = ""; }
+      syncInventoryQuantityLabel();
+      syncInventoryPackageFields();
     }
+    if (field === "quantity" && wasPackaged) form.draft.packageCount = target.value;
+    if (field === "quantity" || field === "packageSize") syncInventoryPackageFields();
     validateInventoryForm();
   }
 
@@ -1070,6 +1131,19 @@
     }
     else if (action === "meal-form-cancel") { state.mealPlanForm=null;state.modal=null;refreshModal(); }
     else if (action === "meal-form-save") { await saveMealPlanForm(); }
+    else if (action === "intake-open") {
+      try { if (window.MentorNutritionIntakeForm.open(state,target.dataset.id)) refreshModal(); }
+      catch (error) { console.error("[Nutrition] Intake form failed",error); state.notice={type:"error",text:t("intake.error","Could not save intake.")}; render(); }
+    }
+    else if (action === "intake-cancel") { if (state.intakeForm?.saving) return; state.intakeForm=null;state.modal=null;refreshModal(); }
+    else if (action === "intake-remove") { state.modal={type:"confirm-intake-remove",id:target.dataset.id};refreshModal(); }
+    else if (action === "intake-remove-cancel") { state.modal=null;refreshModal(); }
+    else if (action === "intake-remove-confirm") {
+      const mealId=state.modal?.id;
+      if (!mealId) return;
+      try { await window.MentorIntakeService.removeForMealPlanEntry(mealId);state.notice={type:"success",text:t("intake.removed","Intake deleted.")};state.modal=null;render(); }
+      catch (error) { console.error("[Nutrition] Intake remove failed",error);state.notice={type:"error",text:t("intake.error","Could not save intake.")};state.modal=null;render(); }
+    }
     else if (action === "meal-toggle") {
       try {
         const entry=window.MentorPlanningRepository.getMealPlanEntryById(target.dataset.id),done=entry?.status==="completed"||Boolean(entry?.completedAt);
@@ -1085,6 +1159,7 @@
     else if (action === "plan-day-select") { const dateKey=target.dataset.date||new Date().toISOString().slice(0,10),first=firstMealPlanEntryForDate(dateKey);state.selectedDay=Number(target.dataset.day)||0;state.selectedMealPlanEntry=first?.id||null;state.planDayTouched=true;state.planAutoFocusPending=true;render(); }
     else if (action === "select-day") { state.selectedDay = Number(target.dataset.day) || 0; render(); }
     else if (action === "period") { state.period = target.dataset.period; render(); }
+    else if (action === "statistics-mode") { state.statisticsMode = target.dataset.mode === "recorded" ? "recorded" : "plan"; render(); }
     else if (action === "modal-close") { state.modal = null; render(); }
     else if (action === "placeholder") { state.modal = { type:"placeholder" }; render(); }
     else if (action === "filter-chip") target.classList.toggle("active");
@@ -1190,18 +1265,13 @@
     if (event.target.matches("[data-plan-recipe-search]")) { state.planRecipeSearch = event.target.value; render(); }
     else if (event.target.matches("[data-inventory-food-search]")) {
       state.inventoryFoodSearch = event.target.value;
-      const matches = window.MentorNutritionInventoryFormUI.searchFoods(state.inventoryFoodSearch);
-      const activeSearch = String(state.inventoryFoodSearch || "").trim();
-      const selectedFoodId = state.inventoryForm?.draft.foodId || "";
-      if (activeSearch && matches.length === 1 && selectedFoodId !== matches[0].id) selectInventoryFood(matches[0].id);
-      else if (activeSearch && selectedFoodId && !matches.some((food) => food.id === selectedFoodId)) selectInventoryFood("");
-      render();
-      if (activeSearch && matches.length) openNativePicker(root.querySelector('[data-inventory-field="foodId"]'));
+      refreshInventoryFoodSearch();
     } else if (event.target.matches("[data-recipe-search]")) { applyRecipeFilters((filters)=>{ filters.search=event.target.value; }); }
     else if (event.target.matches("[data-recipe-metadata-minutes]")) { state.recipeForm.draft.filterMetadata.preparationMinutes=event.target.value; }
     else if (event.target.matches("[data-recipe-field]")) { const field=event.target.dataset.recipeField;if(field==="imageUrl"){state.recipeForm.draft.image.imageUrl=event.target.value;const preview=root.querySelector(".nutrition-recipe-image-fieldset .nutrition-image-preview");if(preview){preview.replaceChildren();const img=document.createElement("img");const empty=document.createElement("span");empty.textContent=t("planning.noImage","No image");img.alt="";img.src=event.target.value;img.onerror=()=>{img.remove();preview.classList.remove("has-image");};preview.append(img,empty);preview.classList.toggle("has-image",Boolean(event.target.value));}}else state.recipeForm.draft[field]=event.target.value; }
     else if (event.target.matches("[data-recipe-ingredient-field]")) { const item=state.recipeForm.draft.ingredients[Number(event.target.dataset.index)];if(item)item[event.target.dataset.recipeIngredientField]=event.target.value; }
     else if (event.target.matches("[data-meal-field]")) { state.mealPlanForm.draft[event.target.dataset.mealField]=event.target.value; }
+    else if (event.target.matches("[data-intake-field]") && state.intakeForm) { state.intakeForm.draft[event.target.dataset.intakeField]=event.target.value; }
     else if (event.target.matches("[data-inventory-field]")) updateInventoryField(event.target);
     else if (event.target.matches("[data-inventory-filter]")) { state.inventoryFilters[event.target.dataset.inventoryFilter] = event.target.value; if (event.target.matches("select") && isFoodSelectInteracting) return; render(); }
     else if (event.target.matches('[data-filter="search"]')) {
@@ -1214,12 +1284,14 @@
 
   root?.addEventListener("change", (event) => {
     const target = event.target;
-    if (target.matches('[data-inventory-field="locationId"]') && target.value === "__create__") { releaseFoodSelectInteraction(); state.inventoryLocationDraft = { name:"", icon:"box" }; state.modal = { type:"inventory-location" }; render(); }
+    if (target.matches("[data-statistics-date]")) { const date = /^\d{4}-\d{2}-\d{2}$/.test(target.value) ? new Date(`${target.value}T12:00:00`) : null; if (date && Number.isFinite(date.getTime()) && `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}` === target.value) { state.statisticsDate = date; render(); } }
+    else if (target.matches('[data-inventory-field="locationId"]') && target.value === "__create__") { releaseFoodSelectInteraction(); state.inventoryLocationDraft = { name:"", icon:"box" }; state.modal = { type:"inventory-location" }; render(); }
     else if (target.matches("[data-recipe-filter-option]")) { if (recipeFilterClickHandled) { recipeFilterClickHandled = false; return; } applyRecipeFilters((filters)=>{ state.recipeFilters=window.MentorRecipeFilterService.toggle(filters,target.dataset.filterGroup,target.value,target.checked); }); }
     else if (target.matches("[data-recipe-metadata-minutes]")) { state.recipeForm.draft.filterMetadata.preparationMinutes=target.value; }
     else if (target.matches("[data-recipe-field]")) { if (target.matches("select")) releaseFoodSelectInteraction();const field=target.dataset.recipeField;if(field==="imageUrl")state.recipeForm.draft.image.imageUrl=target.value;else state.recipeForm.draft[field]=target.value; }
     else if (target.matches("[data-recipe-ingredient-field]")) { if (target.matches("select")) releaseFoodSelectInteraction(); const item=state.recipeForm.draft.ingredients[Number(target.dataset.index)];if(item)item[target.dataset.recipeIngredientField]=target.value; }
     else if (target.matches("[data-meal-field]")) { if (target.matches("select")) releaseFoodSelectInteraction(); state.mealPlanForm.draft[target.dataset.mealField]=target.value; }
+    else if (target.matches("[data-intake-field]") && state.intakeForm) { state.intakeForm.draft[target.dataset.intakeField]=target.value; }
     else if (target.matches("[data-inventory-field]")) { if (target.matches("select")) releaseFoodSelectInteraction(); updateInventoryField(target); }
     else if (target.matches("[data-shopping-field]")) updateShoppingField(target);
     else if (target.matches("[data-inventory-filter]")) { if (target.matches("select")) releaseFoodSelectInteraction(); state.inventoryFilters[target.dataset.inventoryFilter] = target.value; render(); }
@@ -1241,6 +1313,22 @@
     if (event.target.matches("[data-food-form]")) { event.preventDefault(); return; }
     if (event.target.matches("[data-recipe-form]")) { event.preventDefault();await saveRecipeForm();return; }
     if (event.target.matches("[data-meal-plan-form]")) { event.preventDefault();await saveMealPlanForm();return; }
+    if (event.target.matches("[data-intake-form]")) {
+      event.preventDefault();
+      const form=state.intakeForm;
+      if (!form || form.saving) return;
+      const draft=form.draft, servings=Number(draft.servings);
+      if (!window.MentorNutritionIntakeValidation.validDate(draft.eatenDate) || !Number.isFinite(servings) || servings <= 0) { form.error="validation";refreshModal();return; }
+      form.saving=true;
+      try {
+        await window.MentorIntakeService.saveForMealPlanEntry(form.mealId,{eatenDate:draft.eatenDate,servings});
+        state.intakeForm=null;state.modal=null;state.notice={type:"success",text:t("intake.saved","Intake saved.")};render();
+      } catch (error) {
+        console.error("[Nutrition] Intake save failed",error);
+        form.saving=false;form.error="save";state.notice={type:"error",text:t("intake.error","Could not save intake.")};refreshModal();
+      } finally { if (state.intakeForm) state.intakeForm.saving=false; }
+      return;
+    }
     if (event.target.matches("[data-inventory-form]")) {
       event.preventDefault();
       const intent = event.submitter?.dataset.inventoryIntent || state.inventoryForm?.intent || "close";
@@ -1271,6 +1359,7 @@
   });
   window.addEventListener("mentor:languagechange", () => { if (document.body.dataset.activeView === "nutrition") render(); });
   document.addEventListener("click", (event) => {
+    if (window.MentorUIEvents?.isTextEditingEvent?.(event) || window.MentorUIEvents?.isTextEditingTarget?.(event.target)) return;
     if (state.planRecipeMoreOpen && !event.target.closest?.("[data-plan-recipe-more]")) { state.planRecipeMoreOpen = false; render(); }
     if (!state.recipeFilterOpen || event.target.closest?.("[data-recipe-filter-dropdown]")) return;
     closeRecipeFilterDropdown(false);
@@ -1287,7 +1376,7 @@
     else if (state.activeTab === "recipes" && !state.recipeForm?.saving) refreshRecipeResults();
   });
   window.addEventListener("mentor:nutrition-inventorychange", () => {
-    if (favoriteSavePending && state.activeTab === "plan") return;
+    if ((favoriteSavePending || state.intakeForm?.saving || state.modal?.type === "confirm-intake-remove") && state.activeTab === "plan") return;
     if (state.activeTab === "recipes" && !state.inventoryForm?.saving && !state.recipeForm?.saving && !state.mealPlanForm?.saving) { refreshRecipeResults(); refreshRecipeDetails(); }
     else if (["fridge","plan"].includes(state.activeTab) && !state.inventoryForm?.saving && !state.recipeForm?.saving && !state.mealPlanForm?.saving) render();
   });

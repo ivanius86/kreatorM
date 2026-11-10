@@ -15,7 +15,11 @@ function loadWithLegacy(raw) {
   const dataRepository = {
     initialize: async () => {}, migrateLegacyIfNeeded: async () => {}, isReady: () => true,
     getEnvelope: () => clone(envelope),
-    saveEnvelope: async (next) => { envelope = clone(next); saves += 1; return clone(envelope); }
+    mutateEnvelope: async (callback) => {
+      const next = clone(envelope), result = callback(next);
+      envelope = clone(next); saves += 1;
+      return result == null ? result : clone(result);
+    }
   };
   const win = {
     localStorage: { getItem: (key) => {

@@ -210,6 +210,7 @@
           recipes: [],
           mealPlanEntries: [],
           shoppingItems: [],
+          intakeEntries: [],
           migrations: []
         }
       }]

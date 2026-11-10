@@ -36,10 +36,15 @@
       const conversion = root.MentorNutritionUnitConversion;
       let amount; try { amount = conversion.convertForFood(input.quantity, input.unit, before.unit, food); } catch (_) { fail("INCOMPATIBLE_UNITS"); }
       if (!(Number.isFinite(amount) && amount > 0)) fail("INVALID_QUANTITY");
-      const saved = await service.restock(before.id, input.quantity, input.unit);
-      const verified = repo.getBatchById(before.id);
-      if (!verified || verified.quantity !== saved.quantity || verified.quantity !== Math.round((before.quantity + amount + Number.EPSILON) * 1000) / 1000) fail("INVENTORY_VERIFY_FAILED");
-      return { id: verified.id, quantity: verified.quantity, unit: verified.unit, foodId: verified.foodId, locationId: verified.locationId };
+      const saved = await service.restock(before.id, input.quantity, input.unit, {
+        expectedQuantity: input.expectedQuantity, expectedUpdatedAt: input.expectedUpdatedAt,
+        foodId: input.foodId, locationId: input.locationId
+      });
+      // The service returns the record only after its transaction is durable.
+      // A later UI edit may already be visible after reservation resync; it must
+      // not turn this committed write into a failed (and potentially retried) one.
+      if (!saved || saved.id !== before.id || saved.foodId !== input.foodId || saved.locationId !== input.locationId || saved.unit !== before.unit || saved.quantity !== Math.round((before.quantity + amount + Number.EPSILON) * 1000) / 1000) fail("INVENTORY_VERIFY_FAILED");
+      return { id: saved.id, quantity: saved.quantity, unit: saved.unit, foodId: saved.foodId, locationId: saved.locationId };
     };
     return root.navigator?.locks?.request ? root.navigator.locks.request("mentor-inventory-batch-" + input.batchId, { mode: "exclusive" }, execute) : execute();
   }

@@ -44,11 +44,11 @@
     const baseServings = Number(recipe?.servings);
     const servings = Number(plannedServings);
     const totals = Object.fromEntries(NUTRIENTS.map((code) => [code, 0]));
-    const known = Object.fromEntries(NUTRIENTS.map((code) => [code, ingredients.length > 0 && baseServings > 0 && servings > 0]));
+    const known = Object.fromEntries(NUTRIENTS.map((code) => [code, ingredients.length > 0 && Number.isFinite(baseServings) && baseServings > 0 && Number.isFinite(servings) && servings > 0]));
+    const observed = Object.fromEntries(NUTRIENTS.map((code) => [code, false]));
     const factor = servings / baseServings;
-    let energyResolvable = known.energyKcal;
     const scaledAmount = (byCode, code, grams) => {
-      const nutrient = byCode.get(code), amount = Number(nutrient?.amount), basis = Number(nutrient?.basisAmount || 100);
+      const nutrient = byCode.get(code), amount = Number(nutrient?.amount), basis = nutrient?.basisAmount == null ? 100 : Number(nutrient.basisAmount);
       if (!nutrient || nutrient.amount === null || nutrient.amount === undefined || !Number.isFinite(amount) || !(basis > 0)) return null;
       const value = amount * grams / basis * factor;
       return Number.isFinite(value) ? value : null;
@@ -58,41 +58,37 @@
       const details = api.foodNutrition?.details?.(ingredient.foodId);
       const food = details?.food || api.foods.getById(ingredient.foodId);
       const grams = api.recipeProfile.gramsForIngredient(ingredient, food);
-      if (!food || grams === null) {
+      if (!food || !Number.isFinite(grams) || !(grams > 0)) {
         NUTRIENTS.forEach((code) => { known[code] = false; });
-        energyResolvable = false;
         return;
       }
       const byCode = details?.byCode || new Map(api.foods.getNutrients(food.id).map((row) => [api.nutrients.getById(row.nutrientId)?.code, row]));
       const directEnergy = scaledAmount(byCode, "energyKcal", grams);
       NUTRIENTS.forEach((code) => {
-        const nutrient = byCode.get(code), amount = Number(nutrient?.amount), basis = Number(nutrient?.basisAmount || 100);
-        if (!nutrient || nutrient.amount === null || nutrient.amount === undefined || !Number.isFinite(amount) || !(basis > 0)) {
-          known[code] = false;
-          return;
-        }
-        totals[code] += amount * grams / basis * factor;
+        if (code === "energyKcal") return;
+        const amount = scaledAmount(byCode, code, grams);
+        if (amount === null) { known[code] = false; return; }
+        totals[code] += amount;
+        observed[code] = true;
       });
-
-      if (directEnergy !== null) return;
-
+      if (directEnergy !== null) {
+        totals.energyKcal += directEnergy;
+        observed.energyKcal = true;
+        return;
+      }
       const protein = scaledAmount(byCode, "protein", grams);
       const carbohydrate = scaledAmount(byCode, "carbohydrate", grams);
       const totalFat = scaledAmount(byCode, "totalFat", grams);
       const fatComponents = FAT_COMPONENTS.map((code) => scaledAmount(byCode, code, grams)).filter((value) => value !== null);
       const fat = totalFat !== null ? totalFat : fatComponents.length ? fatComponents.reduce((sum, value) => sum + value, 0) : null;
-      if (protein !== null || carbohydrate !== null || fat !== null) {
-        totals.energyKcal += (protein || 0) * 4 + (carbohydrate || 0) * 4 + (fat || 0) * 9;
-        return;
-      }
-      energyResolvable = false;
+      if (protein !== null || carbohydrate !== null || fat !== null) observed.energyKcal = true;
+      totals.energyKcal += (protein || 0) * 4 + (carbohydrate || 0) * 4 + (fat || 0) * 9;
+      if (protein === null || carbohydrate === null || totalFat === null) known.energyKcal = false;
     });
-
-    known.energyKcal = energyResolvable;
-
     return {
       values: Object.fromEntries(NUTRIENTS.map((code) => [code, known[code] ? round(totals[code], code === "energyKcal" ? 0 : 1) : null])),
-      known
+      partialValues: Object.fromEntries(NUTRIENTS.map((code) => [code, observed[code] ? round(totals[code], code === "energyKcal" ? 0 : 1) : null])),
+      known, observed
     };
   }
 
@@ -111,7 +107,7 @@
   }
 
   function micronutrientStatus(percent) {
-    if (!Number.isFinite(Number(percent))) return "unknown";
+    if (percent === null || percent === undefined || String(percent).trim() === "" || !Number.isFinite(Number(percent))) return "unknown";
     if (percent < MICRONUTRIENT_THRESHOLDS.deficit) return "deficit";
     if (percent < MICRONUTRIENT_THRESHOLDS.low) return "low";
     if (percent <= MICRONUTRIENT_THRESHOLDS.optimal) return "optimal";
@@ -132,6 +128,7 @@
     (entries || []).forEach((entry) => {
       const recipe = recipeMap.get(entry.recipeId);
       const ingredients = Array.isArray(recipe?.ingredients) ? recipe.ingredients : [];
+      if (!ingredients.length) ingredientCount += 1;
       const baseServings = Number(recipe?.servings);
       const plannedServings = Number(entry.servings);
       const factor = plannedServings / baseServings;
@@ -140,13 +137,13 @@
         const details = api.foodNutrition?.details?.(ingredient.foodId);
         const food = details?.food || api.foods?.getById?.(ingredient.foodId);
         const grams = food ? api.recipeProfile?.gramsForIngredient?.(ingredient, food) : null;
-        if (!food || grams === null || !Number.isFinite(factor) || !(factor > 0)) return;
+        if (!food || !Number.isFinite(grams) || !(grams > 0) || !Number.isFinite(factor) || !(factor > 0)) return;
         resolvableIngredientCount += 1;
         const byCode = details?.byCode || new Map((api.foods?.getNutrients?.(food.id) || []).map((row) => [api.nutrients?.getById?.(row.nutrientId)?.code, row]));
         definitions.forEach((definition) => {
           const nutrient = byCode.get(definition.code);
           const amount = Number(nutrient?.amount);
-          const basis = Number(nutrient?.basisAmount || 100);
+          const basis = nutrient?.basisAmount == null ? 100 : Number(nutrient.basisAmount);
           if (!nutrient || nutrient.amount === null || nutrient.amount === undefined || !Number.isFinite(amount) || !(basis > 0)) return;
           totals[definition.code] += amount * grams / basis * factor;
           observations[definition.code] += 1;
@@ -155,7 +152,7 @@
     });
 
     const nutrients = definitions.map((definition) => {
-      const evaluated = observations[definition.code] > 0;
+      const evaluated = ingredientCount > 0 && observations[definition.code] === ingredientCount;
       const amount = evaluated ? round(totals[definition.code], 2) : null;
       const percent = evaluated ? round(amount / Number(definition.dailyReference) * 100, 0) : null;
       return {
@@ -166,11 +163,11 @@
         dailyReference: Number(definition.dailyReference),
         percent,
         status: micronutrientStatus(percent),
-        observations: observations[definition.code]
+        observations: observations[definition.code], complete: evaluated
       };
     });
     const evaluated = nutrients.filter((nutrient) => nutrient.percent !== null);
-    const percent = evaluated.length
+    const percent = nutrients.length > 0 && evaluated.length === nutrients.length
       ? round(evaluated.reduce((sum, nutrient) => sum + Math.min(250, Math.max(0, nutrient.percent)), 0) / evaluated.length, 0)
       : null;
     return {

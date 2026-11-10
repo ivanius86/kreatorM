@@ -28,7 +28,7 @@
     return cache;
   }
   function details(foodId){const index=readCache(),food=index.foods.get(foodId);if(!food)return null;const values=index.nutrients.get(foodId)||[],byCode=new Map();values.forEach(value=>{const definition=index.nutrientDefinitions.get(value.nutrientId);if(definition)byCode.set(definition.code,{definition,...value});});return{food,source:index.sources.get(food.sourceId)||null,portions:index.portions.get(foodId)||[],nutrients:values,byCode};}
-  function scale(foodId,grams){if(!Number.isFinite(grams)||grams<0)throw new Error("Količina mora biti nenegativna.");const result=details(foodId);if(!result)return null;return{...result,grams,nutrients:result.nutrients.map(value=>({...value,amount:value.amount===null?null:value.amount*grams/100}))};}
+  function scale(foodId,grams){if(!Number.isFinite(grams)||grams<0)throw new Error("Količina mora biti nenegativna.");const result=details(foodId);if(!result)return null;return{...result,grams,nutrients:result.nutrients.map(value=>({...value,amount:value.amount == null || !Number.isFinite(Number(value.amount)) ? null : Number(value.amount)*grams/100}))};}
   function formTemplate(foodId){const result=details(foodId);if(!result)return null;const groups={};window.MentorNutrientRepository.getAll().forEach(definition=>{groups[definition.group]=groups[definition.group]||[];const value=result.byCode.get(definition.code);groups[definition.group].push({definition,amount:value?.amount??null,available:Boolean(value)});});return{food:{...result.food},source:result.source,groups};}
   window.addEventListener?.("mentor:nutrition-foodschange",()=>{cache=null;});
   window.MentorFoodNutritionService={details,scale,formTemplate};

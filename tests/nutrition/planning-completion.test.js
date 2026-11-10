@@ -10,13 +10,13 @@ function loadService(envelope) {
   let sequence = 0;
   window.MentorNutritionId = { create(prefix) { sequence += 1; return `${prefix}-service-${sequence}`; } };
   window.MentorPlanningRepository = {};
-  window.MentorFoodRepository = { getById(id) { return { id, categoryId:id === "egg" ? "eggs" : "other" }; } };
-  window.MentorInventoryService = { getFood(id) { return window.MentorFoodRepository.getById(id); } };
+  window.MentorFoodRepository = { getById(id) { return { id, categoryId:id === "egg" ? "eggs" : "other" }; }, getAll() { return [{ id:"egg", categoryId:"eggs" }]; } };
   vm.runInThisContext(fs.readFileSync(path.join(__dirname, "../../js/nutrition/services/unit-conversion.service.js"), "utf8"));
   window.MentorInventoryRepository = {
     mutate(callback) { return JSON.parse(JSON.stringify(callback(envelope))); },
     getAllocations() { return JSON.parse(JSON.stringify(envelope.allocations)); }
   };
+  vm.runInThisContext(fs.readFileSync(path.join(__dirname, "../../js/nutrition/services/inventory.service.js"), "utf8"));
   vm.runInThisContext(fs.readFileSync(path.join(__dirname, "../../js/nutrition/services/planning.service.js"), "utf8"));
 }
 
@@ -153,13 +153,13 @@ function loadInventoryIntegration(envelope) {
   };
   window.MentorPlanningRepository = {};
   vm.runInThisContext(fs.readFileSync(path.join(__dirname, "../../js/nutrition/services/unit-conversion.service.js"), "utf8"));
-  window.MentorInventoryService = { getFood(id) { return window.MentorFoodRepository.getById(id); } };
-  vm.runInThisContext(fs.readFileSync(path.join(__dirname, "../../js/nutrition/services/planning.service.js"), "utf8"));
   vm.runInThisContext(fs.readFileSync(path.join(__dirname, "../../js/nutrition/services/inventory.service.js"), "utf8"));
+  vm.runInThisContext(fs.readFileSync(path.join(__dirname, "../../js/nutrition/services/planning.service.js"), "utf8"));
 }
 
 test("inventory add and restock immediately resync planned egg reservations", async () => {
   const envelope = {
+    locations:[{ id:"location_fridge" }],
     recipes:[{ id:"recipe-egg", servings:1, ingredients:[{ foodId:"egg", quantity:7, unit:"kom" }] }],
     mealPlanEntries:[{ id:"entry-egg", recipeId:"recipe-egg", plannedDate:"2026-07-27", mealType:"breakfast", servings:1, status:"planned" }],
     allocations:[{ id:"missing-old", mealPlanEntryId:"entry-egg", recipeId:"recipe-egg", foodId:"egg", inventoryBatchId:null, requiredQuantity:7, reservedQuantity:0, unit:"kom", status:"missing" }],

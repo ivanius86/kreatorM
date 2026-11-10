@@ -33,6 +33,8 @@
       getState: () => controller.getState(),
       getSnapshot: () => controller.getSnapshot(),
       getEnvelope: () => controller.getSnapshot(),
+      // Used under the shared Nutrition write lock to validate current references.
+      readEnvelope: load,
       validate: (envelope) => requireService().validate(envelope),
       subscribe: controller.subscribe,
       mutateEnvelope(mutator) {

@@ -40,6 +40,7 @@
   };
   sr.inventory.expiryStatus = { today:"Ističe danas", tomorrow:"Ističe sutra", inDays:"Ističe za {{count}} dana", expiredYesterday:"Isteklo juče", expiredDays:"Isteklo pre {{count}} dana" };
   sr.inventory.formQuantity = { grams:"Gramaža (g)", kilograms:"Težina (kg)", milliliters:"Zapremina (ml)", liters:"Zapremina (l)", pieces:"Količina (kom)", packages:"Broj pakovanja", generic:"Količina ({{unit}})" };
+  Object.assign(sr.inventory.form, { packageSizeWithUnit:"Sadržaj jednog pakovanja ({{unit}})", packageTotal:"Ukupno: {{quantity}} {{unit}}" });
   sr.inventory.locationPanel = { title:"Lokacije", create:"Kreiraj lokaciju", products:"{{count}} proizvoda", expiring:"{{count}} ističe uskoro", allGood:"Sve u redu" };
   sr.inventory.expiringPanel = { title:"Uskoro ističe", empty:"Nema stavki koje uskoro ističu." };
   Object.assign(sr.planning, {
@@ -55,6 +56,7 @@
   });
   en.inventory.expiryStatus = { today:"Expires today", tomorrow:"Expires tomorrow", inDays:"Expires in {{count}} days", expiredYesterday:"Expired yesterday", expiredDays:"Expired {{count}} days ago" };
   en.inventory.formQuantity = { grams:"Weight / grams (g)", kilograms:"Weight (kg)", milliliters:"Volume (ml)", liters:"Volume (l)", pieces:"Quantity / pieces", packages:"Package count", generic:"Quantity ({{unit}})" };
+  Object.assign(en.inventory.form, { packageSizeWithUnit:"Contents per package ({{unit}})", packageTotal:"Total: {{quantity}} {{unit}}" });
   en.inventory.locationPanel = { title:"Locations", create:"Create location", products:"{{count}} products", expiring:"{{count}} expiring soon", allGood:"All good" };
   en.inventory.expiringPanel = { title:"Expiring soon", empty:"No items expiring soon." };
 
@@ -146,10 +148,12 @@
     reorderFailed:"Meal order could not be saved."
   });
   Object.assign(sr.planning, {
-    availableIngredients:"Namirnice dostupne", clickToSeeMissing:"Kliknite za pregled"
+    availableIngredients:"Namirnice dostupne", clickToSeeMissing:"Kliknite za pregled",
+    validation:"Proveri obavezna polja, datum, tip obroka i pozitivne brojčane količine."
   });
   Object.assign(en.planning, {
-    availableIngredients:"Ingredients available", clickToSeeMissing:"Click to view"
+    availableIngredients:"Ingredients available", clickToSeeMissing:"Click to view",
+    validation:"Check required fields, the date, meal type and positive numeric quantities."
   });
 
   Object.assign(sr.inventory, { allFoods:"Sve namirnice", details:"Detalji namirnice", subtitle:"Pregledaj i upravljaj svojim zalihama. Prati rok trajanja, izbegni bacanje hrane i uvek imaj pregled šta ti je dostupno." });

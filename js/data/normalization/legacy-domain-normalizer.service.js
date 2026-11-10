@@ -22,6 +22,7 @@
     recipes: [],
     mealPlanEntries: [],
     shoppingItems: [],
+    intakeEntries: [],
     migrations: []
   });
 
@@ -607,6 +608,7 @@
     );
     if (inventoryRecovery) recovery.push(inventoryRecovery);
     let inventoryEnvelope = validValue(entries, inventoryKeys[0]) || validValue(entries, inventoryKeys[1]) || (inventoryRecovery ? null : clone(EMPTY_INVENTORY));
+    if (inventoryEnvelope && !Object.prototype.hasOwnProperty.call(inventoryEnvelope, "intakeEntries")) inventoryEnvelope.intakeEntries = [];
     const legacySources = legacyInventoryKeys
       .map((key) => ({ key, value: validValue(entries, key) }))
       .filter((source) => source.value);

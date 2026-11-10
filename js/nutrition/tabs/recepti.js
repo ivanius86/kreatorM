@@ -6,7 +6,6 @@
   const t = (key, fallback, params) => C.t(`planning.${key}`, fallback, params);
   const foodName = (food) => window.MentorNutritionInventoryFormUI.foodName(food);
   const mealTypes = ["breakfast", "lunch", "dinner", "snack"];
-  const coreNutrients = ["energyKcal", "protein", "carbohydrate", "totalFat"];
 
   const round = (value, digits = 0) => {
     const number = Number(value);
@@ -116,69 +115,20 @@
     };
   }
 
-  function gramsForIngredient(item, food) {
-    const amount = Number(item?.quantity), unit = window.MentorNutritionUnitConversion.normalizeUnit(item?.unit);
-    if (!food || !(amount > 0)) return null;
-    try {
-      if (window.MentorNutritionUnitConversion.isCompatibleForFood(unit, "g", food)) return window.MentorNutritionUnitConversion.convertForFood(amount, unit, "g", food);
-    } catch (_) { return null; }
-    if (unit === "kom" && Number(food.defaultServingGrams) > 0) return amount * Number(food.defaultServingGrams);
-    const portion = window.MentorFoodRepository.getPortions(food.id).find((row) => row.unit === unit && Number(row.amount) > 0 && Number(row.equivalentGrams) > 0);
-    if (portion) {
-      try { return window.MentorNutritionUnitConversion.toGrams(amount, portion); }
-      catch (_) { return null; }
-    }
-    return null;
-  }
-
   function recipeNutrition(recipe) {
-    const totals = { energyKcal: 0, protein: 0, carbohydrate: 0, totalFat: 0 };
-    const hasIngredients = Array.isArray(recipe.ingredients) && recipe.ingredients.length > 0;
-    const missing = Object.fromEntries(coreNutrients.map((code) => [code, !hasIngredients]));
-    const contributed = Object.fromEntries(coreNutrients.map((code) => [code, false]));
-    (recipe.ingredients || []).forEach((item) => {
-      const details = window.MentorFoodNutritionService.details(item.foodId);
-      const food = details?.food || null;
-      const grams = gramsForIngredient(item, food);
-      if (!food || grams === null) { coreNutrients.forEach((code) => { missing[code] = true; }); return; }
-      const nutrients = details.byCode;
-      coreNutrients.forEach((code) => {
-        const nutrient = nutrients.get(code);
-        if (!nutrient || nutrient.amount === null || nutrient.amount === undefined || !Number.isFinite(Number(nutrient.amount))) { missing[code] = true; return; }
-        contributed[code] = true;
-        totals[code] += Number(nutrient.amount) * grams / Number(nutrient.basisAmount || 100);
-      });
-    });
-    const complete = Object.fromEntries(coreNutrients.map((code) => [code, hasIngredients && !missing[code] && contributed[code]]));
-    if (!complete.energyKcal && (totals.protein > 0 || totals.carbohydrate > 0 || totals.totalFat > 0)) {
-      totals.energyKcal = totals.protein * 4 + totals.carbohydrate * 4 + totals.totalFat * 9;
-      contributed.energyKcal = true;
-      complete.energyKcal = complete.protein && complete.carbohydrate && complete.totalFat;
-    }
-    const servings = Math.max(Number(recipe.servings || 1), 1);
+    const total = window.MentorMealPlanSelectors.recipeNutrition(recipe, recipe?.servings);
+    const perServing = window.MentorMealPlanSelectors.recipeNutrition(recipe, 1);
     return {
-      known: complete,
-      contributed,
-      missing,
-      total: {
-        energyKcal: round(totals.energyKcal),
-        protein: round(totals.protein, 1),
-        carbohydrate: round(totals.carbohydrate, 1),
-        totalFat: round(totals.totalFat, 1)
-      },
-      perServing: {
-        energyKcal: round(totals.energyKcal / servings),
-        protein: round(totals.protein / servings, 1),
-        carbohydrate: round(totals.carbohydrate / servings, 1),
-        totalFat: round(totals.totalFat / servings, 1)
-      }
+      known: total.known, total: total.values, perServing: perServing.values,
+      partialTotal: total.partialValues, partialPerServing: perServing.partialValues
     };
   }
 
   function nutritionLabel(nutrition, code, unit) {
     const value = nutrition.total[code];
     if (nutrition.known[code]) return `${value} ${unit}`;
-    if (nutrition.contributed[code] && Number(value) > 0) return t("atLeastValue", "≥ {{value}} {{unit}}", { value, unit });
+    const partial = nutrition.partialTotal[code];
+    if (partial !== null && Number(partial) > 0) return t("atLeastValue", "≥ {{value}} {{unit}}", { value: partial, unit });
     return t("nutritionIncomplete", "Missing data");
   }
 
@@ -199,7 +149,7 @@
         <span class="nutrition-recipe-card-meta">
           ${minutes ? `<span>${icon("clock")}${C.esc(t("minutesShort", "{{count}} min", { count: minutes }))}</span>` : ""}
           <span>${icon("box")}${C.esc(`${recipe.servings} ${t("servingsLower", "servings")}`)}</span>
-          <span>${icon("recipe")}${C.esc(nutrition.known.energyKcal ? `${nutrition.perServing.energyKcal} kcal` : Number(nutrition.perServing.energyKcal) > 0 ? t("atLeastValue", "≥ {{value}} {{unit}}", { value:nutrition.perServing.energyKcal, unit:"kcal" }) : t("caloriesUnknown", "kcal unknown"))}</span>
+          <span>${icon("recipe")}${C.esc(nutrition.known.energyKcal ? `${nutrition.perServing.energyKcal} kcal` : Number(nutrition.partialPerServing.energyKcal) > 0 ? t("atLeastValue", "≥ {{value}} {{unit}}", { value:nutrition.partialPerServing.energyKcal, unit:"kcal" }) : t("caloriesUnknown", "kcal unknown"))}</span>
         </span>
         <span class="nutrition-recipe-card-tags">${C.badge(t(recipe.mealType, recipe.mealType))}${derivedProfile.nutritionTags.includes("highProtein") ? C.badge(t("highProtein", "High protein")) : ""}</span>
         <span class="nutrition-recipe-status ${statusClass}">${availability.ready ? icon("leaf") : icon("dots")}${C.esc(availability.missing ? availability.missingLabel : availability.label)}</span>

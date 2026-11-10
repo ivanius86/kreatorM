@@ -187,6 +187,7 @@
     const nutrition = selectors().recipeNutrition(recipe, entry.servings);
     const stock = availability(entry, allocations);
     const done = entry.status === "completed" || Boolean(entry.completedAt);
+    const intakeRecorded = Boolean(window.MentorIntakeService.getForMealPlanEntry(entry.id));
     const rows = stock.rows.filter((row) => Number(row.requiredQuantity || 0) > Number(row.reservedQuantity || 0)).map((row) => {
       const food = window.MentorInventoryService.getFood(row.foodId), missing = Math.max(0, Number(row.requiredQuantity || 0) - Number(row.reservedQuantity || 0));
       return `<div class="nutrition-plan-reservation-row">
@@ -208,6 +209,7 @@
       </dl>
       <div class="nutrition-plan-missing-ingredients">${rows ? `<button type="button" class="nutrition-plan-missing-trigger" data-action="meal-missing-toggle" data-tooltip="${C.esc(t("clickToSeeMissing", "Click to view"))}" aria-expanded="${Boolean(state?.mealMissingOpen)}">${C.esc(t("missingIngredients", "Missing ingredients"))}</button>${state?.mealMissingOpen ? `<div>${rows}</div>` : ""}` : `<button type="button" class="nutrition-plan-missing-trigger is-ready" aria-disabled="true">${C.esc(t("availableIngredients", "Ingredients available"))}</button>`}</div>
       <div class="nutrition-plan-detail-actions">
+        <button class="nutrition-btn" type="button" data-action="intake-open" data-id="${C.esc(entry.id)}">${C.esc(C.t(intakeRecorded ? "intake.edit" : "intake.record", intakeRecorded ? "Edit recorded intake" : "Record eaten meal"))}</button>
         ${!done ? `<button class="nutrition-btn" type="button" data-action="meal-edit" data-id="${C.esc(entry.id)}">${C.esc(t("editMeal", "Edit"))}</button>` : ""}
         <button class="nutrition-btn" type="button" data-action="meal-copy" data-id="${C.esc(entry.id)}">${C.esc(t("copyMeal", "Copy"))}</button>
         <button class="nutrition-btn nutrition-btn-danger" type="button" data-action="meal-remove" data-id="${C.esc(entry.id)}">${C.esc(t("remove", "Remove"))}</button>

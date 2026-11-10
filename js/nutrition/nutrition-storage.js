@@ -3,7 +3,7 @@
 
   const createState = () => ({
     activeTab: "overview", date: new Date(), weekOffset: 0, selectedDay: 0,
-    period: "Danas", selectedFood: 1, selectedStock: null, selectedRecipe: 1,
+    period: "day", statisticsDate: new Date(), statisticsMode: "plan", selectedFood: 1, selectedStock: null, selectedRecipe: 1,
     search: "", filters: { foodCategory: "", foodUnit: "", foodOrigin: "", foodSort: "nameAsc" },
     inventoryFilters: { search: "", locationId: "", categoryId: "", expiry: "", status: "" },
     completedMealIds: new Set((window.MentorNutritionData?.meals || []).filter((meal) => meal.done).map((meal) => meal.id)),
@@ -11,7 +11,7 @@
     inventoryForm: null, inventoryLocationDraft: null,
     recipeFilters: { search:"", mealTypes:[], dietaryPatterns:[], fastingTypes:[], allergenExclusions:[], nutritionTags:[], preparationTime:[], availability:[] }, recipeFilterOpen: null, recipeForm: null,
     recipeServings: {},
-    mealPlanForm: null, selectedMealPlanEntry: null, shoppingDrafts: {}, shoppingError: null, notice: null
+    mealPlanForm: null, intakeForm: null, selectedMealPlanEntry: null, shoppingDrafts: {}, shoppingError: null, notice: null
   });
 
   window.MentorNutritionStorage = {

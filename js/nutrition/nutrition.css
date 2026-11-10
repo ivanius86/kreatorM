@@ -548,3 +548,10 @@
   #nutritionView .nutrition-stock-macros{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 .nutrition-recipe-detail-columns.is-single{grid-template-columns:minmax(0,1fr)}
+.nutrition-inventory-quantity-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.nutrition-inventory-package-total{display:block;margin:2px 8px 8px;color:var(--n-green);font-size:.68rem;font-weight:700}
+.nutrition-inventory-package-total[hidden]{display:none}
+@media(max-width:480px){.nutrition-inventory-quantity-row{grid-template-columns:1fr}}
+.nutrition-statistics-note{margin:0;border-radius:9px;padding:10px 13px;background:var(--n-green-soft);color:#496644;font-size:.72rem}
+.nutrition-statistics-empty{margin:0;color:var(--n-muted);font-size:.73rem;line-height:1.5}
+.nutrition-statistics-mode{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.nutrition-statistics-mode button{border:1px solid var(--n-border);border-radius:9px;padding:8px 12px;background:#fff;color:inherit;font-size:.73rem;font-weight:750;cursor:pointer}.nutrition-statistics-mode button.active{border-color:var(--n-green);background:var(--n-green-soft);color:var(--n-green)}.nutrition-intake-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;border-bottom:1px solid var(--n-border);padding:9px 0;font-size:.72rem}.nutrition-intake-row>div:first-child{display:grid;gap:3px;min-width:0}.nutrition-intake-row>div:first-child span{color:var(--n-muted);font-size:.66rem}.nutrition-intake-row-actions{grid-column:1/-1;display:flex;gap:6px}.nutrition-intake-row-actions .nutrition-btn{padding:5px 9px;font-size:.65rem}.nutrition-intake-recipe-name{margin:6px 0 13px;color:var(--n-muted);font-size:.76rem}.nutrition-intake-form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}

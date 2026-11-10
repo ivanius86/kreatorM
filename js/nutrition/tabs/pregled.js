@@ -37,7 +37,7 @@
   function micronutrientMetric(row, analysis) {
     const label = t(`nutrients.${row.key}`, row.fallback);
     const status = analysis?.status || "unknown";
-    const statusFallbacks = { deficit:"Deficit", low:"Nisko", optimal:"Optimalno", high:"Visoko", excessive:"Prekomerno", unknown:"Nema podataka" };
+    const statusFallbacks = { deficit:"Ispod reference", low:"Niže od reference", optimal:"Oko reference", high:"Iznad reference", excessive:"Znatno iznad reference", unknown:"Nema podataka" };
     const statusLabel = t(`micronutrientStatus.${status}`, statusFallbacks[status] || statusFallbacks.unknown);
     return `<article class="nutrition-overview-metric nutrition-overview-metric-micronutrients is-${C.esc(status)}">
       <header>
@@ -131,14 +131,12 @@
   }
 
   function nutritionScore(summary, goals) {
-    const percentages = nutrientRows
-      .filter((row) => row.code !== "micronutrients")
-      .map((row) => summary?.known?.[row.code] ? percentOf(summary.values[row.code], goals?.[row.code]) : null)
-      .filter((value) => value !== null)
+    const coreRows = nutrientRows.filter((row) => row.code !== "micronutrients");
+    if (!coreRows.every((row) => summary?.known?.[row.code] && Number(goals?.[row.code]) > 0)) return null;
+    const percentages = coreRows
+      .map((row) => percentOf(summary.values[row.code], goals[row.code]))
       .map((value) => Math.min(100, Math.max(0, value)));
-    return percentages.length
-      ? Math.round(percentages.reduce((sum, value) => sum + value, 0) / percentages.length)
-      : null;
+    return Math.round(percentages.reduce((sum, value) => sum + value, 0) / percentages.length);
   }
 
   function overviewAction(label, action) {

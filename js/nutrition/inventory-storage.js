@@ -7,13 +7,15 @@
   const LEGACY_BACKUP_KEY = `${KEY}_legacy_backup`;
   const LEGACY_KEYS = ["mentor_nutrition_fridge_v1", "mentor_nutrition_stock_v1"];
   const VERSION = 1;
-  const COLLECTIONS = ["batches", "locations", "allocations", "preferences", "stores", "recipes", "mealPlanEntries", "shoppingItems", "recipeFavoriteIds", "migrations"];
+  const COLLECTIONS = ["batches", "locations", "allocations", "preferences", "stores", "recipes", "mealPlanEntries", "shoppingItems", "recipeFavoriteIds", "intakeEntries", "migrations"];
   const clone = (value) => value == null ? value : JSON.parse(JSON.stringify(value));
-  const empty = () => ({ version: VERSION, updatedAt: null, batches: [], locations: [], allocations: [], preferences: [], stores: [], recipes: [], mealPlanEntries: [], shoppingItems: [], recipeFavoriteIds: [], migrations: [] });
+  const empty = () => ({ version: VERSION, updatedAt: null, batches: [], locations: [], allocations: [], preferences: [], stores: [], recipes: [], mealPlanEntries: [], shoppingItems: [], recipeFavoriteIds: [], intakeEntries: [], migrations: [] });
 
   function normalize(value) {
     const result = { ...empty(), ...(value && typeof value === "object" ? value : {}) };
-    COLLECTIONS.forEach((key) => { result[key] = Array.isArray(result[key]) ? result[key] : []; });
+    // The optional ledger defaults only when absent. A malformed present value
+    // must reach validation intact, so recovery never replaces it with emptiness.
+    COLLECTIONS.forEach((key) => { if (key !== "intakeEntries") result[key] = Array.isArray(result[key]) ? result[key] : []; });
     result.version = VERSION;
     return result;
   }
@@ -21,11 +23,16 @@
   function validate(value) {
     const errors = [];
     if (!value || typeof value !== "object") return [{ code: "inventory.storage.invalid" }];
-    COLLECTIONS.forEach((key) => { if (!Array.isArray(value[key])) errors.push({ code: `inventory.storage.${key}.invalid` }); });
+    COLLECTIONS.forEach((key) => { if (key === "intakeEntries" && !Object.prototype.hasOwnProperty.call(value, key)) return; if (!Array.isArray(value[key])) errors.push({ code: `inventory.storage.${key}.invalid` }); });
     if (Array.isArray(value.recipeFavoriteIds) && value.recipeFavoriteIds.some((id) => typeof id !== "string" || !id)) errors.push({ code: "inventory.storage.recipeFavoriteIds.invalid" });
+    if (Array.isArray(value.intakeEntries) && value.intakeEntries.length) {
+      const validation = window.MentorNutritionIntakeValidation;
+      const intakeErrors = validation ? validation.validateEntries(value.intakeEntries) : ["INTAKE_VALIDATOR_UNAVAILABLE"];
+      intakeErrors.forEach((code) => errors.push({ collection: "intakeEntries", code }));
+    }
     const ids = new Set();
     ["batches", "locations", "allocations", "stores", "shoppingItems"].forEach((collection) => {
-      (value[collection] || []).forEach((item) => {
+      (Array.isArray(value[collection]) ? value[collection] : []).forEach((item) => {
         if (!item?.id) errors.push({ collection, code: "inventory.id.required" });
         else if (ids.has(`${collection}:${item.id}`)) errors.push({ collection, id: item.id, code: "inventory.id.duplicate" });
         ids.add(`${collection}:${item.id}`);

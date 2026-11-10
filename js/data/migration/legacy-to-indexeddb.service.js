@@ -930,6 +930,7 @@
         "mealPlanEntries",
         "shoppingItems",
         "recipeFavoriteIds",
+        "intakeEntries",
         "migrations"
       ];
     const metrics = {
@@ -1002,6 +1003,12 @@
         shoppingFoodIds: sortedStrings(
           (envelope?.shoppingItems || []).map((record) => record?.foodId)
         ),
+        intakeMealPlanEntryIds: sortedStrings(
+          (envelope?.intakeEntries || []).map((record) => record?.mealPlanEntryId)
+        ),
+        intakeRecipeIds: sortedStrings(
+          (envelope?.intakeEntries || []).map((record) => record?.recipeId)
+        ),
         legacyIds: sortedStrings(
           (envelope?.batches || []).map((record) => record?.legacyId)
         )
@@ -1044,6 +1051,10 @@
       }
     });
     if (errors.length) return errors;
+    if (kind === "inventory" && Object.prototype.hasOwnProperty.call(envelope, "intakeEntries")) {
+      if (!Array.isArray(envelope.intakeEntries)) errors.push("INTAKE_COLLECTION_INVALID");
+      else if (envelope.intakeEntries.length) errors.push(...(root.MentorNutritionIntakeValidation?.validateEntries(envelope.intakeEntries) || ["INTAKE_VALIDATOR_UNAVAILABLE"]));
+    }
     if (kind === "food") {
       envelope.userFoods.forEach((record) => {
         if (record?.ownership !== "user") {

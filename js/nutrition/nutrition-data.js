@@ -48,27 +48,79 @@
     sections:{dailyPlan:"Daily meal plan",dailyStats:"Daily nutrition",fridgeState:"Inventory status",canCook:"What you can prepare",summary:"Daily summary",foodBase:"Food database",categories:"Categories",details:"Details",quick:"Quick actions",stock:"Inventory status",locations:"Locations",expires:"Expiring soon",recipeList:"Recipe list",recipeOverview:"Recipe overview",suggestions:"Inventory suggestions",weeklyPlan:"Weekly meal plan",smallStats:"Quick statistics",balance:"Daily balance",shopping:"Shopping list",intake:"Intake overview",values:"Core values",vitamins:"Vitamins",minerals:"Minerals",calorieTrend:"Calorie intake trend",macros:"Macro distribution",sources:"Top calorie sources",goals:"Daily goals",progress:"Progress"}
   };
   Object.assign(sr.overview, {
+    nutritionState:"Planirani nutritivni sastav",
+    dailyGoal:"dnevne referentne vrednosti u planu",
+    mentorProtein:"Planirani proteini su ispod referentne vrednosti.",
+    mentorProteinReason:"Planirani proteini su na {{percent}}% dnevne referentne vrednosti.",
+    mentorBalanced:"Planirani proteini dostižu referentnu vrednost.",
+    mentorBalancedReason:"Podaci se odnose na planirane obroke za izabrani dan.",
     dateLabel:"Datum nutritivnog pregleda",
     notAvailable:"N/A",
     noNutritionData:"Nema nutritivnih podataka",
     uncompleteMeal:"Ukloni oznaku pripremljeno za obrok {{meal}}",
     mealUncompleted:"Obrok je vraćen u planirano stanje.",
-    micronutrientStatus:{deficit:"Deficit",low:"Nisko",optimal:"Optimalno",high:"Visoko",excessive:"Prekomerno",unknown:"Nema podataka"},
+    micronutrientStatus:{deficit:"Ispod reference",low:"Niže od reference",optimal:"Oko reference",high:"Iznad reference",excessive:"Znatno iznad reference",unknown:"Nema podataka"},
     mentorNoData:"Nema dovoljno podataka za dnevnu preporuku.",
     mentorNoDataReason:"Dodaj nutritivno kompletne recepte u plan za izabrani dan.",
     silhouetteAlt:"Nutrition profil korisnika"
   });
   Object.assign(en.overview, {
+    nutritionState:"Planned nutrition",
+    dailyGoal:"of the daily reference in the plan",
+    mentorProtein:"Planned protein is below the reference value.",
+    mentorProteinReason:"Planned protein is at {{percent}}% of the daily reference.",
+    mentorBalanced:"Planned protein reaches the reference value.",
+    mentorBalancedReason:"These values reflect meals planned for the selected day.",
     dateLabel:"Nutrition overview date",
     notAvailable:"N/A",
     noNutritionData:"No nutrition data",
     uncompleteMeal:"Remove the prepared status from meal {{meal}}",
     mealUncompleted:"The meal was returned to planned status.",
-    micronutrientStatus:{deficit:"Deficit",low:"Low",optimal:"Optimal",high:"High",excessive:"Excessive",unknown:"No data"},
+    micronutrientStatus:{deficit:"Below reference",low:"Lower than reference",optimal:"Near reference",high:"Above reference",excessive:"Well above reference",unknown:"No data"},
     mentorNoData:"There is not enough data for a daily recommendation.",
     mentorNoDataReason:"Add nutritionally complete recipes to the plan for the selected day.",
     silhouetteAlt:"User nutrition profile"
   });
+  sr.statistics = {
+    mode:"Izvor statistike", modes:{plan:"Plan",recorded:"Zabeleženo"},
+    recordedNotice:"Vrednosti su iz ručno zabeleženih obroka. Nepotpuna evidencija ne predstavlja sav pojedeni sadržaj.",
+    recordedValues:"Zabeležene nutritivne vrednosti", recordedMacros:"Udeo makronutrijenata u zabeleženom unosu",
+    recordedMeals:"Zabeleženi obroci", noIntake:"Nema zabeleženog unosa za ovaj period.",
+    servings:"porcija", editIntake:"Izmeni", removeIntake:"Obriši",
+    periods:{day:"Dan",week:"Nedelja",month:"Mesec",year:"Godina"}, period:"Period", date:"Datum statistike",
+    plannedNotice:"Vrednosti su izračunate iz planiranih obroka.",
+    values:"Planirane nutritivne vrednosti", vitamins:"Vitamini", minerals:"Minerali", macros:"Udeo makronutrijenata u planu",
+    meals:"Planirani obroci", coverage:"Potpunost podataka", coverageValue:"Poznato {{known}} od {{total}} glavnih vrednosti.",
+    calories:"Kalorije", protein:"Proteini", carbohydrates:"Ugljeni hidrati", fat:"Masti", fiber:"Vlakna",
+    unknown:"Nema podataka", noMeals:"Nema planiranih obroka za ovaj period.", missingRecipe:"Recept nije dostupan"
+  };
+  en.statistics = {
+    mode:"Statistics source", modes:{plan:"Plan",recorded:"Recorded intake"},
+    recordedNotice:"Values come from manually recorded meals. An incomplete log does not represent everything eaten.",
+    recordedValues:"Recorded nutrition values", recordedMacros:"Macro share of recorded intake",
+    recordedMeals:"Recorded meals", noIntake:"No recorded intake for this period.",
+    servings:"servings", editIntake:"Edit", removeIntake:"Delete",
+    periods:{day:"Day",week:"Week",month:"Month",year:"Year"}, period:"Period", date:"Statistics date",
+    plannedNotice:"Values are calculated from planned meals.",
+    values:"Planned nutrition values", vitamins:"Vitamins", minerals:"Minerals", macros:"Macro share in the plan",
+    meals:"Planned meals", coverage:"Data completeness", coverageValue:"{{known}} of {{total}} main values are known.",
+    calories:"Calories", protein:"Protein", carbohydrates:"Carbohydrates", fat:"Fat", fiber:"Fiber",
+    unknown:"No data", noMeals:"No meals planned for this period.", missingRecipe:"Recipe is unavailable"
+  };
+  sr.intake = {
+    record:"Zabeleži pojedeno", edit:"Izmeni unos", title:"Zabeleži pojedeno", eatenDate:"Datum unosa",
+    servings:"Pojedene porcije", inventoryNote:"Evidencija pojedenog ne menja zalihe.",
+    validation:"Unesi ispravan datum i pozitivan broj porcija.", cancel:"Otkaži", save:"Sačuvaj unos",
+    saved:"Unos je sačuvan.", removed:"Unos je obrisan.", error:"Unos nije sačuvan. Proveri podatke i pokušaj ponovo.",
+    removeTitle:"Obrisati zabeleženi unos?", removeText:"Ova radnja ne menja zalihe niti status pripreme.", remove:"Obriši"
+  };
+  en.intake = {
+    record:"Record eaten meal", edit:"Edit recorded intake", title:"Record food intake", eatenDate:"Date eaten",
+    servings:"Servings eaten", inventoryNote:"Recording food intake does not change inventory.",
+    validation:"Enter a valid date and a positive number of servings.", cancel:"Cancel", save:"Save intake",
+    saved:"Intake saved.", removed:"Intake deleted.", error:"Could not save intake. Check the values and try again.",
+    removeTitle:"Delete recorded intake?", removeText:"This does not change inventory or preparation status.", remove:"Delete"
+  };
   window.MentorI18n?.registerResources("sr", "nutrition", sr);
   window.MentorI18n?.registerResources("en", "nutrition", en);
 })();

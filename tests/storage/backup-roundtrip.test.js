@@ -8,6 +8,7 @@ const { loadPhase0Scripts, memoryStorage } = require("./test-helpers");
 function load() {
   return loadPhase0Scripts([
     "js/data/legacy/legacy-storage.registry.js",
+    "js/data/validation/nutrition-intake.validator.js",
     "js/data/validation/legacy-payload.validators.js",
     "js/data/validation/backup.validators.js",
     "js/data/legacy/legacy-storage.reader.js",
@@ -115,6 +116,8 @@ function emptyFood() {
 }
 
 function emptyInventory() {
+  const values = { energyKcal:200, protein:10, carbohydrate:20, totalFat:5, fiber:3 };
+  const flags = Object.fromEntries(Object.keys(values).map((code) => [code,true]));
   return {
     version: 1,
     updatedAt: "2026-01-02T00:00:00.000Z",
@@ -126,6 +129,12 @@ function emptyInventory() {
     recipes: [{ id: "recipe-1", ingredients: [{ foodId: "food-1" }] }, { id: "recipe-2", ingredients: [] }],
     recipeFavoriteIds: ["recipe-1"],
     mealPlanEntries: [{ id: "meal-1", recipeId: "recipe-1" }],
+    intakeEntries: [{
+      id:"intake-1", mealPlanEntryId:"meal-1", recipeId:"recipe-1", recipeName:"Fixture recipe", mealType:"lunch",
+      eatenDate:"2026-01-02", servings:1, createdAt:"2026-01-02T12:00:00.000Z", updatedAt:"2026-01-02T12:00:00.000Z",
+      nutritionSnapshot:{ version:1, capturedAt:"2026-01-02T12:00:00.000Z", basisServings:1, recipeUpdatedAt:null,
+        values, partialValues:{...values}, known:flags, observed:{...flags}, micronutrients:[] }
+    }],
     shoppingItems: [{ id: "shopping-1", foodId: "food-1" }],
     migrations: []
   };
@@ -289,6 +298,7 @@ test("complete export, ZIP validation and isolated restore preserve domain and m
 
   assert.equal(parity.valid, true, parity.errors.join(","));
   assert.deepEqual(restored.stores.nutritionInventoryData.recipeFavoriteIds, ["recipe-1", "recipe-2"]);
+  assert.deepEqual(restored.stores.nutritionInventoryData.intakeEntries, emptyInventory().intakeEntries);
   assert.equal(parity.domains.length, 10);
   const goalsParity = parity.domains.find((domain) => domain.domain === "goals");
   const calendarParity = parity.domains.find((domain) => domain.domain === "calendar");

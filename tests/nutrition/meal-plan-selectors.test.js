@@ -79,7 +79,7 @@ test("meal plan calories fall back to macro calculation when kcal is missing", (
   assert.equal(result.values.energyKcal, 165);
 });
 
-test("meal plan calories can use fat components when direct kcal and total fat are missing", () => {
+test("fat components provide only a partial calorie estimate when core macros are missing", () => {
   const oilFoods = {
     getById(id) { return id === "oil" ? { id:"oil" } : null; },
     getNutrients() {
@@ -97,8 +97,59 @@ test("meal plan calories can use fat components when direct kcal and total fat a
   };
   const recipe = { id:"oil-recipe", servings:1, ingredients:[{ foodId:"oil", quantity:10, unit:"g" }] };
   const result = window.MentorMealPlanSelectors.recipeNutrition(recipe, 1, { ...overrides, foods:oilFoods });
+  assert.equal(result.known.energyKcal, false);
+  assert.equal(result.values.energyKcal, null);
+  assert.equal(result.partialValues.energyKcal, 86);
+});
+
+test("incomplete macros cannot turn missing calories into a known total", () => {
+  const incomplete = { ...foods, getNutrients(id) {
+    return foods.getNutrients(id).map((row) => {
+      const code = nutrients.getById(row.nutrientId)?.code;
+      return code === "energyKcal" || code === "carbohydrate" ? { ...row, amount:null } : row;
+    });
+  } };
+  const recipe = { servings:1, ingredients:[{ foodId:"complete", quantity:100, unit:"g" }] };
+  const result = window.MentorMealPlanSelectors.recipeNutrition(recipe, 1, { ...overrides, foods:incomplete });
+  assert.equal(result.known.energyKcal, false);
+  assert.equal(result.values.energyKcal, null);
+  assert.equal(result.partialValues.energyKcal, 85);
+});
+
+test("zero calories remain a known zero when supplied directly", () => {
+  const zero = { ...foods, getNutrients(id) { return foods.getNutrients(id).map((row) =>
+    nutrients.getById(row.nutrientId)?.code === "energyKcal" ? { ...row, amount:0 } : row); } };
+  const result = window.MentorMealPlanSelectors.recipeNutrition({ servings:1, ingredients:[{ foodId:"complete", quantity:100, unit:"g" }] }, 1, { ...overrides, foods:zero });
   assert.equal(result.known.energyKcal, true);
-  assert.equal(result.values.energyKcal, 86);
+  assert.equal(result.values.energyKcal, 0);
+});
+
+test("non-finite legacy serving counts never become known zero nutrition", () => {
+  const recipe = { servings:Infinity, ingredients:[{ foodId:"complete", quantity:100, unit:"g" }] };
+  const result = window.MentorMealPlanSelectors.recipeNutrition(recipe, 1, overrides);
+  assert.equal(result.known.energyKcal, false);
+  assert.equal(result.known.protein, false);
+  assert.equal(result.values.energyKcal, null);
+  assert.equal(result.values.protein, null);
+});
+
+test("micronutrient status and summary remain unknown for incomplete ingredients", () => {
+  const vitamin = { id:"vit-c", code:"vitaminC", group:"vitamin", unit:"mg", dailyReference:100 };
+  const microNutrients = { getAll:() => [vitamin], getById:(id) => id === vitamin.id ? vitamin : null };
+  const microFoods = { getById:(id) => ({ id }), getNutrients:(id) => id === "known" ? [{ nutrientId:vitamin.id, amount:80, basisAmount:100 }] : [] };
+  const microOverrides = { ...overrides, foods:microFoods, nutrients:microNutrients };
+  const recipes = [{ id:"r", servings:1, ingredients:[{ foodId:"known", quantity:100, unit:"g" }, { foodId:"missing", quantity:100, unit:"g" }] }];
+  const entries = [{ recipeId:"r", servings:1 }];
+  const result = window.MentorMealPlanSelectors.micronutrientSummary(entries, recipes, microOverrides);
+  assert.equal(window.MentorMealPlanSelectors.micronutrientStatus(null), "unknown");
+  assert.equal(window.MentorMealPlanSelectors.micronutrientStatus(""), "unknown");
+  assert.equal(result.status, "unknown");
+  assert.equal(result.percent, null);
+  assert.equal(result.nutrients[0].amount, null);
+  assert.equal(result.nutrients[0].complete, false);
+  const complete = window.MentorMealPlanSelectors.micronutrientSummary(entries, [{ ...recipes[0], ingredients:recipes[0].ingredients.slice(0,1) }], microOverrides);
+  assert.equal(complete.nutrients[0].amount, 80);
+  assert.equal(complete.nutrients[0].status, "optimal");
 });
 
 test("daily and weekly aggregates include only planned days in averages", () => {

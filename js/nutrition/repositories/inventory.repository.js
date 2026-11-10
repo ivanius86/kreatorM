@@ -30,15 +30,13 @@
       .then(() => dataRepository().initialize())
       .then(() => dataRepository().migrateLegacyIfNeeded(resolveLegacyFoodId))
       .then(() => {
-        const envelope = dataRepository().getEnvelope();
-        let changed = false;
-        const stamp = new Date().toISOString();
-        defaults.forEach((location) => {
-          if (envelope.locations.some((item) => item.id === location.id)) return;
-          envelope.locations.push({ ...location, createdAt: stamp, updatedAt: stamp });
-          changed = true;
+        if (defaults.every((location) => dataRepository().getEnvelope().locations.some((item) => item.id === location.id))) return;
+        return dataRepository().mutateEnvelope((envelope) => {
+          const stamp = new Date().toISOString();
+          defaults.forEach((location) => {
+            if (!envelope.locations.some((item) => item.id === location.id)) envelope.locations.push({ ...location, createdAt: stamp, updatedAt: stamp });
+          });
         });
-        return changed ? dataRepository().saveEnvelope(envelope) : envelope;
       })
       .then(async () => {
         const key = "mentor_nutrition_plan_favorites_v1";
@@ -50,10 +48,12 @@
         let ids;
         try { ids = JSON.parse(raw); } catch (_) { return; }
         if (!Array.isArray(ids) || ids.some((id) => typeof id !== "string" || !id)) return;
-        const before = envelope.recipeFavoriteIds?.length || 0;
-        envelope.recipeFavoriteIds = [...new Set([...(envelope.recipeFavoriteIds || []), ...ids])];
-        envelope.migrations.push({ id: "legacy-plan-favorites-v1", version: 1, appliedAt: new Date().toISOString(), importedCount: envelope.recipeFavoriteIds.length - before });
-        await dataRepository().saveEnvelope(envelope);
+        await dataRepository().mutateEnvelope((current) => {
+          if (current.migrations.some((item) => item?.id === "legacy-plan-favorites-v1")) return;
+          const before = current.recipeFavoriteIds?.length || 0;
+          current.recipeFavoriteIds = [...new Set([...(current.recipeFavoriteIds || []), ...ids])];
+          current.migrations.push({ id: "legacy-plan-favorites-v1", version: 1, appliedAt: new Date().toISOString(), importedCount: current.recipeFavoriteIds.length - before });
+        });
       })
       .then(() => { initialized = true; })
       .catch((error) => {
@@ -65,13 +65,14 @@
   }
 
   function read() {
-    if (!initialized || !dataRepository()?.isReady?.()) throw new Error("NUTRITION_INVENTORY_REPOSITORY_NOT_READY");
+    if (!initialized) throw new Error("NUTRITION_INVENTORY_REPOSITORY_NOT_READY");
+    // The data repository keeps its last durable snapshot after a failed write.
+    // Its own hydration guard also permits a safe read/retry in that state.
     return dataRepository().getEnvelope();
   }
   function mutate(callback) {
-    const envelope = read();
-    const result = callback(envelope);
-    return dataRepository().saveEnvelope(envelope).then(() => clone(result));
+    read();
+    return dataRepository().mutateEnvelope(callback);
   }
   const all = (collection) => clone(read()[collection]);
   const byId = (collection, id) => all(collection).find((item) => item.id === id) || null;
@@ -81,6 +82,7 @@
       const stamp = new Date().toISOString();
       const location = { id: record.id || window.MentorNutritionId.create("location"), name: String(record.name || "").trim(), icon: record.icon || "box", createdAt: stamp, updatedAt: stamp };
       if (!location.name) throw new Error("LOCATION_NAME_REQUIRED");
+      if (envelope.locations.some((item) => item.id === location.id)) throw new Error("LOCATION_ALREADY_EXISTS");
       envelope.locations.push(location);
       return location;
     });
@@ -108,6 +110,7 @@
     return mutate((envelope) => {
       const stamp = new Date().toISOString();
       const batch = { ...clone(record), id: record.id || window.MentorNutritionId.create("inventory_batch"), createdAt: record.createdAt || stamp, updatedAt: stamp };
+      if (envelope.batches.some((item) => item.id === batch.id)) throw new Error("INVENTORY_BATCH_ALREADY_EXISTS");
       envelope.batches.push(batch);
       return batch;
     });
@@ -117,7 +120,8 @@
     return mutate((envelope) => {
       const index = envelope.batches.findIndex((item) => item.id === id);
       if (index < 0) throw new Error("INVENTORY_BATCH_NOT_FOUND");
-      envelope.batches[index] = { ...envelope.batches[index], ...clone(patch), id, createdAt: envelope.batches[index].createdAt, updatedAt: new Date().toISOString() };
+      const changes = typeof patch === "function" ? patch(clone(envelope.batches[index]), envelope) : patch;
+      envelope.batches[index] = { ...envelope.batches[index], ...clone(changes), id, createdAt: envelope.batches[index].createdAt, updatedAt: new Date().toISOString() };
       return envelope.batches[index];
     });
   }

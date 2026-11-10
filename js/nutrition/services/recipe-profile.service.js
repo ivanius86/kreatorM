@@ -24,14 +24,15 @@
   });
   const ALL_NUTRIENTS = Object.freeze([...new Set(Object.values(NUTRITION_REQUIREMENTS).flat())]);
 
-  function gramsForIngredient(ingredient, food) {
+  function gramsForIngredient(ingredient, food, options = {}) {
     const amount = Number(ingredient?.quantity), unit = window.MentorNutritionUnitConversion.normalizeUnit(ingredient?.unit);
     if (!Number.isFinite(amount) || amount <= 0 || !food) return null;
     try {
       if (window.MentorNutritionUnitConversion.isCompatibleForFood(unit, "g", food)) return window.MentorNutritionUnitConversion.convertForFood(amount, unit, "g", food);
     } catch (_) { return null; }
     if (unit === "kom" && Number(food.defaultServingGrams) > 0) return amount * Number(food.defaultServingGrams);
-    const portion = window.MentorFoodRepository.getPortions(food.id).find((item) => item.unit === unit && Number(item.amount) > 0 && Number(item.equivalentGrams) > 0);
+    const portions = options.portions || window.MentorFoodRepository.getPortions(food.id);
+    const portion = portions.find((item) => item.unit === unit && Number(item.amount) > 0 && Number(item.equivalentGrams) > 0);
     if (!portion) return null;
     try { return window.MentorNutritionUnitConversion.toGrams(amount, portion); }
     catch (_) { return null; }
@@ -49,9 +50,16 @@
       ALL_NUTRIENTS.forEach((code) => {
         const nutrient = nutrientMap.get(code);
         if (grams === null || !nutrient || nutrient.amount === null || nutrient.amount === undefined || !Number.isFinite(Number(nutrient.amount))) { complete[code] = false; return; }
-        totals[code] += Number(nutrient.amount) * grams / Number(nutrient.basisAmount || 100);
+        const basis = nutrient.basisAmount == null ? 100 : Number(nutrient.basisAmount);
+        if (!(basis > 0)) { complete[code] = false; return; }
+        totals[code] += Number(nutrient.amount) * grams / basis;
       });
     });
+    const sharedEnergy = window.MentorMealPlanSelectors?.recipeNutrition?.(recipe, servings);
+    if (sharedEnergy) {
+      complete.energyKcal = sharedEnergy.known.energyKcal;
+      totals.energyKcal = sharedEnergy.values.energyKcal ?? 0;
+    }
     const perServing = Object.fromEntries(ALL_NUTRIENTS.map((code) => [code, complete[code] ? totals[code] / servings : null]));
     const allKnown = (tag) => NUTRITION_REQUIREMENTS[tag].every((code) => complete[code]);
     const tags = [];

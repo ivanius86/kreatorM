@@ -14,6 +14,9 @@
     });
   }
   window.MentorPlanningRepository = {
+    getIntakeEntries:()=>all("intakeEntries") || [],
+    getIntakeEntryById:(id)=>(all("intakeEntries") || []).find((item)=>item.id===id)||null,
+    getIntakeEntryForMealPlanEntry:(id)=>(all("intakeEntries") || []).find((item)=>item.mealPlanEntryId===id)||null,
     getRecipeFavoriteIds:()=>all("recipeFavoriteIds"),
     toggleRecipeFavorite(id){
       if (!all("recipes").some((recipe)=>recipe.id===id)) return Promise.resolve(false);

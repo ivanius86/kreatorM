@@ -17,7 +17,11 @@ async function setup() {
   context.MentorData = { repositories:{ nutritionInventoryData:{
     initialize:async () => {}, migrateLegacyIfNeeded:async () => {}, isReady:() => true,
     getEnvelope:() => clone(persisted),
-    saveEnvelope:async (envelope) => { if (failSave) throw new Error("SAVE_FAILED"); persisted = clone(envelope); return clone(persisted); }
+    mutateEnvelope:async (callback) => {
+      const envelope = clone(persisted), result = callback(envelope);
+      if (failSave) throw new Error("SAVE_FAILED");
+      persisted = clone(envelope); return result == null ? result : clone(result);
+    }
   } } };
   const load = (file) => vm.runInContext(fs.readFileSync(path.resolve(__dirname,"../../js/nutrition",file),"utf8"), context);
   load("repositories/inventory.repository.js");
@@ -42,12 +46,12 @@ test("location deletion protects every inventory batch and the final active loca
   const repo = context.MentorInventoryRepository;
   await repo.createBatch({ id:"used", locationId:"location_fridge", quantity:0, status:"consumed" });
   const previous = snapshot();
-  assert.throws(() => repo.removeLocation("location_fridge"), /LOCATION_IN_USE/);
+  await assert.rejects(repo.removeLocation("location_fridge"), /LOCATION_IN_USE/);
   assert.deepEqual(snapshot(), previous);
   await repo.removeLocation("location_freezer");
   await repo.removeLocation("location_pantry");
   await repo.removeBatch("used");
-  assert.throws(() => repo.removeLocation("location_fridge"), /LOCATION_LAST_REMAINING/);
+  await assert.rejects(repo.removeLocation("location_fridge"), /LOCATION_LAST_REMAINING/);
   assert.equal(repo.getLocations().length, 1);
 });
 

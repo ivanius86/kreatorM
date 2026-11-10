@@ -79,6 +79,10 @@
     if (Number(value.version) !== 1) errors.push("UNSUPPORTED_VERSION");
     requireArrays(value, INVENTORY_ARRAYS, errors);
     if (value.recipeFavoriteIds !== undefined && (!Array.isArray(value.recipeFavoriteIds) || value.recipeFavoriteIds.some((id) => typeof id !== "string" || !id))) errors.push("INVALID_RECIPE_FAVORITES");
+    if (Object.prototype.hasOwnProperty.call(value, "intakeEntries")) {
+      if (!Array.isArray(value.intakeEntries)) errors.push("INTAKE_COLLECTION_INVALID");
+      else if (value.intakeEntries.length) errors.push(...(root.MentorNutritionIntakeValidation?.validateEntries(value.intakeEntries) || ["INTAKE_VALIDATOR_UNAVAILABLE"]));
+    }
     if (errors.length) return;
     ["batches", "locations", "allocations", "stores", "shoppingItems"]
       .forEach((collection) => {
