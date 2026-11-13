@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="research-organizer.css?v=20261016-custom-focus-01" />
   <link rel="stylesheet" href="research-sticker-designer.css?v=20261021-header-colors-10" />
   <link rel="stylesheet" href="mentor-chat.css?v=20261030-history-controls-01" />
+  <link rel="stylesheet" href="js/journal/prototype/book-prototype.css?v=20261113-book-07" />
   <script>
     try {
       document.documentElement.dataset.sidebarState = localStorage.getItem("mentor.sidebar.state") === "collapsed" ? "collapsed" : "expanded";
@@ -1193,6 +1194,9 @@
           <h1>Dnevna refleksija</h1>
           <span>Tiha stranica za misli, energiju i fokus.</span>
         </div>
+        <div id="journalBookPrototype" data-panel="journal-book-prototype"></div>
+        <details class="journal-book-legacy">
+          <summary id="journalBookLegacyLabel"></summary>
         <div class="journal-layout">
           <article class="mentor-card journal-editor">
             <textarea id="journalEntry" name="journalEntry" class="text-input mentor-textarea" rows="8" placeholder="Šta danas primećuješ kod sebe?"></textarea>
@@ -1209,6 +1213,7 @@
             <p><strong>Subota</strong> Završena jedna važna mala stvar.</p>
           </aside>
         </div>
+        </details>
       </section>
 
       <section id="nutritionView" class="view-panel app-page hidden"></section>
@@ -1409,8 +1414,8 @@
   <script src="js/i18n/mentor-actions.js?v=20261030-catalog-recipes-02"></script>
   <script src="js/i18n/mentor-foods.js?v=20261030-usda-first-01"></script>
   <script src="js/i18n/provider.js"></script>
-  <script src="lazyLoader.js?v=20261110-nutrition-phase3-01"></script>
-  <script src="script.js?v=20261029-floating-01"></script>
+  <script src="lazyLoader.js?v=20261113-book-07"></script>
+  <script src="script.js?v=20261113-book-01"></script>
   <script src="js/mentor/mentor-protocol.js?v=20261030-catalog-recipes-02"></script>
   <script src="js/mentor/mentor-conversations.repository.js?v=20261030-catalog-recipes-02"></script>
   <script src="js/mentor/mentor-goal-proposals.js?v=20261023-01"></script>

@@ -569,7 +569,7 @@ function renderAppStaticLanguage() {
   setUiText("#journalView .page-heading p", "journal.eyebrow", "DNEVNIK");
   setUiText("#journalView .page-heading h1", "journal.title", "Dnevna refleksija");
   setUiText("#journalView .page-heading span", "journal.subtitle", "Tiha stranica za misli, energiju i fokus.");
-  setUiPlaceholder(document.querySelector("#journalView textarea"), "journal.placeholder", "Sta danas primecujes kod sebe?");
+  setUiPlaceholder(document.getElementById("journalEntry"), "journal.placeholder", "Sta danas primecujes kod sebe?");
   const journalLabels = document.querySelectorAll("#journalView .journal-inputs label span");
   if (journalLabels[0]) journalLabels[0].textContent = uiT("journal.mood", "Raspolozenje");
   if (journalLabels[1]) journalLabels[1].textContent = uiT("journal.energy", "Energija");
@@ -631,6 +631,10 @@ function renderAppStaticLanguage() {
 function renderActiveViewLanguage(viewName) {
   renderShellLanguage();
   renderAppStaticLanguage();
+  if (viewName === "journal") {
+    window.MentorJournalBookPrototype?.activate?.();
+    return;
+  }
   if (viewName === "finance") {
     window.FinanceDashboard?.activateFinanceDashboard?.();
     return;
@@ -721,6 +725,9 @@ async function setView(viewName, options) {
   if (document.body.dataset.activeView === "planner" && (nextView !== "planner" || options?.reset)) {
     const notesFlushed = await window.CalendarPlanner?.deactivateCalendarPlanner?.();
     if (notesFlushed === false) return false;
+  }
+  if (document.body.dataset.activeView === "journal" && nextView !== "journal") {
+    window.MentorJournalBookPrototype?.deactivate?.();
   }
   if (nextView !== "finance") window.Finance?.deactivateAssetRefresh?.();
   const showBuilder = nextView === "builder";

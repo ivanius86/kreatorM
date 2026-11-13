@@ -6,12 +6,14 @@
   "scripts": {
     "start": "node server.js",
     "check:gemini": "node server.js --check-gemini",
-    "test": "npm run test:mentor && npm run test:storage && npm run test:nutrition && npm run test:research",
+    "test": "npm run test:mentor && npm run test:storage && npm run test:nutrition && npm run test:research && npm run test:journal",
     "test:mentor": "node --test --test-isolation=none tests/mentor/*.test.js",
     "test:mentor:browser": "node tests/mentor/browser-check.js",
     "test:storage": "node --test --test-isolation=none tests/storage/*.test.js",
     "test:nutrition": "node --test --test-isolation=none tests/nutrition/*.test.js",
-    "test:research": "node --test --test-isolation=none tests/research-canvas.test.js tests/research-sticker-designer.test.js"
+    "test:research": "node --test --test-isolation=none tests/research-canvas.test.js tests/research-sticker-designer.test.js",
+    "test:journal": "node --test --test-isolation=none tests/journal/*.test.js",
+    "test:journal:browser": "node tests/journal/browser-check.js"
   },
   "dependencies": {
     "dexie": "4.4.4",

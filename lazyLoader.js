@@ -8,6 +8,10 @@
   const nutritionAsset = (src) => `${src}?v=${NUTRITION_ASSET_VERSION}`;
 
   const FEATURES = {
+    journal: {
+      scripts: ["js/i18n/journal-book-prototype.js", "js/journal/prototype/book-animation.js", "js/journal/prototype/book-prototype.js"].map((src) => `${src}?v=20261113-book-07`),
+      ready: () => Boolean(window.MentorJournalBookPrototype?.activate)
+    },
     calendar: {
       scripts: ["kalendar.js"],
       ready: () => Boolean(window.CalendarPlanner?.renderCalendar)
@@ -35,6 +39,7 @@
   };
 
   const VIEW_FEATURES = {
+    journal: "journal",
     planner: "calendar",
     brainstorming: "brainstorming",
     finance: "financeDashboard",
